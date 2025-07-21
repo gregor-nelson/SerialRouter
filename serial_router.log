@@ -1,0 +1,659 @@
+[2025-07-21 14:30:30] [INFO] [MainThread] SerialRouter initialized with config: {'incoming_port': 'COM88', 'incoming_baud': 115200, 'outgoing_baud': 115200, 'timeout': 0.1, 'retry_delay_max': 30, 'log_level': 'INFO'}
+[2025-07-21 14:30:30] [INFO] [MainThread] Starting SerialRouter - COM88 <-> COM131 & COM141
+[2025-07-21 14:30:30] [INFO] [MainThread] Incoming baud: 115200, Outgoing baud: 115200
+[2025-07-21 14:30:30] [INFO] [IncomingToBoth] Starting routing thread: COM88->131&141
+[2025-07-21 14:30:30] [INFO] [Port131ToIncoming] Starting routing thread: 131->Incoming
+[2025-07-21 14:30:30] [INFO] [Port141ToIncoming] Starting routing thread: 141->Incoming
+[2025-07-21 14:30:30] [INFO] [MainThread] Started 3 routing threads
+[2025-07-21 14:30:30] [INFO] [IncomingToBoth] Attempting to connect to COM88 (attempt 1)
+[2025-07-21 14:30:30] [INFO] [Port131ToIncoming] Attempting to connect to COM131 (attempt 1)
+[2025-07-21 14:30:30] [INFO] [Port141ToIncoming] Attempting to connect to COM141 (attempt 1)
+[2025-07-21 14:30:30] [INFO] [Watchdog] Watchdog monitor started
+[2025-07-21 14:30:30] [INFO] [MainThread] SerialRouter started successfully
+[2025-07-21 14:30:30] [INFO] [Port131ToIncoming] Successfully connected to COM131
+[2025-07-21 14:30:30] [INFO] [Port141ToIncoming] Successfully connected to COM141
+[2025-07-21 14:30:30] [INFO] [Port131ToIncoming] Attempting to connect to COM88 (attempt 1)
+[2025-07-21 14:30:30] [INFO] [Port141ToIncoming] Attempting to connect to COM88 (attempt 1)
+[2025-07-21 14:30:30] [INFO] [Port131ToIncoming] Failed to connect to COM88: could not open port 'COM88': PermissionError(13, 'Access is denied.', None, 5). Retrying in 1s
+[2025-07-21 14:30:30] [INFO] [Port141ToIncoming] Failed to connect to COM88: could not open port 'COM88': PermissionError(13, 'Access is denied.', None, 5). Retrying in 1s
+[2025-07-21 14:30:31] [INFO] [Port141ToIncoming] Attempting to connect to COM88 (attempt 2)
+[2025-07-21 14:30:31] [INFO] [Port131ToIncoming] Attempting to connect to COM88 (attempt 2)
+[2025-07-21 14:30:31] [INFO] [Port141ToIncoming] Failed to connect to COM88: could not open port 'COM88': PermissionError(13, 'Access is denied.', None, 5). Retrying in 2s
+[2025-07-21 14:30:31] [INFO] [Port131ToIncoming] Failed to connect to COM88: could not open port 'COM88': PermissionError(13, 'Access is denied.', None, 5). Retrying in 2s
+[2025-07-21 14:30:33] [INFO] [Port141ToIncoming] Attempting to connect to COM88 (attempt 3)
+[2025-07-21 14:30:33] [INFO] [Port131ToIncoming] Attempting to connect to COM88 (attempt 3)
+[2025-07-21 14:30:33] [INFO] [Port141ToIncoming] Failed to connect to COM88: could not open port 'COM88': PermissionError(13, 'Access is denied.', None, 5). Retrying in 4s
+[2025-07-21 14:30:33] [INFO] [Port131ToIncoming] Failed to connect to COM88: could not open port 'COM88': PermissionError(13, 'Access is denied.', None, 5). Retrying in 4s
+[2025-07-21 14:30:33] [INFO] [MainThread] Stopping SerialRouter...
+[2025-07-21 14:30:35] [INFO] [IncomingToBoth] Failed to connect to COM88: could not open port 'COM88': OSError(22, 'Insufficient system resources exist to complete the requested service.', None, 1450). Retrying in 1s
+[2025-07-21 14:39:28] [INFO] [MainThread] SerialRouter initialized with config: {'incoming_port': 'COM88', 'incoming_baud': 115200, 'outgoing_baud': 115200, 'timeout': 0.1, 'retry_delay_max': 30, 'log_level': 'INFO'}
+[2025-07-21 14:39:28] [INFO] [MainThread] Starting SerialRouter - COM88 <-> COM131 & COM141
+[2025-07-21 14:39:28] [INFO] [MainThread] Incoming baud: 115200, Outgoing baud: 115200
+[2025-07-21 14:39:28] [INFO] [IncomingToBoth] Starting routing thread: COM88->131&141
+[2025-07-21 14:39:28] [INFO] [Port131ToIncoming] Starting routing thread: 131->Incoming
+[2025-07-21 14:39:28] [INFO] [IncomingToBoth] Attempting to connect to COM88 (attempt 1)
+[2025-07-21 14:39:28] [INFO] [Port141ToIncoming] Starting routing thread: 141->Incoming
+[2025-07-21 14:39:28] [INFO] [MainThread] Started 3 routing threads
+[2025-07-21 14:39:28] [INFO] [Port131ToIncoming] Attempting to connect to COM131 (attempt 1)
+[2025-07-21 14:39:28] [INFO] [Port141ToIncoming] Attempting to connect to COM141 (attempt 1)
+[2025-07-21 14:39:28] [INFO] [Watchdog] Watchdog monitor started
+[2025-07-21 14:39:28] [INFO] [MainThread] SerialRouter started successfully
+[2025-07-21 14:39:28] [INFO] [Port131ToIncoming] Successfully connected to COM131
+[2025-07-21 14:39:28] [INFO] [Port141ToIncoming] Successfully connected to COM141
+[2025-07-21 14:39:28] [INFO] [Port131ToIncoming] Attempting to connect to COM88 (attempt 1)
+[2025-07-21 14:39:28] [INFO] [Port141ToIncoming] Attempting to connect to COM88 (attempt 1)
+[2025-07-21 14:39:28] [INFO] [Port131ToIncoming] Failed to connect to COM88: could not open port 'COM88': PermissionError(13, 'Access is denied.', None, 5). Retrying in 1s
+[2025-07-21 14:39:28] [INFO] [Port141ToIncoming] Failed to connect to COM88: could not open port 'COM88': PermissionError(13, 'Access is denied.', None, 5). Retrying in 1s
+[2025-07-21 14:39:29] [INFO] [IncomingToBoth] Successfully connected to COM88
+[2025-07-21 14:39:29] [INFO] [IncomingToBoth] Attempting to connect to COM131 (attempt 1)
+[2025-07-21 14:39:29] [INFO] [IncomingToBoth] Failed to connect to COM131: could not open port 'COM131': PermissionError(13, 'Access is denied.', None, 5). Retrying in 1s
+[2025-07-21 14:39:29] [INFO] [Port141ToIncoming] Attempting to connect to COM88 (attempt 2)
+[2025-07-21 14:39:29] [INFO] [Port131ToIncoming] Attempting to connect to COM88 (attempt 2)
+[2025-07-21 14:39:29] [INFO] [Port141ToIncoming] Failed to connect to COM88: could not open port 'COM88': PermissionError(13, 'Access is denied.', None, 5). Retrying in 2s
+[2025-07-21 14:39:29] [INFO] [Port131ToIncoming] Failed to connect to COM88: could not open port 'COM88': PermissionError(13, 'Access is denied.', None, 5). Retrying in 2s
+[2025-07-21 14:39:30] [INFO] [IncomingToBoth] Attempting to connect to COM131 (attempt 2)
+[2025-07-21 14:39:30] [INFO] [IncomingToBoth] Failed to connect to COM131: could not open port 'COM131': PermissionError(13, 'Access is denied.', None, 5). Retrying in 2s
+[2025-07-21 14:39:31] [INFO] [MainThread] Stopping SerialRouter...
+[2025-07-21 14:39:31] [ERROR] [Port141ToIncoming] Could not connect to destination COM88, skipping routing
+[2025-07-21 14:39:31] [ERROR] [Port131ToIncoming] Could not connect to destination COM88, skipping routing
+[2025-07-21 14:39:32] [ERROR] [IncomingToBoth] Could not connect to destination COM131, skipping routing
+[2025-07-21 14:42:25] [INFO] [MainThread] SerialRouter initialized with config: {'incoming_port': 'COM88', 'incoming_baud': 115200, 'outgoing_baud': 115200, 'timeout': 0.1, 'retry_delay_max': 30, 'log_level': 'INFO'}
+[2025-07-21 14:42:25] [INFO] [MainThread] Starting SerialRouter - COM88 <-> COM131 & COM141
+[2025-07-21 14:42:25] [INFO] [MainThread] Incoming baud: 115200, Outgoing baud: 115200
+[2025-07-21 14:42:25] [INFO] [IncomingToBoth] Starting routing thread: COM88->131&141
+[2025-07-21 14:42:25] [INFO] [Port131ToIncoming] Starting routing thread: 131->Incoming
+[2025-07-21 14:42:25] [INFO] [Port141ToIncoming] Starting routing thread: 141->Incoming
+[2025-07-21 14:42:25] [INFO] [IncomingToBoth] Attempting to connect to COM88 (attempt 1)
+[2025-07-21 14:42:25] [INFO] [MainThread] Started 3 routing threads
+[2025-07-21 14:42:25] [INFO] [Port131ToIncoming] Attempting to connect to COM131 (attempt 1)
+[2025-07-21 14:42:25] [INFO] [Port141ToIncoming] Attempting to connect to COM141 (attempt 1)
+[2025-07-21 14:42:25] [INFO] [Watchdog] Watchdog monitor started
+[2025-07-21 14:42:25] [INFO] [MainThread] SerialRouter started successfully
+[2025-07-21 14:42:25] [INFO] [Port131ToIncoming] Failed to connect to COM131: could not open port 'COM131': FileNotFoundError(2, 'The system cannot find the file specified.', None, 2). Retrying in 1s
+[2025-07-21 14:42:25] [INFO] [Port141ToIncoming] Failed to connect to COM141: could not open port 'COM141': FileNotFoundError(2, 'The system cannot find the file specified.', None, 2). Retrying in 1s
+[2025-07-21 14:42:25] [INFO] [IncomingToBoth] Successfully connected to COM88
+[2025-07-21 14:42:25] [INFO] [IncomingToBoth] Attempting to connect to COM131 (attempt 1)
+[2025-07-21 14:42:25] [INFO] [IncomingToBoth] Failed to connect to COM131: could not open port 'COM131': FileNotFoundError(2, 'The system cannot find the file specified.', None, 2). Retrying in 1s
+[2025-07-21 14:42:26] [INFO] [Port141ToIncoming] Attempting to connect to COM141 (attempt 2)
+[2025-07-21 14:42:26] [INFO] [Port131ToIncoming] Attempting to connect to COM131 (attempt 2)
+[2025-07-21 14:42:26] [INFO] [Port141ToIncoming] Failed to connect to COM141: could not open port 'COM141': FileNotFoundError(2, 'The system cannot find the file specified.', None, 2). Retrying in 2s
+[2025-07-21 14:42:26] [INFO] [Port131ToIncoming] Failed to connect to COM131: could not open port 'COM131': FileNotFoundError(2, 'The system cannot find the file specified.', None, 2). Retrying in 2s
+[2025-07-21 14:42:26] [INFO] [IncomingToBoth] Attempting to connect to COM131 (attempt 2)
+[2025-07-21 14:42:26] [INFO] [IncomingToBoth] Failed to connect to COM131: could not open port 'COM131': FileNotFoundError(2, 'The system cannot find the file specified.', None, 2). Retrying in 2s
+[2025-07-21 14:42:27] [INFO] [MainThread] Stopping SerialRouter...
+[2025-07-21 14:42:28] [ERROR] [IncomingToBoth] Could not connect to destination COM131, skipping routing
+[2025-07-21 14:44:54] [INFO] [MainThread] SerialRouter initialized with config: {'incoming_port': 'COM8', 'incoming_baud': 115200, 'outgoing_baud': 115200, 'timeout': 0.1, 'retry_delay_max': 30, 'log_level': 'INFO'}
+[2025-07-21 14:44:54] [INFO] [MainThread] Starting SerialRouter - COM8 <-> COM131 & COM141
+[2025-07-21 14:44:54] [INFO] [MainThread] Incoming baud: 115200, Outgoing baud: 115200
+[2025-07-21 14:44:54] [INFO] [IncomingToBoth] Starting routing thread: COM8->131&141
+[2025-07-21 14:44:54] [INFO] [Port131ToIncoming] Starting routing thread: 131->Incoming
+[2025-07-21 14:44:54] [INFO] [IncomingToBoth] Attempting to connect to COM8 (attempt 1)
+[2025-07-21 14:44:54] [INFO] [Port141ToIncoming] Starting routing thread: 141->Incoming
+[2025-07-21 14:44:54] [INFO] [Port131ToIncoming] Attempting to connect to COM131 (attempt 1)
+[2025-07-21 14:44:54] [INFO] [MainThread] Started 3 routing threads
+[2025-07-21 14:44:54] [INFO] [Port141ToIncoming] Attempting to connect to COM141 (attempt 1)
+[2025-07-21 14:44:54] [INFO] [Port131ToIncoming] Failed to connect to COM131: could not open port 'COM131': FileNotFoundError(2, 'The system cannot find the file specified.', None, 2). Retrying in 1s
+[2025-07-21 14:44:54] [INFO] [Watchdog] Watchdog monitor started
+[2025-07-21 14:44:54] [INFO] [MainThread] SerialRouter started successfully
+[2025-07-21 14:44:54] [INFO] [Port141ToIncoming] Failed to connect to COM141: could not open port 'COM141': FileNotFoundError(2, 'The system cannot find the file specified.', None, 2). Retrying in 1s
+[2025-07-21 14:44:54] [INFO] [IncomingToBoth] Successfully connected to COM8
+[2025-07-21 14:44:54] [INFO] [IncomingToBoth] Attempting to connect to COM131 (attempt 1)
+[2025-07-21 14:44:54] [INFO] [IncomingToBoth] Failed to connect to COM131: could not open port 'COM131': FileNotFoundError(2, 'The system cannot find the file specified.', None, 2). Retrying in 1s
+[2025-07-21 14:44:55] [INFO] [Port141ToIncoming] Attempting to connect to COM141 (attempt 2)
+[2025-07-21 14:44:55] [INFO] [Port131ToIncoming] Attempting to connect to COM131 (attempt 2)
+[2025-07-21 14:44:55] [INFO] [Port141ToIncoming] Failed to connect to COM141: could not open port 'COM141': FileNotFoundError(2, 'The system cannot find the file specified.', None, 2). Retrying in 2s
+[2025-07-21 14:44:55] [INFO] [Port131ToIncoming] Failed to connect to COM131: could not open port 'COM131': FileNotFoundError(2, 'The system cannot find the file specified.', None, 2). Retrying in 2s
+[2025-07-21 14:44:55] [INFO] [IncomingToBoth] Attempting to connect to COM131 (attempt 2)
+[2025-07-21 14:44:55] [INFO] [IncomingToBoth] Failed to connect to COM131: could not open port 'COM131': FileNotFoundError(2, 'The system cannot find the file specified.', None, 2). Retrying in 2s
+[2025-07-21 14:44:57] [INFO] [Port141ToIncoming] Attempting to connect to COM141 (attempt 3)
+[2025-07-21 14:44:57] [INFO] [Port131ToIncoming] Attempting to connect to COM131 (attempt 3)
+[2025-07-21 14:44:57] [INFO] [Port141ToIncoming] Failed to connect to COM141: could not open port 'COM141': FileNotFoundError(2, 'The system cannot find the file specified.', None, 2). Retrying in 4s
+[2025-07-21 14:44:57] [INFO] [Port131ToIncoming] Failed to connect to COM131: could not open port 'COM131': FileNotFoundError(2, 'The system cannot find the file specified.', None, 2). Retrying in 4s
+[2025-07-21 14:44:57] [INFO] [IncomingToBoth] Attempting to connect to COM131 (attempt 3)
+[2025-07-21 14:44:57] [INFO] [IncomingToBoth] Failed to connect to COM131: could not open port 'COM131': FileNotFoundError(2, 'The system cannot find the file specified.', None, 2). Retrying in 4s
+[2025-07-21 14:45:01] [INFO] [Port141ToIncoming] Attempting to connect to COM141 (attempt 4)
+[2025-07-21 14:45:01] [INFO] [Port131ToIncoming] Attempting to connect to COM131 (attempt 4)
+[2025-07-21 14:45:01] [INFO] [Port141ToIncoming] Failed to connect to COM141: could not open port 'COM141': FileNotFoundError(2, 'The system cannot find the file specified.', None, 2). Retrying in 8s
+[2025-07-21 14:45:01] [INFO] [Port131ToIncoming] Failed to connect to COM131: could not open port 'COM131': FileNotFoundError(2, 'The system cannot find the file specified.', None, 2). Retrying in 8s
+[2025-07-21 14:45:01] [INFO] [IncomingToBoth] Attempting to connect to COM131 (attempt 4)
+[2025-07-21 14:45:01] [INFO] [IncomingToBoth] Failed to connect to COM131: could not open port 'COM131': FileNotFoundError(2, 'The system cannot find the file specified.', None, 2). Retrying in 8s
+[2025-07-21 14:45:09] [INFO] [Port131ToIncoming] Attempting to connect to COM131 (attempt 5)
+[2025-07-21 14:45:09] [INFO] [Port141ToIncoming] Attempting to connect to COM141 (attempt 5)
+[2025-07-21 14:45:09] [INFO] [Port131ToIncoming] Failed to connect to COM131: could not open port 'COM131': FileNotFoundError(2, 'The system cannot find the file specified.', None, 2). Retrying in 16s
+[2025-07-21 14:45:09] [INFO] [Port141ToIncoming] Failed to connect to COM141: could not open port 'COM141': FileNotFoundError(2, 'The system cannot find the file specified.', None, 2). Retrying in 16s
+[2025-07-21 14:45:09] [INFO] [IncomingToBoth] Attempting to connect to COM131 (attempt 5)
+[2025-07-21 14:45:09] [INFO] [IncomingToBoth] Failed to connect to COM131: could not open port 'COM131': FileNotFoundError(2, 'The system cannot find the file specified.', None, 2). Retrying in 16s
+[2025-07-21 14:45:24] [ERROR] [Watchdog] Thread IncomingToBoth heartbeat timeout, restarting
+[2025-07-21 14:45:24] [INFO] [IncomingToBoth] Starting routing thread: COM8->131&141
+[2025-07-21 14:45:24] [INFO] [Watchdog] Restarted thread IncomingToBoth
+[2025-07-21 14:45:24] [INFO] [IncomingToBoth] Attempting to connect to COM8 (attempt 1)
+[2025-07-21 14:45:24] [ERROR] [Watchdog] Thread Port131ToIncoming heartbeat timeout, restarting
+[2025-07-21 14:45:24] [INFO] [IncomingToBoth] Failed to connect to COM8: could not open port 'COM8': PermissionError(13, 'Access is denied.', None, 5). Retrying in 1s
+[2025-07-21 14:45:24] [INFO] [Port131ToIncoming] Starting routing thread: 131->Incoming
+[2025-07-21 14:45:24] [INFO] [Watchdog] Restarted thread Port131ToIncoming
+[2025-07-21 14:45:24] [INFO] [Port131ToIncoming] Attempting to connect to COM131 (attempt 1)
+[2025-07-21 14:45:24] [ERROR] [Watchdog] Thread Port141ToIncoming heartbeat timeout, restarting
+[2025-07-21 14:45:24] [INFO] [Port131ToIncoming] Failed to connect to COM131: could not open port 'COM131': FileNotFoundError(2, 'The system cannot find the file specified.', None, 2). Retrying in 1s
+[2025-07-21 14:45:24] [INFO] [Port141ToIncoming] Starting routing thread: 141->Incoming
+[2025-07-21 14:45:24] [INFO] [Watchdog] Restarted thread Port141ToIncoming
+[2025-07-21 14:45:24] [INFO] [Port141ToIncoming] Attempting to connect to COM141 (attempt 1)
+[2025-07-21 14:45:24] [INFO] [Port141ToIncoming] Failed to connect to COM141: could not open port 'COM141': FileNotFoundError(2, 'The system cannot find the file specified.', None, 2). Retrying in 1s
+[2025-07-21 14:45:25] [INFO] [IncomingToBoth] Attempting to connect to COM8 (attempt 2)
+[2025-07-21 14:45:25] [INFO] [IncomingToBoth] Failed to connect to COM8: could not open port 'COM8': PermissionError(13, 'Access is denied.', None, 5). Retrying in 2s
+[2025-07-21 14:45:25] [INFO] [Port131ToIncoming] Attempting to connect to COM131 (attempt 6)
+[2025-07-21 14:45:25] [INFO] [Port141ToIncoming] Attempting to connect to COM141 (attempt 6)
+[2025-07-21 14:45:25] [INFO] [Port131ToIncoming] Attempting to connect to COM131 (attempt 2)
+[2025-07-21 14:45:25] [INFO] [Port131ToIncoming] Failed to connect to COM131: could not open port 'COM131': FileNotFoundError(2, 'The system cannot find the file specified.', None, 2). Retrying in 2s
+[2025-07-21 14:45:25] [INFO] [Port141ToIncoming] Attempting to connect to COM141 (attempt 2)
+[2025-07-21 14:45:25] [INFO] [Port141ToIncoming] Failed to connect to COM141: could not open port 'COM141': FileNotFoundError(2, 'The system cannot find the file specified.', None, 2). Retrying in 2s
+[2025-07-21 14:45:25] [INFO] [IncomingToBoth] Attempting to connect to COM131 (attempt 6)
+[2025-07-21 14:45:27] [INFO] [IncomingToBoth] Attempting to connect to COM8 (attempt 3)
+[2025-07-21 14:45:27] [INFO] [IncomingToBoth] Failed to connect to COM8: could not open port 'COM8': PermissionError(13, 'Access is denied.', None, 5). Retrying in 4s
+[2025-07-21 14:45:27] [INFO] [Port131ToIncoming] Attempting to connect to COM131 (attempt 3)
+[2025-07-21 14:45:27] [INFO] [Port131ToIncoming] Failed to connect to COM131: could not open port 'COM131': FileNotFoundError(2, 'The system cannot find the file specified.', None, 2). Retrying in 4s
+[2025-07-21 14:45:27] [INFO] [Port141ToIncoming] Attempting to connect to COM141 (attempt 3)
+[2025-07-21 14:45:27] [INFO] [Port141ToIncoming] Failed to connect to COM141: could not open port 'COM141': FileNotFoundError(2, 'The system cannot find the file specified.', None, 2). Retrying in 4s
+[2025-07-21 14:45:31] [INFO] [MainThread] Stopping SerialRouter...
+[2025-07-21 14:46:52] [INFO] [MainThread] SerialRouter initialized with config: {'incoming_port': 'COM8', 'incoming_baud': 115200, 'outgoing_baud': 115200, 'timeout': 0.1, 'retry_delay_max': 30, 'log_level': 'INFO'}
+[2025-07-21 14:46:52] [INFO] [MainThread] SerialRouter initialized with config: {'incoming_port': 'COM88', 'incoming_baud': 115200, 'outgoing_baud': 115200, 'timeout': 0.1, 'retry_delay_max': 30, 'log_level': 'INFO'}
+[2025-07-21 14:58:39] [INFO] [MainThread] SerialRouter initialized with config: {'incoming_port': 'COM8', 'incoming_baud': 115200, 'outgoing_baud': 115200, 'timeout': 0.1, 'retry_delay_max': 30, 'log_level': 'INFO'}
+[2025-07-21 14:58:39] [INFO] [Dummy-1] Starting SerialRouter - COM8 <-> COM131 & COM141
+[2025-07-21 15:02:39] [INFO] [MainThread] SerialRouter initialized with config: {'incoming_port': 'COM8', 'incoming_baud': 115200, 'outgoing_baud': 115200, 'timeout': 0.1, 'retry_delay_max': 30, 'log_level': 'INFO'}
+[2025-07-21 15:02:39] [INFO] [Dummy-1] Starting SerialRouter - COM54 <-> COM131 & COM141
+[2025-07-21 15:02:51] [INFO] [MainThread] SerialRouter initialized with config: {'incoming_port': 'COM8', 'incoming_baud': 115200, 'outgoing_baud': 115200, 'timeout': 0.1, 'retry_delay_max': 30, 'log_level': 'INFO'}
+[2025-07-21 15:02:51] [INFO] [Dummy-1] Starting SerialRouter - COM54 <-> COM131 & COM141
+[2025-07-21 15:02:52] [INFO] [MainThread] SerialRouter initialized with config: {'incoming_port': 'COM8', 'incoming_baud': 115200, 'outgoing_baud': 115200, 'timeout': 0.1, 'retry_delay_max': 30, 'log_level': 'INFO'}
+[2025-07-21 15:02:52] [INFO] [Dummy-2] Starting SerialRouter - COM54 <-> COM131 & COM141
+[2025-07-21 15:02:52] [INFO] [MainThread] SerialRouter initialized with config: {'incoming_port': 'COM8', 'incoming_baud': 115200, 'outgoing_baud': 115200, 'timeout': 0.1, 'retry_delay_max': 30, 'log_level': 'INFO'}
+[2025-07-21 15:02:52] [INFO] [Dummy-3] Starting SerialRouter - COM54 <-> COM131 & COM141
+[2025-07-21 15:02:52] [INFO] [MainThread] SerialRouter initialized with config: {'incoming_port': 'COM8', 'incoming_baud': 115200, 'outgoing_baud': 115200, 'timeout': 0.1, 'retry_delay_max': 30, 'log_level': 'INFO'}
+[2025-07-21 15:02:52] [INFO] [Dummy-4] Starting SerialRouter - COM54 <-> COM131 & COM141
+[2025-07-21 15:03:51] [INFO] [MainThread] SerialRouter initialized with config: {'incoming_port': 'COM8', 'incoming_baud': 115200, 'outgoing_baud': 115200, 'timeout': 0.1, 'retry_delay_max': 30, 'log_level': 'INFO'}
+[2025-07-21 15:03:51] [INFO] [Dummy-1] Starting SerialRouter - COM54 <-> COM131 & COM141
+[2025-07-21 15:03:57] [INFO] [MainThread] SerialRouter initialized with config: {'incoming_port': 'COM8', 'incoming_baud': 115200, 'outgoing_baud': 115200, 'timeout': 0.1, 'retry_delay_max': 30, 'log_level': 'INFO'}
+[2025-07-21 15:03:57] [INFO] [Dummy-2] Starting SerialRouter - COM54 <-> COM131 & COM141
+[2025-07-21 15:04:04] [INFO] [MainThread] SerialRouter initialized with config: {'incoming_port': 'COM8', 'incoming_baud': 115200, 'outgoing_baud': 115200, 'timeout': 0.1, 'retry_delay_max': 30, 'log_level': 'INFO'}
+[2025-07-21 15:04:04] [INFO] [Dummy-1] Starting SerialRouter - COM54 <-> COM131 & COM141
+[2025-07-21 15:04:04] [INFO] [Dummy-1] Incoming baud: 115200, Outgoing baud: 115200
+[2025-07-21 15:04:04] [INFO] [IncomingToBoth] Starting routing thread: COM54->131&141
+[2025-07-21 15:04:04] [INFO] [Port131ToIncoming] Starting routing thread: 131->Incoming
+[2025-07-21 15:04:04] [INFO] [Port141ToIncoming] Starting routing thread: 141->Incoming
+[2025-07-21 15:04:04] [INFO] [IncomingToBoth] Attempting to connect to COM54 (attempt 1)
+[2025-07-21 15:04:04] [INFO] [Dummy-1] Started 3 routing threads
+[2025-07-21 15:04:04] [INFO] [Port131ToIncoming] Attempting to connect to COM131 (attempt 1)
+[2025-07-21 15:04:04] [INFO] [Port141ToIncoming] Attempting to connect to COM141 (attempt 1)
+[2025-07-21 15:04:04] [INFO] [Watchdog] Watchdog monitor started
+[2025-07-21 15:04:04] [INFO] [Dummy-1] SerialRouter started successfully
+[2025-07-21 15:04:04] [INFO] [Port131ToIncoming] Successfully connected to COM131
+[2025-07-21 15:04:04] [INFO] [Port141ToIncoming] Successfully connected to COM141
+[2025-07-21 15:04:04] [INFO] [Port131ToIncoming] Attempting to connect to COM54 (attempt 1)
+[2025-07-21 15:04:04] [INFO] [Port141ToIncoming] Attempting to connect to COM54 (attempt 1)
+[2025-07-21 15:04:04] [INFO] [Port131ToIncoming] Failed to connect to COM54: could not open port 'COM54': PermissionError(13, 'Access is denied.', None, 5). Retrying in 1s
+[2025-07-21 15:04:04] [INFO] [Port141ToIncoming] Failed to connect to COM54: could not open port 'COM54': PermissionError(13, 'Access is denied.', None, 5). Retrying in 1s
+[2025-07-21 15:04:04] [INFO] [IncomingToBoth] Successfully connected to COM54
+[2025-07-21 15:04:04] [INFO] [IncomingToBoth] Attempting to connect to COM131 (attempt 1)
+[2025-07-21 15:04:04] [INFO] [IncomingToBoth] Failed to connect to COM131: could not open port 'COM131': PermissionError(13, 'Access is denied.', None, 5). Retrying in 1s
+[2025-07-21 15:04:05] [INFO] [Port131ToIncoming] Attempting to connect to COM54 (attempt 2)
+[2025-07-21 15:04:05] [INFO] [Port131ToIncoming] Failed to connect to COM54: could not open port 'COM54': PermissionError(13, 'Access is denied.', None, 5). Retrying in 2s
+[2025-07-21 15:04:05] [INFO] [Port141ToIncoming] Attempting to connect to COM54 (attempt 2)
+[2025-07-21 15:04:05] [INFO] [Port141ToIncoming] Failed to connect to COM54: could not open port 'COM54': PermissionError(13, 'Access is denied.', None, 5). Retrying in 2s
+[2025-07-21 15:04:05] [INFO] [IncomingToBoth] Attempting to connect to COM131 (attempt 2)
+[2025-07-21 15:04:05] [INFO] [IncomingToBoth] Failed to connect to COM131: could not open port 'COM131': PermissionError(13, 'Access is denied.', None, 5). Retrying in 2s
+[2025-07-21 15:04:07] [INFO] [Port131ToIncoming] Attempting to connect to COM54 (attempt 3)
+[2025-07-21 15:04:07] [INFO] [Port131ToIncoming] Failed to connect to COM54: could not open port 'COM54': PermissionError(13, 'Access is denied.', None, 5). Retrying in 4s
+[2025-07-21 15:04:07] [INFO] [Port141ToIncoming] Attempting to connect to COM54 (attempt 3)
+[2025-07-21 15:04:07] [INFO] [Port141ToIncoming] Failed to connect to COM54: could not open port 'COM54': PermissionError(13, 'Access is denied.', None, 5). Retrying in 4s
+[2025-07-21 15:04:07] [INFO] [IncomingToBoth] Attempting to connect to COM131 (attempt 3)
+[2025-07-21 15:04:07] [INFO] [IncomingToBoth] Failed to connect to COM131: could not open port 'COM131': PermissionError(13, 'Access is denied.', None, 5). Retrying in 4s
+[2025-07-21 15:04:09] [INFO] [Dummy-2] Stopping SerialRouter...
+[2025-07-21 15:04:11] [ERROR] [Port131ToIncoming] Could not connect to destination COM54, skipping routing
+[2025-07-21 15:04:11] [ERROR] [Port141ToIncoming] Could not connect to destination COM54, skipping routing
+[2025-07-21 15:04:11] [ERROR] [IncomingToBoth] Could not connect to destination COM131, skipping routing
+[2025-07-21 15:04:13] [INFO] [Dummy-2] SerialRouter stopped
+[2025-07-21 15:04:24] [INFO] [MainThread] SerialRouter initialized with config: {'incoming_port': 'COM8', 'incoming_baud': 115200, 'outgoing_baud': 115200, 'timeout': 0.1, 'retry_delay_max': 30, 'log_level': 'INFO'}
+[2025-07-21 15:04:24] [INFO] [Dummy-1] Starting SerialRouter - COM54 <-> COM131 & COM141
+[2025-07-21 15:04:24] [INFO] [Dummy-1] Incoming baud: 115200, Outgoing baud: 115200
+[2025-07-21 15:04:24] [INFO] [IncomingToBoth] Starting routing thread: COM54->131&141
+[2025-07-21 15:04:24] [INFO] [Port131ToIncoming] Starting routing thread: 131->Incoming
+[2025-07-21 15:04:24] [INFO] [IncomingToBoth] Attempting to connect to COM54 (attempt 1)
+[2025-07-21 15:04:24] [INFO] [Port141ToIncoming] Starting routing thread: 141->Incoming
+[2025-07-21 15:04:24] [INFO] [Dummy-1] Started 3 routing threads
+[2025-07-21 15:04:24] [INFO] [Port131ToIncoming] Attempting to connect to COM131 (attempt 1)
+[2025-07-21 15:04:24] [INFO] [Port141ToIncoming] Attempting to connect to COM141 (attempt 1)
+[2025-07-21 15:04:24] [INFO] [Watchdog] Watchdog monitor started
+[2025-07-21 15:04:24] [INFO] [Dummy-1] SerialRouter started successfully
+[2025-07-21 15:04:24] [INFO] [Port131ToIncoming] Successfully connected to COM131
+[2025-07-21 15:04:24] [INFO] [Port141ToIncoming] Successfully connected to COM141
+[2025-07-21 15:04:24] [INFO] [Port131ToIncoming] Attempting to connect to COM54 (attempt 1)
+[2025-07-21 15:04:24] [INFO] [Port141ToIncoming] Attempting to connect to COM54 (attempt 1)
+[2025-07-21 15:04:24] [INFO] [Port131ToIncoming] Failed to connect to COM54: could not open port 'COM54': PermissionError(13, 'Access is denied.', None, 5). Retrying in 1s
+[2025-07-21 15:04:24] [INFO] [Port141ToIncoming] Failed to connect to COM54: could not open port 'COM54': PermissionError(13, 'Access is denied.', None, 5). Retrying in 1s
+[2025-07-21 15:04:25] [INFO] [IncomingToBoth] Successfully connected to COM54
+[2025-07-21 15:04:25] [INFO] [IncomingToBoth] Attempting to connect to COM131 (attempt 1)
+[2025-07-21 15:04:25] [INFO] [IncomingToBoth] Failed to connect to COM131: could not open port 'COM131': PermissionError(13, 'Access is denied.', None, 5). Retrying in 1s
+[2025-07-21 15:04:25] [INFO] [Port131ToIncoming] Attempting to connect to COM54 (attempt 2)
+[2025-07-21 15:04:25] [INFO] [Port131ToIncoming] Failed to connect to COM54: could not open port 'COM54': PermissionError(13, 'Access is denied.', None, 5). Retrying in 2s
+[2025-07-21 15:04:25] [INFO] [Port141ToIncoming] Attempting to connect to COM54 (attempt 2)
+[2025-07-21 15:04:25] [INFO] [Port141ToIncoming] Failed to connect to COM54: could not open port 'COM54': PermissionError(13, 'Access is denied.', None, 5). Retrying in 2s
+[2025-07-21 15:04:26] [INFO] [IncomingToBoth] Attempting to connect to COM131 (attempt 2)
+[2025-07-21 15:04:26] [INFO] [IncomingToBoth] Failed to connect to COM131: could not open port 'COM131': PermissionError(13, 'Access is denied.', None, 5). Retrying in 2s
+[2025-07-21 15:04:27] [INFO] [Port131ToIncoming] Attempting to connect to COM54 (attempt 3)
+[2025-07-21 15:04:27] [INFO] [Port131ToIncoming] Failed to connect to COM54: could not open port 'COM54': PermissionError(13, 'Access is denied.', None, 5). Retrying in 4s
+[2025-07-21 15:04:27] [INFO] [Port141ToIncoming] Attempting to connect to COM54 (attempt 3)
+[2025-07-21 15:04:27] [INFO] [Port141ToIncoming] Failed to connect to COM54: could not open port 'COM54': PermissionError(13, 'Access is denied.', None, 5). Retrying in 4s
+[2025-07-21 15:04:28] [INFO] [IncomingToBoth] Attempting to connect to COM131 (attempt 3)
+[2025-07-21 15:04:28] [INFO] [IncomingToBoth] Failed to connect to COM131: could not open port 'COM131': PermissionError(13, 'Access is denied.', None, 5). Retrying in 4s
+[2025-07-21 15:04:28] [INFO] [MainThread] Stopping SerialRouter...
+[2025-07-21 15:04:31] [ERROR] [Port131ToIncoming] Could not connect to destination COM54, skipping routing
+[2025-07-21 15:04:31] [ERROR] [Port141ToIncoming] Could not connect to destination COM54, skipping routing
+[2025-07-21 15:04:32] [ERROR] [IncomingToBoth] Could not connect to destination COM131, skipping routing
+[2025-07-21 15:04:34] [INFO] [MainThread] SerialRouter stopped
+[2025-07-21 15:06:23] [INFO] [MainThread] SerialRouter initialized with config: {'incoming_port': 'COM8', 'incoming_baud': 115200, 'outgoing_baud': 115200, 'timeout': 0.1, 'retry_delay_max': 30, 'log_level': 'INFO'}
+[2025-07-21 15:06:23] [INFO] [Dummy-1] Starting SerialRouter - COM54 <-> COM131 & COM141
+[2025-07-21 15:06:23] [INFO] [Dummy-1] Incoming baud: 115200, Outgoing baud: 115200
+[2025-07-21 15:06:23] [INFO] [IncomingToBoth] Starting routing thread: COM54->131&141
+[2025-07-21 15:06:23] [INFO] [Port131ToIncoming] Starting routing thread: 131->Incoming
+[2025-07-21 15:06:23] [INFO] [IncomingToBoth] Attempting to connect to COM54 (attempt 1)
+[2025-07-21 15:06:23] [INFO] [Port141ToIncoming] Starting routing thread: 141->Incoming
+[2025-07-21 15:06:23] [INFO] [Port131ToIncoming] Attempting to connect to COM131 (attempt 1)
+[2025-07-21 15:06:23] [INFO] [Dummy-1] Started 3 routing threads
+[2025-07-21 15:06:23] [INFO] [Port141ToIncoming] Attempting to connect to COM141 (attempt 1)
+[2025-07-21 15:06:23] [INFO] [Port131ToIncoming] Successfully connected to COM131
+[2025-07-21 15:06:23] [INFO] [Watchdog] Watchdog monitor started
+[2025-07-21 15:06:23] [INFO] [Dummy-1] SerialRouter started successfully
+[2025-07-21 15:06:23] [INFO] [Port141ToIncoming] Successfully connected to COM141
+[2025-07-21 15:06:23] [INFO] [Port131ToIncoming] Attempting to connect to COM54 (attempt 1)
+[2025-07-21 15:06:23] [INFO] [Port141ToIncoming] Attempting to connect to COM54 (attempt 1)
+[2025-07-21 15:06:23] [INFO] [Port131ToIncoming] Failed to connect to COM54: could not open port 'COM54': PermissionError(13, 'Access is denied.', None, 5). Retrying in 1s
+[2025-07-21 15:06:23] [INFO] [Port141ToIncoming] Failed to connect to COM54: could not open port 'COM54': PermissionError(13, 'Access is denied.', None, 5). Retrying in 1s
+[2025-07-21 15:06:24] [INFO] [IncomingToBoth] Successfully connected to COM54
+[2025-07-21 15:06:24] [INFO] [IncomingToBoth] Attempting to connect to COM131 (attempt 1)
+[2025-07-21 15:06:24] [INFO] [IncomingToBoth] Failed to connect to COM131: could not open port 'COM131': PermissionError(13, 'Access is denied.', None, 5). Retrying in 1s
+[2025-07-21 15:06:24] [INFO] [Port141ToIncoming] Attempting to connect to COM54 (attempt 2)
+[2025-07-21 15:06:24] [INFO] [Port131ToIncoming] Attempting to connect to COM54 (attempt 2)
+[2025-07-21 15:06:24] [INFO] [Port141ToIncoming] Failed to connect to COM54: could not open port 'COM54': PermissionError(13, 'Access is denied.', None, 5). Retrying in 2s
+[2025-07-21 15:06:24] [INFO] [Port131ToIncoming] Failed to connect to COM54: could not open port 'COM54': PermissionError(13, 'Access is denied.', None, 5). Retrying in 2s
+[2025-07-21 15:06:25] [INFO] [IncomingToBoth] Attempting to connect to COM131 (attempt 2)
+[2025-07-21 15:06:25] [INFO] [IncomingToBoth] Failed to connect to COM131: could not open port 'COM131': PermissionError(13, 'Access is denied.', None, 5). Retrying in 2s
+[2025-07-21 15:06:26] [INFO] [Port141ToIncoming] Attempting to connect to COM54 (attempt 3)
+[2025-07-21 15:06:26] [INFO] [Port141ToIncoming] Failed to connect to COM54: could not open port 'COM54': PermissionError(13, 'Access is denied.', None, 5). Retrying in 4s
+[2025-07-21 15:06:26] [INFO] [Port131ToIncoming] Attempting to connect to COM54 (attempt 3)
+[2025-07-21 15:06:26] [INFO] [Port131ToIncoming] Failed to connect to COM54: could not open port 'COM54': PermissionError(13, 'Access is denied.', None, 5). Retrying in 4s
+[2025-07-21 15:06:27] [INFO] [IncomingToBoth] Attempting to connect to COM131 (attempt 3)
+[2025-07-21 15:06:27] [INFO] [IncomingToBoth] Failed to connect to COM131: could not open port 'COM131': PermissionError(13, 'Access is denied.', None, 5). Retrying in 4s
+[2025-07-21 15:06:30] [INFO] [Port141ToIncoming] Attempting to connect to COM54 (attempt 4)
+[2025-07-21 15:06:30] [INFO] [Port141ToIncoming] Failed to connect to COM54: could not open port 'COM54': PermissionError(13, 'Access is denied.', None, 5). Retrying in 8s
+[2025-07-21 15:06:30] [INFO] [Port131ToIncoming] Attempting to connect to COM54 (attempt 4)
+[2025-07-21 15:06:30] [INFO] [Port131ToIncoming] Failed to connect to COM54: could not open port 'COM54': PermissionError(13, 'Access is denied.', None, 5). Retrying in 8s
+[2025-07-21 15:06:31] [INFO] [IncomingToBoth] Attempting to connect to COM131 (attempt 4)
+[2025-07-21 15:06:31] [INFO] [IncomingToBoth] Failed to connect to COM131: could not open port 'COM131': PermissionError(13, 'Access is denied.', None, 5). Retrying in 8s
+[2025-07-21 15:06:36] [INFO] [Dummy-2] Stopping SerialRouter...
+[2025-07-21 15:06:38] [ERROR] [Port131ToIncoming] Could not connect to destination COM54, skipping routing
+[2025-07-21 15:06:38] [ERROR] [Port141ToIncoming] Could not connect to destination COM54, skipping routing
+[2025-07-21 15:06:39] [ERROR] [IncomingToBoth] Could not connect to destination COM131, skipping routing
+[2025-07-21 15:06:41] [INFO] [Dummy-2] SerialRouter stopped
+[2025-07-21 15:08:14] [INFO] [MainThread] SerialRouter initialized with config: {'incoming_port': 'COM8', 'incoming_baud': 115200, 'outgoing_baud': 115200, 'timeout': 0.1, 'retry_delay_max': 30, 'log_level': 'INFO'}
+[2025-07-21 15:08:14] [INFO] [Dummy-1] Starting SerialRouter - COM54 <-> COM131 & COM141
+[2025-07-21 15:08:14] [INFO] [Dummy-1] Incoming baud: 115200, Outgoing baud: 115200
+[2025-07-21 15:08:14] [INFO] [IncomingToBoth] Starting routing thread: COM54->131&141
+[2025-07-21 15:08:14] [INFO] [Port131ToIncoming] Starting routing thread: 131->Incoming
+[2025-07-21 15:08:14] [INFO] [IncomingToBoth] Attempting to connect to COM54 (attempt 1)
+[2025-07-21 15:08:14] [INFO] [Port141ToIncoming] Starting routing thread: 141->Incoming
+[2025-07-21 15:08:14] [INFO] [Dummy-1] Started 3 routing threads
+[2025-07-21 15:08:14] [INFO] [Port131ToIncoming] Attempting to connect to COM131 (attempt 1)
+[2025-07-21 15:08:14] [INFO] [Port141ToIncoming] Attempting to connect to COM141 (attempt 1)
+[2025-07-21 15:08:14] [INFO] [Watchdog] Watchdog monitor started
+[2025-07-21 15:08:14] [INFO] [Dummy-1] SerialRouter started successfully
+[2025-07-21 15:08:14] [INFO] [Port131ToIncoming] Successfully connected to COM131
+[2025-07-21 15:08:14] [INFO] [Port141ToIncoming] Successfully connected to COM141
+[2025-07-21 15:08:14] [INFO] [Port131ToIncoming] Attempting to connect to COM54 (attempt 1)
+[2025-07-21 15:08:14] [INFO] [Port141ToIncoming] Attempting to connect to COM54 (attempt 1)
+[2025-07-21 15:08:14] [INFO] [Port131ToIncoming] Failed to connect to COM54: could not open port 'COM54': PermissionError(13, 'Access is denied.', None, 5). Retrying in 1s
+[2025-07-21 15:08:14] [INFO] [Port141ToIncoming] Failed to connect to COM54: could not open port 'COM54': PermissionError(13, 'Access is denied.', None, 5). Retrying in 1s
+[2025-07-21 15:08:14] [INFO] [IncomingToBoth] Successfully connected to COM54
+[2025-07-21 15:08:14] [INFO] [IncomingToBoth] Attempting to connect to COM131 (attempt 1)
+[2025-07-21 15:08:14] [INFO] [IncomingToBoth] Failed to connect to COM131: could not open port 'COM131': PermissionError(13, 'Access is denied.', None, 5). Retrying in 1s
+[2025-07-21 15:08:15] [INFO] [Port141ToIncoming] Attempting to connect to COM54 (attempt 2)
+[2025-07-21 15:08:15] [INFO] [Port131ToIncoming] Attempting to connect to COM54 (attempt 2)
+[2025-07-21 15:08:15] [INFO] [Port141ToIncoming] Failed to connect to COM54: could not open port 'COM54': PermissionError(13, 'Access is denied.', None, 5). Retrying in 2s
+[2025-07-21 15:08:15] [INFO] [Port131ToIncoming] Failed to connect to COM54: could not open port 'COM54': PermissionError(13, 'Access is denied.', None, 5). Retrying in 2s
+[2025-07-21 15:08:15] [INFO] [IncomingToBoth] Attempting to connect to COM131 (attempt 2)
+[2025-07-21 15:08:15] [INFO] [IncomingToBoth] Failed to connect to COM131: could not open port 'COM131': PermissionError(13, 'Access is denied.', None, 5). Retrying in 2s
+[2025-07-21 15:08:15] [INFO] [Dummy-2] Stopping SerialRouter...
+[2025-07-21 15:08:17] [ERROR] [Port131ToIncoming] Could not connect to destination COM54, skipping routing
+[2025-07-21 15:08:17] [ERROR] [Port141ToIncoming] Could not connect to destination COM54, skipping routing
+[2025-07-21 15:08:17] [ERROR] [IncomingToBoth] Could not connect to destination COM131, skipping routing
+[2025-07-21 15:08:19] [INFO] [Dummy-2] SerialRouter stopped
+[2025-07-21 15:19:04] [INFO] [MainThread] PortManager initialized
+[2025-07-21 15:19:04] [INFO] [MainThread] SerialRouter initialized with config: {'incoming_port': 'COM8', 'incoming_baud': 115200, 'outgoing_baud': 115200, 'timeout': 0.1, 'retry_delay_max': 30, 'log_level': 'INFO'}
+[2025-07-21 15:19:04] [INFO] [Dummy-1] Starting SerialRouter - COM54 <-> COM131 & COM141
+[2025-07-21 15:19:04] [INFO] [Dummy-1] Incoming baud: 115200, Outgoing baud: 115200
+[2025-07-21 15:19:04] [INFO] [Dummy-1] Acquiring port ownership for all routing threads...
+[2025-07-21 15:19:04] [INFO] [Dummy-1] Opening port COM54 for owner IncomingPortOwner
+[2025-07-21 15:19:05] [INFO] [Dummy-1] Port COM54 successfully acquired by IncomingPortOwner
+[2025-07-21 15:19:05] [INFO] [Dummy-1] Successfully acquired COM54 for IncomingPortOwner
+[2025-07-21 15:19:05] [INFO] [Dummy-1] Opening port COM131 for owner Port131Owner
+[2025-07-21 15:19:05] [INFO] [Dummy-1] Port COM131 successfully acquired by Port131Owner
+[2025-07-21 15:19:05] [INFO] [Dummy-1] Successfully acquired COM131 for Port131Owner
+[2025-07-21 15:19:05] [INFO] [Dummy-1] Opening port COM141 for owner Port141Owner
+[2025-07-21 15:19:05] [INFO] [Dummy-1] Port COM141 successfully acquired by Port141Owner
+[2025-07-21 15:19:05] [INFO] [Dummy-1] Successfully acquired COM141 for Port141Owner
+[2025-07-21 15:19:05] [INFO] [Dummy-1] All ports acquired, starting routing threads...
+[2025-07-21 15:19:45] [INFO] [MainThread] PortManager initialized
+[2025-07-21 15:19:45] [INFO] [MainThread] SerialRouter initialized with config: {'incoming_port': 'COM8', 'incoming_baud': 115200, 'outgoing_baud': 115200, 'timeout': 0.1, 'retry_delay_max': 30, 'log_level': 'INFO'}
+[2025-07-21 15:19:45] [INFO] [Dummy-1] Starting SerialRouter - COM54 <-> COM131 & COM141
+[2025-07-21 15:19:45] [INFO] [Dummy-1] Incoming baud: 115200, Outgoing baud: 115200
+[2025-07-21 15:19:45] [INFO] [Dummy-1] Acquiring port ownership for all routing threads...
+[2025-07-21 15:19:45] [INFO] [Dummy-1] Opening port COM54 for owner IncomingPortOwner
+[2025-07-21 15:19:45] [INFO] [Dummy-1] Port COM54 successfully acquired by IncomingPortOwner
+[2025-07-21 15:19:45] [INFO] [Dummy-1] Successfully acquired COM54 for IncomingPortOwner
+[2025-07-21 15:19:45] [INFO] [Dummy-1] Opening port COM131 for owner Port131Owner
+[2025-07-21 15:19:45] [INFO] [Dummy-1] Port COM131 successfully acquired by Port131Owner
+[2025-07-21 15:19:45] [INFO] [Dummy-1] Successfully acquired COM131 for Port131Owner
+[2025-07-21 15:19:45] [INFO] [Dummy-1] Opening port COM141 for owner Port141Owner
+[2025-07-21 15:19:45] [INFO] [Dummy-1] Port COM141 successfully acquired by Port141Owner
+[2025-07-21 15:19:45] [INFO] [Dummy-1] Successfully acquired COM141 for Port141Owner
+[2025-07-21 15:19:45] [INFO] [Dummy-1] All ports acquired, starting routing threads...
+[2025-07-21 15:19:45] [INFO] [IncomingPortOwner] Starting incoming port handler: COM54->131&141
+[2025-07-21 15:19:45] [INFO] [Port131Owner] Starting outgoing port handler: COM131->Incoming
+[2025-07-21 15:19:45] [INFO] [Port141Owner] Starting outgoing port handler: COM141->Incoming
+[2025-07-21 15:19:45] [INFO] [Dummy-1] Started 3 routing threads with centralized port management
+[2025-07-21 15:19:45] [INFO] [Watchdog] Watchdog monitor started
+[2025-07-21 15:19:45] [INFO] [Dummy-1] SerialRouter started successfully
+[2025-07-21 15:20:07] [INFO] [Dummy-2] Stopping SerialRouter...
+[2025-07-21 15:20:07] [INFO] [Port141Owner] COM141->Incoming handler shutting down
+[2025-07-21 15:20:07] [INFO] [IncomingPortOwner] COM54->131&141 handler shutting down
+[2025-07-21 15:20:07] [INFO] [Port131Owner] COM131->Incoming handler shutting down
+[2025-07-21 15:20:09] [INFO] [Dummy-2] SerialRouter stopped
+[2025-07-21 15:20:09] [INFO] [MainThread] PortManager initialized
+[2025-07-21 15:20:09] [INFO] [MainThread] SerialRouter initialized with config: {'incoming_port': 'COM8', 'incoming_baud': 115200, 'outgoing_baud': 115200, 'timeout': 0.1, 'retry_delay_max': 30, 'log_level': 'INFO'}
+[2025-07-21 15:20:09] [INFO] [Dummy-3] Starting SerialRouter - COM54 <-> COM131 & COM141
+[2025-07-21 15:20:09] [INFO] [Dummy-3] Incoming baud: 115200, Outgoing baud: 115200
+[2025-07-21 15:20:09] [INFO] [Dummy-3] Acquiring port ownership for all routing threads...
+[2025-07-21 15:20:09] [INFO] [Dummy-3] Opening port COM54 for owner IncomingPortOwner
+[2025-07-21 15:20:09] [ERROR] [Dummy-3] Failed to open port COM54 for IncomingPortOwner: could not open port 'COM54': PermissionError(13, 'Access is denied.', None, 5)
+[2025-07-21 15:20:09] [ERROR] [Dummy-3] Failed to acquire COM54 for IncomingPortOwner
+[2025-07-21 15:20:09] [INFO] [Watchdog] Watchdog monitor started
+[2025-07-21 15:20:09] [INFO] [Dummy-3] SerialRouter started successfully
+[2025-07-21 15:20:14] [INFO] [Dummy-4] Stopping SerialRouter...
+[2025-07-21 15:20:16] [INFO] [Dummy-4] SerialRouter stopped
+[2025-07-21 15:20:34] [INFO] [MainThread] PortManager initialized
+[2025-07-21 15:20:34] [INFO] [MainThread] SerialRouter initialized with config: {'incoming_port': 'COM8', 'incoming_baud': 115200, 'outgoing_baud': 115200, 'timeout': 0.1, 'retry_delay_max': 30, 'log_level': 'INFO'}
+[2025-07-21 15:21:06] [INFO] [MainThread] PortManager initialized
+[2025-07-21 15:21:06] [INFO] [MainThread] SerialRouter initialized with config: {'incoming_port': 'COM8', 'incoming_baud': 115200, 'outgoing_baud': 115200, 'timeout': 0.1, 'retry_delay_max': 30, 'log_level': 'INFO'}
+[2025-07-21 15:21:14] [INFO] [MainThread] PortManager initialized
+[2025-07-21 15:21:14] [INFO] [MainThread] SerialRouter initialized with config: {'incoming_port': 'COM8', 'incoming_baud': 115200, 'outgoing_baud': 115200, 'timeout': 0.1, 'retry_delay_max': 30, 'log_level': 'INFO'}
+[2025-07-21 15:21:14] [INFO] [Dummy-1] Starting SerialRouter - COM54 <-> COM131 & COM141
+[2025-07-21 15:21:14] [INFO] [Dummy-1] Incoming baud: 115200, Outgoing baud: 115200
+[2025-07-21 15:21:14] [INFO] [Dummy-1] Acquiring port ownership for all routing threads...
+[2025-07-21 15:21:14] [INFO] [Dummy-1] Opening port COM54 for owner IncomingPortOwner
+[2025-07-21 15:21:14] [INFO] [Dummy-1] Port COM54 successfully acquired by IncomingPortOwner
+[2025-07-21 15:21:14] [INFO] [Dummy-1] Successfully acquired COM54 for IncomingPortOwner
+[2025-07-21 15:21:14] [INFO] [Dummy-1] Opening port COM131 for owner Port131Owner
+[2025-07-21 15:21:14] [INFO] [Dummy-1] Port COM131 successfully acquired by Port131Owner
+[2025-07-21 15:21:14] [INFO] [Dummy-1] Successfully acquired COM131 for Port131Owner
+[2025-07-21 15:21:14] [INFO] [Dummy-1] Opening port COM141 for owner Port141Owner
+[2025-07-21 15:21:14] [INFO] [Dummy-1] Port COM141 successfully acquired by Port141Owner
+[2025-07-21 15:21:14] [INFO] [Dummy-1] Successfully acquired COM141 for Port141Owner
+[2025-07-21 15:21:14] [INFO] [Dummy-1] All ports acquired, starting routing threads...
+[2025-07-21 15:21:14] [INFO] [IncomingPortOwner] Starting incoming port handler: COM54->131&141
+[2025-07-21 15:21:14] [INFO] [Port131Owner] Starting outgoing port handler: COM131->Incoming
+[2025-07-21 15:21:14] [INFO] [Port141Owner] Starting outgoing port handler: COM141->Incoming
+[2025-07-21 15:21:14] [INFO] [Dummy-1] Started 3 routing threads with centralized port management
+[2025-07-21 15:21:14] [INFO] [Watchdog] Watchdog monitor started
+[2025-07-21 15:21:14] [INFO] [Dummy-1] SerialRouter started successfully
+[2025-07-21 15:23:51] [INFO] [Dummy-2] Stopping SerialRouter...
+[2025-07-21 15:23:51] [INFO] [IncomingPortOwner] COM54->131&141 handler shutting down
+[2025-07-21 15:23:51] [INFO] [Port141Owner] COM141->Incoming handler shutting down
+[2025-07-21 15:23:51] [INFO] [Port131Owner] COM131->Incoming handler shutting down
+[2025-07-21 15:23:53] [INFO] [Dummy-2] Releasing port ownership...
+[2025-07-21 15:23:53] [INFO] [Dummy-2] Port COM54 connection closed by IncomingPortOwner
+[2025-07-21 15:23:53] [INFO] [Dummy-2] Port COM54 released by IncomingPortOwner
+[2025-07-21 15:23:53] [INFO] [Dummy-2] Successfully released COM54 from IncomingPortOwner
+[2025-07-21 15:23:53] [INFO] [Dummy-2] Port COM131 connection closed by Port131Owner
+[2025-07-21 15:23:53] [INFO] [Dummy-2] Port COM131 released by Port131Owner
+[2025-07-21 15:23:53] [INFO] [Dummy-2] Successfully released COM131 from Port131Owner
+[2025-07-21 15:23:53] [INFO] [Dummy-2] Port COM141 connection closed by Port141Owner
+[2025-07-21 15:23:53] [INFO] [Dummy-2] Port COM141 released by Port141Owner
+[2025-07-21 15:23:53] [INFO] [Dummy-2] Successfully released COM141 from Port141Owner
+[2025-07-21 15:23:53] [INFO] [Dummy-2] SerialRouter stopped
+[2025-07-21 15:23:59] [INFO] [MainThread] PortManager initialized
+[2025-07-21 15:23:59] [INFO] [MainThread] SerialRouter initialized with config: {'incoming_port': 'COM8', 'incoming_baud': 115200, 'outgoing_baud': 115200, 'timeout': 0.1, 'retry_delay_max': 30, 'log_level': 'INFO'}
+[2025-07-21 15:23:59] [INFO] [Dummy-1] Starting SerialRouter - COM54 <-> COM131 & COM141
+[2025-07-21 15:23:59] [INFO] [Dummy-1] Incoming baud: 115200, Outgoing baud: 115200
+[2025-07-21 15:23:59] [INFO] [Dummy-1] Acquiring port ownership for all routing threads...
+[2025-07-21 15:23:59] [INFO] [Dummy-1] Opening port COM54 for owner IncomingPortOwner
+[2025-07-21 15:23:59] [INFO] [Dummy-1] Port COM54 successfully acquired by IncomingPortOwner
+[2025-07-21 15:23:59] [INFO] [Dummy-1] Successfully acquired COM54 for IncomingPortOwner
+[2025-07-21 15:23:59] [INFO] [Dummy-1] Opening port COM131 for owner Port131Owner
+[2025-07-21 15:23:59] [INFO] [Dummy-1] Port COM131 successfully acquired by Port131Owner
+[2025-07-21 15:23:59] [INFO] [Dummy-1] Successfully acquired COM131 for Port131Owner
+[2025-07-21 15:23:59] [INFO] [Dummy-1] Opening port COM141 for owner Port141Owner
+[2025-07-21 15:23:59] [INFO] [Dummy-1] Port COM141 successfully acquired by Port141Owner
+[2025-07-21 15:23:59] [INFO] [Dummy-1] Successfully acquired COM141 for Port141Owner
+[2025-07-21 15:23:59] [INFO] [Dummy-1] All ports acquired, starting routing threads...
+[2025-07-21 15:23:59] [INFO] [IncomingPortOwner] Starting incoming port handler: COM54->131&141
+[2025-07-21 15:23:59] [INFO] [Port131Owner] Starting outgoing port handler: COM131->Incoming
+[2025-07-21 15:23:59] [INFO] [Port141Owner] Starting outgoing port handler: COM141->Incoming
+[2025-07-21 15:23:59] [INFO] [Dummy-1] Started 3 routing threads with centralized port management
+[2025-07-21 15:23:59] [INFO] [Watchdog] Watchdog monitor started
+[2025-07-21 15:23:59] [INFO] [Dummy-1] SerialRouter started successfully
+[2025-07-21 15:24:13] [INFO] [Dummy-2] Stopping SerialRouter...
+[2025-07-21 15:24:13] [INFO] [Port141Owner] COM141->Incoming handler shutting down
+[2025-07-21 15:24:13] [INFO] [IncomingPortOwner] COM54->131&141 handler shutting down
+[2025-07-21 15:24:13] [INFO] [Port131Owner] COM131->Incoming handler shutting down
+[2025-07-21 15:24:15] [INFO] [Dummy-2] Releasing port ownership...
+[2025-07-21 15:24:15] [INFO] [Dummy-2] Port COM54 connection closed by IncomingPortOwner
+[2025-07-21 15:24:15] [INFO] [Dummy-2] Port COM54 released by IncomingPortOwner
+[2025-07-21 15:24:15] [INFO] [Dummy-2] Successfully released COM54 from IncomingPortOwner
+[2025-07-21 15:24:15] [INFO] [Dummy-2] Port COM131 connection closed by Port131Owner
+[2025-07-21 15:24:15] [INFO] [Dummy-2] Port COM131 released by Port131Owner
+[2025-07-21 15:24:15] [INFO] [Dummy-2] Successfully released COM131 from Port131Owner
+[2025-07-21 15:24:15] [INFO] [Dummy-2] Port COM141 connection closed by Port141Owner
+[2025-07-21 15:24:15] [INFO] [Dummy-2] Port COM141 released by Port141Owner
+[2025-07-21 15:24:15] [INFO] [Dummy-2] Successfully released COM141 from Port141Owner
+[2025-07-21 15:24:15] [INFO] [Dummy-2] SerialRouter stopped
+[2025-07-21 15:24:19] [INFO] [MainThread] PortManager initialized
+[2025-07-21 15:24:19] [INFO] [MainThread] SerialRouter initialized with config: {'incoming_port': 'COM8', 'incoming_baud': 115200, 'outgoing_baud': 115200, 'timeout': 0.1, 'retry_delay_max': 30, 'log_level': 'INFO'}
+[2025-07-21 15:24:27] [INFO] [MainThread] PortManager initialized
+[2025-07-21 15:24:27] [INFO] [MainThread] SerialRouter initialized with config: {'incoming_port': 'COM8', 'incoming_baud': 115200, 'outgoing_baud': 115200, 'timeout': 0.1, 'retry_delay_max': 30, 'log_level': 'INFO'}
+[2025-07-21 15:24:27] [INFO] [Dummy-1] Starting SerialRouter - COM54 <-> COM131 & COM141
+[2025-07-21 15:24:27] [INFO] [Dummy-1] Incoming baud: 115200, Outgoing baud: 115200
+[2025-07-21 15:24:27] [INFO] [Dummy-1] Acquiring port ownership for all routing threads...
+[2025-07-21 15:24:27] [INFO] [Dummy-1] Opening port COM54 for owner IncomingPortOwner
+[2025-07-21 15:24:27] [INFO] [Dummy-1] Port COM54 successfully acquired by IncomingPortOwner
+[2025-07-21 15:24:27] [INFO] [Dummy-1] Successfully acquired COM54 for IncomingPortOwner
+[2025-07-21 15:24:27] [INFO] [Dummy-1] Opening port COM131 for owner Port131Owner
+[2025-07-21 15:24:27] [INFO] [Dummy-1] Port COM131 successfully acquired by Port131Owner
+[2025-07-21 15:24:27] [INFO] [Dummy-1] Successfully acquired COM131 for Port131Owner
+[2025-07-21 15:24:27] [INFO] [Dummy-1] Opening port COM141 for owner Port141Owner
+[2025-07-21 15:24:27] [INFO] [Dummy-1] Port COM141 successfully acquired by Port141Owner
+[2025-07-21 15:24:27] [INFO] [Dummy-1] Successfully acquired COM141 for Port141Owner
+[2025-07-21 15:24:27] [INFO] [Dummy-1] All ports acquired, starting routing threads...
+[2025-07-21 15:24:27] [INFO] [IncomingPortOwner] Starting incoming port handler: COM54->131&141
+[2025-07-21 15:24:27] [INFO] [Port131Owner] Starting outgoing port handler: COM131->Incoming
+[2025-07-21 15:24:27] [INFO] [Port141Owner] Starting outgoing port handler: COM141->Incoming
+[2025-07-21 15:24:27] [INFO] [Dummy-1] Started 3 routing threads with centralized port management
+[2025-07-21 15:24:27] [INFO] [Watchdog] Watchdog monitor started
+[2025-07-21 15:24:27] [INFO] [Dummy-1] SerialRouter started successfully
+[2025-07-21 15:26:49] [INFO] [MainThread] PortManager initialized
+[2025-07-21 15:26:49] [INFO] [MainThread] SerialRouter initialized with config: {'incoming_port': 'COM54', 'incoming_baud': 115200, 'outgoing_baud': 115200, 'timeout': 0.1, 'retry_delay_max': 30, 'log_level': 'INFO'}
+[2025-07-21 15:26:56] [INFO] [Dummy-2] Stopping SerialRouter...
+[2025-07-21 15:26:56] [INFO] [Port131Owner] COM131->Incoming handler shutting down
+[2025-07-21 15:26:56] [INFO] [Port141Owner] COM141->Incoming handler shutting down
+[2025-07-21 15:26:56] [INFO] [IncomingPortOwner] COM54->131&141 handler shutting down
+[2025-07-21 15:26:57] [INFO] [Dummy-2] Releasing port ownership...
+[2025-07-21 15:26:57] [INFO] [Dummy-2] Port COM54 connection closed by IncomingPortOwner
+[2025-07-21 15:26:57] [INFO] [Dummy-2] Port COM54 released by IncomingPortOwner
+[2025-07-21 15:26:57] [INFO] [Dummy-2] Successfully released COM54 from IncomingPortOwner
+[2025-07-21 15:26:57] [INFO] [Dummy-2] Port COM131 connection closed by Port131Owner
+[2025-07-21 15:26:57] [INFO] [Dummy-2] Port COM131 released by Port131Owner
+[2025-07-21 15:26:57] [INFO] [Dummy-2] Successfully released COM131 from Port131Owner
+[2025-07-21 15:26:57] [INFO] [Dummy-2] Port COM141 connection closed by Port141Owner
+[2025-07-21 15:26:57] [INFO] [Dummy-2] Port COM141 released by Port141Owner
+[2025-07-21 15:26:57] [INFO] [Dummy-2] Successfully released COM141 from Port141Owner
+[2025-07-21 15:26:57] [INFO] [Dummy-2] SerialRouter stopped
+[2025-07-21 15:27:07] [INFO] [MainThread] PortManager initialized
+[2025-07-21 15:27:07] [INFO] [MainThread] SerialRouter initialized with config: {'incoming_port': 'COM54', 'incoming_baud': 115200, 'outgoing_baud': 115200, 'timeout': 0.1, 'retry_delay_max': 30, 'log_level': 'INFO'}
+[2025-07-21 15:27:07] [INFO] [MainThread] Starting SerialRouter - COM54 <-> COM131 & COM141
+[2025-07-21 15:27:07] [INFO] [MainThread] Incoming baud: 115200, Outgoing baud: 115200
+[2025-07-21 15:27:07] [INFO] [MainThread] Acquiring port ownership for all routing threads...
+[2025-07-21 15:27:07] [INFO] [MainThread] Opening port COM54 for owner IncomingPortOwner
+[2025-07-21 15:27:07] [INFO] [MainThread] Port COM54 successfully acquired by IncomingPortOwner
+[2025-07-21 15:27:07] [INFO] [MainThread] Successfully acquired COM54 for IncomingPortOwner
+[2025-07-21 15:27:07] [INFO] [MainThread] Opening port COM131 for owner Port131Owner
+[2025-07-21 15:27:07] [INFO] [MainThread] Port COM131 successfully acquired by Port131Owner
+[2025-07-21 15:27:07] [INFO] [MainThread] Successfully acquired COM131 for Port131Owner
+[2025-07-21 15:27:07] [INFO] [MainThread] Opening port COM141 for owner Port141Owner
+[2025-07-21 15:27:07] [INFO] [MainThread] Port COM141 successfully acquired by Port141Owner
+[2025-07-21 15:27:07] [INFO] [MainThread] Successfully acquired COM141 for Port141Owner
+[2025-07-21 15:27:07] [INFO] [MainThread] All ports acquired, starting routing threads...
+[2025-07-21 15:27:07] [INFO] [IncomingPortOwner] Starting incoming port handler: COM54->131&141
+[2025-07-21 15:27:07] [INFO] [Port131Owner] Starting outgoing port handler: COM131->Incoming
+[2025-07-21 15:27:07] [INFO] [Port141Owner] Starting outgoing port handler: COM141->Incoming
+[2025-07-21 15:27:07] [INFO] [MainThread] Started 3 routing threads with centralized port management
+[2025-07-21 15:27:07] [INFO] [Watchdog] Watchdog monitor started
+[2025-07-21 15:27:07] [INFO] [MainThread] SerialRouter started successfully
+[2025-07-21 15:27:09] [INFO] [MainThread] Stopping SerialRouter...
+[2025-07-21 15:27:09] [INFO] [IncomingPortOwner] COM54->131&141 handler shutting down
+[2025-07-21 15:27:09] [INFO] [Port141Owner] COM141->Incoming handler shutting down
+[2025-07-21 15:27:09] [INFO] [Port131Owner] COM131->Incoming handler shutting down
+[2025-07-21 15:27:11] [INFO] [MainThread] Releasing port ownership...
+[2025-07-21 15:27:11] [INFO] [MainThread] Port COM54 connection closed by IncomingPortOwner
+[2025-07-21 15:27:11] [INFO] [MainThread] Port COM54 released by IncomingPortOwner
+[2025-07-21 15:27:11] [INFO] [MainThread] Successfully released COM54 from IncomingPortOwner
+[2025-07-21 15:27:11] [INFO] [MainThread] Port COM131 connection closed by Port131Owner
+[2025-07-21 15:27:11] [INFO] [MainThread] Port COM131 released by Port131Owner
+[2025-07-21 15:27:11] [INFO] [MainThread] Successfully released COM131 from Port131Owner
+[2025-07-21 15:27:11] [INFO] [MainThread] Port COM141 connection closed by Port141Owner
+[2025-07-21 15:27:11] [INFO] [MainThread] Port COM141 released by Port141Owner
+[2025-07-21 15:27:11] [INFO] [MainThread] Successfully released COM141 from Port141Owner
+[2025-07-21 15:27:11] [INFO] [MainThread] SerialRouter stopped
+[2025-07-21 15:28:49] [INFO] [MainThread] PortManager initialized
+[2025-07-21 15:28:49] [INFO] [MainThread] SerialRouter initialized with config: {'incoming_port': 'COM54', 'incoming_baud': 115200, 'outgoing_baud': 115200, 'timeout': 0.1, 'retry_delay_max': 30, 'log_level': 'INFO'}
+[2025-07-21 15:28:49] [INFO] [Dummy-1] Starting SerialRouter - COM54 <-> COM131 & COM141
+[2025-07-21 15:28:49] [INFO] [Dummy-1] Incoming baud: 115200, Outgoing baud: 115200
+[2025-07-21 15:28:49] [INFO] [Dummy-1] Acquiring port ownership for all routing threads...
+[2025-07-21 15:28:49] [INFO] [Dummy-1] Opening port COM54 for owner IncomingPortOwner
+[2025-07-21 15:28:49] [INFO] [Dummy-1] Port COM54 successfully acquired by IncomingPortOwner
+[2025-07-21 15:28:49] [INFO] [Dummy-1] Successfully acquired COM54 for IncomingPortOwner
+[2025-07-21 15:28:49] [INFO] [Dummy-1] Opening port COM131 for owner Port131Owner
+[2025-07-21 15:28:49] [INFO] [Dummy-1] Port COM131 successfully acquired by Port131Owner
+[2025-07-21 15:28:49] [INFO] [Dummy-1] Successfully acquired COM131 for Port131Owner
+[2025-07-21 15:28:49] [INFO] [Dummy-1] Opening port COM141 for owner Port141Owner
+[2025-07-21 15:28:49] [INFO] [Dummy-1] Port COM141 successfully acquired by Port141Owner
+[2025-07-21 15:28:49] [INFO] [Dummy-1] Successfully acquired COM141 for Port141Owner
+[2025-07-21 15:28:49] [INFO] [Dummy-1] All ports acquired, starting routing threads...
+[2025-07-21 15:28:49] [INFO] [IncomingPortOwner] Starting incoming port handler: COM54->131&141
+[2025-07-21 15:28:49] [INFO] [Port131Owner] Starting outgoing port handler: COM131->Incoming
+[2025-07-21 15:28:49] [INFO] [Port141Owner] Starting outgoing port handler: COM141->Incoming
+[2025-07-21 15:28:49] [INFO] [Dummy-1] Started 3 routing threads with centralized port management
+[2025-07-21 15:28:49] [INFO] [Watchdog] Watchdog monitor started
+[2025-07-21 15:28:49] [INFO] [Dummy-1] SerialRouter started successfully
+[2025-07-21 15:34:27] [INFO] [IncomingPortOwner] COM54->131&141: Resetting byte counter at 1000242 bytes
+[2025-07-21 15:36:59] [INFO] [MainThread] PortManager initialized
+[2025-07-21 15:36:59] [INFO] [MainThread] SerialRouter initialized with config: {'incoming_port': 'COM54', 'incoming_baud': 115200, 'outgoing_baud': 115200, 'timeout': 0.1, 'retry_delay_max': 30, 'log_level': 'INFO'}
+[2025-07-21 15:36:59] [INFO] [MainThread] Starting SerialRouter - COM54 <-> COM131 & COM141
+[2025-07-21 15:36:59] [INFO] [MainThread] Incoming baud: 115200, Outgoing baud: 115200
+[2025-07-21 15:36:59] [INFO] [MainThread] Acquiring port ownership for all routing threads...
+[2025-07-21 15:36:59] [INFO] [MainThread] Opening port COM54 for owner IncomingPortOwner
+[2025-07-21 15:36:59] [ERROR] [MainThread] Failed to open port COM54 for IncomingPortOwner: could not open port 'COM54': PermissionError(13, 'Access is denied.', None, 5)
+[2025-07-21 15:36:59] [ERROR] [MainThread] Failed to acquire COM54 for IncomingPortOwner
+[2025-07-21 15:36:59] [INFO] [Watchdog] Watchdog monitor started
+[2025-07-21 15:36:59] [INFO] [MainThread] SerialRouter started successfully
+[2025-07-21 15:36:59] [INFO] [MainThread] Stopping SerialRouter...
+[2025-07-21 15:37:01] [INFO] [MainThread] Releasing port ownership...
+[2025-07-21 15:37:01] [WARNING] [MainThread] Attempted to release unowned port COM54 by IncomingPortOwner
+[2025-07-21 15:37:01] [WARNING] [MainThread] Failed to release COM54 from IncomingPortOwner
+[2025-07-21 15:37:01] [WARNING] [MainThread] Attempted to release unowned port COM131 by Port131Owner
+[2025-07-21 15:37:01] [WARNING] [MainThread] Failed to release COM131 from Port131Owner
+[2025-07-21 15:37:01] [WARNING] [MainThread] Attempted to release unowned port COM141 by Port141Owner
+[2025-07-21 15:37:01] [WARNING] [MainThread] Failed to release COM141 from Port141Owner
+[2025-07-21 15:37:01] [INFO] [MainThread] SerialRouter stopped
+[2025-07-21 15:37:08] [INFO] [Dummy-2] Stopping SerialRouter...
+[2025-07-21 15:37:08] [INFO] [Port131Owner] COM131->Incoming handler shutting down
+[2025-07-21 15:37:08] [INFO] [Port141Owner] COM141->Incoming handler shutting down
+[2025-07-21 15:37:08] [INFO] [IncomingPortOwner] COM54->131&141 handler shutting down
+[2025-07-21 15:37:09] [INFO] [Dummy-2] Releasing port ownership...
+[2025-07-21 15:37:09] [INFO] [Dummy-2] Port COM54 connection closed by IncomingPortOwner
+[2025-07-21 15:37:09] [INFO] [Dummy-2] Port COM54 released by IncomingPortOwner
+[2025-07-21 15:37:09] [INFO] [Dummy-2] Successfully released COM54 from IncomingPortOwner
+[2025-07-21 15:37:09] [INFO] [Dummy-2] Port COM131 connection closed by Port131Owner
+[2025-07-21 15:37:09] [INFO] [Dummy-2] Port COM131 released by Port131Owner
+[2025-07-21 15:37:09] [INFO] [Dummy-2] Successfully released COM131 from Port131Owner
+[2025-07-21 15:37:09] [INFO] [Dummy-2] Port COM141 connection closed by Port141Owner
+[2025-07-21 15:37:09] [INFO] [Dummy-2] Port COM141 released by Port141Owner
+[2025-07-21 15:37:09] [INFO] [Dummy-2] Successfully released COM141 from Port141Owner
+[2025-07-21 15:37:09] [INFO] [Dummy-2] SerialRouter stopped
+[2025-07-21 15:37:10] [INFO] [MainThread] PortManager initialized
+[2025-07-21 15:37:10] [INFO] [MainThread] SerialRouter initialized with config: {'incoming_port': 'COM54', 'incoming_baud': 115200, 'outgoing_baud': 115200, 'timeout': 0.1, 'retry_delay_max': 30, 'log_level': 'INFO'}
+[2025-07-21 15:37:10] [INFO] [MainThread] Starting SerialRouter - COM54 <-> COM131 & COM141
+[2025-07-21 15:37:10] [INFO] [MainThread] Incoming baud: 115200, Outgoing baud: 115200
+[2025-07-21 15:37:10] [INFO] [MainThread] Acquiring port ownership for all routing threads...
+[2025-07-21 15:37:10] [INFO] [MainThread] Opening port COM54 for owner IncomingPortOwner
+[2025-07-21 15:37:11] [INFO] [MainThread] Port COM54 successfully acquired by IncomingPortOwner
+[2025-07-21 15:37:11] [INFO] [MainThread] Successfully acquired COM54 for IncomingPortOwner
+[2025-07-21 15:37:11] [INFO] [MainThread] Opening port COM131 for owner Port131Owner
+[2025-07-21 15:37:11] [INFO] [MainThread] Port COM131 successfully acquired by Port131Owner
+[2025-07-21 15:37:11] [INFO] [MainThread] Successfully acquired COM131 for Port131Owner
+[2025-07-21 15:37:11] [INFO] [MainThread] Opening port COM141 for owner Port141Owner
+[2025-07-21 15:37:11] [INFO] [MainThread] Port COM141 successfully acquired by Port141Owner
+[2025-07-21 15:37:11] [INFO] [MainThread] Successfully acquired COM141 for Port141Owner
+[2025-07-21 15:37:11] [INFO] [MainThread] All ports acquired, starting routing threads...
+[2025-07-21 15:37:11] [INFO] [IncomingPortOwner] Starting incoming port handler: COM54->131&141
+[2025-07-21 15:37:11] [INFO] [Port131Owner] Starting outgoing port handler: COM131->Incoming
+[2025-07-21 15:37:11] [INFO] [Port141Owner] Starting outgoing port handler: COM141->Incoming
+[2025-07-21 15:37:11] [INFO] [MainThread] Started 3 routing threads with centralized port management
+[2025-07-21 15:37:11] [INFO] [Watchdog] Watchdog monitor started
+[2025-07-21 15:37:11] [INFO] [MainThread] SerialRouter started successfully
+[2025-07-21 15:37:11] [INFO] [MainThread] Stopping SerialRouter...
+[2025-07-21 15:37:11] [INFO] [Port131Owner] COM131->Incoming handler shutting down
+[2025-07-21 15:37:11] [INFO] [Port141Owner] COM141->Incoming handler shutting down
+[2025-07-21 15:37:11] [INFO] [IncomingPortOwner] COM54->131&141 handler shutting down
+[2025-07-21 15:37:13] [INFO] [MainThread] Releasing port ownership...
+[2025-07-21 15:37:13] [INFO] [MainThread] Port COM54 connection closed by IncomingPortOwner
+[2025-07-21 15:37:13] [INFO] [MainThread] Port COM54 released by IncomingPortOwner
+[2025-07-21 15:37:13] [INFO] [MainThread] Successfully released COM54 from IncomingPortOwner
+[2025-07-21 15:37:13] [INFO] [MainThread] Port COM131 connection closed by Port131Owner
+[2025-07-21 15:37:13] [INFO] [MainThread] Port COM131 released by Port131Owner
+[2025-07-21 15:37:13] [INFO] [MainThread] Successfully released COM131 from Port131Owner
+[2025-07-21 15:37:13] [INFO] [MainThread] Port COM141 connection closed by Port141Owner
+[2025-07-21 15:37:13] [INFO] [MainThread] Port COM141 released by Port141Owner
+[2025-07-21 15:37:13] [INFO] [MainThread] Successfully released COM141 from Port141Owner
+[2025-07-21 15:37:13] [INFO] [MainThread] SerialRouter stopped
+[2025-07-21 15:37:21] [INFO] [MainThread] PortManager initialized
+[2025-07-21 15:37:21] [INFO] [MainThread] SerialRouter initialized with config: {'incoming_port': 'COM54', 'incoming_baud': 115200, 'outgoing_baud': 115200, 'timeout': 0.1, 'retry_delay_max': 30, 'log_level': 'INFO'}
+[2025-07-21 15:37:21] [INFO] [Dummy-1] Starting SerialRouter - COM54 <-> COM131 & COM141
+[2025-07-21 15:37:21] [INFO] [Dummy-1] Incoming baud: 115200, Outgoing baud: 115200
+[2025-07-21 15:37:21] [INFO] [Dummy-1] Acquiring port ownership for all routing threads...
+[2025-07-21 15:37:21] [INFO] [Dummy-1] Opening port COM54 for owner IncomingPortOwner
+[2025-07-21 15:37:22] [INFO] [Dummy-1] Port COM54 successfully acquired by IncomingPortOwner
+[2025-07-21 15:37:22] [INFO] [Dummy-1] Successfully acquired COM54 for IncomingPortOwner
+[2025-07-21 15:37:22] [INFO] [Dummy-1] Opening port COM131 for owner Port131Owner
+[2025-07-21 15:37:22] [INFO] [Dummy-1] Port COM131 successfully acquired by Port131Owner
+[2025-07-21 15:37:22] [INFO] [Dummy-1] Successfully acquired COM131 for Port131Owner
+[2025-07-21 15:37:22] [INFO] [Dummy-1] Opening port COM141 for owner Port141Owner
+[2025-07-21 15:37:22] [INFO] [Dummy-1] Port COM141 successfully acquired by Port141Owner
+[2025-07-21 15:37:22] [INFO] [Dummy-1] Successfully acquired COM141 for Port141Owner
+[2025-07-21 15:37:22] [INFO] [Dummy-1] All ports acquired, starting routing threads...
+[2025-07-21 15:37:22] [INFO] [IncomingPortOwner] Starting incoming port handler: COM54->131&141
+[2025-07-21 15:37:22] [INFO] [Port131Owner] Starting outgoing port handler: COM131->Incoming
+[2025-07-21 15:37:22] [INFO] [Port141Owner] Starting outgoing port handler: COM141->Incoming
+[2025-07-21 15:37:22] [INFO] [Dummy-1] Started 3 routing threads with centralized port management
+[2025-07-21 15:37:22] [INFO] [Watchdog] Watchdog monitor started
+[2025-07-21 15:37:22] [INFO] [Dummy-1] SerialRouter started successfully
+[2025-07-21 15:37:25] [INFO] [Dummy-2] Stopping SerialRouter...
+[2025-07-21 15:37:25] [INFO] [Port141Owner] COM141->Incoming handler shutting down
+[2025-07-21 15:37:25] [INFO] [IncomingPortOwner] COM54->131&141 handler shutting down
+[2025-07-21 15:37:25] [INFO] [Port131Owner] COM131->Incoming handler shutting down
+[2025-07-21 15:37:27] [INFO] [Dummy-2] Releasing port ownership...
+[2025-07-21 15:37:27] [INFO] [Dummy-2] Port COM54 connection closed by IncomingPortOwner
+[2025-07-21 15:37:27] [INFO] [Dummy-2] Port COM54 released by IncomingPortOwner
+[2025-07-21 15:37:27] [INFO] [Dummy-2] Successfully released COM54 from IncomingPortOwner
+[2025-07-21 15:37:27] [INFO] [Dummy-2] Port COM131 connection closed by Port131Owner
+[2025-07-21 15:37:27] [INFO] [Dummy-2] Port COM131 released by Port131Owner
+[2025-07-21 15:37:27] [INFO] [Dummy-2] Successfully released COM131 from Port131Owner
+[2025-07-21 15:37:27] [INFO] [Dummy-2] Port COM141 connection closed by Port141Owner
+[2025-07-21 15:37:27] [INFO] [Dummy-2] Port COM141 released by Port141Owner
+[2025-07-21 15:37:27] [INFO] [Dummy-2] Successfully released COM141 from Port141Owner
+[2025-07-21 15:37:27] [INFO] [Dummy-2] SerialRouter stopped
