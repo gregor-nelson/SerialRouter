@@ -26,8 +26,13 @@ class ResourceManager:
     def _get_base_path(self) -> Path:
         """Get the base path of the application."""
         if getattr(sys, 'frozen', False):
-            # Running as compiled executable
-            return Path(sys.executable).parent
+            # Running as compiled executable - PyInstaller sets sys._MEIPASS
+            if hasattr(sys, '_MEIPASS'):
+                # PyInstaller temp extraction folder
+                return Path(sys._MEIPASS)
+            else:
+                # Fallback to executable directory
+                return Path(sys.executable).parent
         else:
             # Running as script - go up from src/gui/resources.py to project root
             return Path(__file__).parent.parent.parent
