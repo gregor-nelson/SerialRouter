@@ -24,6 +24,7 @@ import queue
 from datetime import datetime, timedelta
 from typing import Optional, Dict, Any, List, Set
 import traceback
+from collections import deque
 
 
 class PortManager:
@@ -52,6 +53,28 @@ class PortManager:
         self.last_activity: Dict[str, datetime] = {}
         self.error_counts: Dict[str, int] = {}
         
+        # Advanced monitoring - throughput calculation
+        self.throughput_history: Dict[str, deque] = {}  # Port -> deque of (timestamp, bytes) tuples
+        self.throughput_window_seconds = 60  # Calculate rates over 60 seconds
+        
+        # Advanced monitoring - connection tracking
+        self.connection_attempts: Dict[str, int] = {}
+        self.connection_successes: Dict[str, int] = {}
+        self.connection_start_times: Dict[str, datetime] = {}
+        self.total_downtime: Dict[str, float] = {}  # Seconds
+        self.last_disconnect_time: Dict[str, Optional[datetime]] = {}
+        
+        # Advanced monitoring - error tracking
+        self.error_history: Dict[str, deque] = {}  # Port -> deque of error timestamps
+        self.error_window_seconds = 3600  # Track errors over 1 hour
+        
+        # Advanced monitoring - queue latency
+        self.queue_latency_samples: Dict[str, deque] = {}  # Port -> deque of latency samples
+        self.queue_latency_window = 100  # Keep last 100 samples
+        
+        # System startup time for uptime calculation
+        self.system_start_time = datetime.now()
+        
         # Configuration
         self.connection_timeout = 0.1
         self.max_queue_size = 1000
@@ -59,7 +82,7 @@ class PortManager:
         # Master lock for port manager operations
         self._manager_lock = threading.RLock()
         
-        self.logger.info("PortManager initialized")
+        self.logger.info("PortManager initialized with advanced monitoring")
     
     def acquire_port(self, port_name: str, baud_rate: int, owner_thread: str, timeout: float = 30.0) -> bool:
         """Thread-safe port acquisition with ownership tracking.
@@ -91,9 +114,18 @@ class PortManager:
                 self.port_stats[port_name] = {
                     'bytes_read': 0, 'bytes_written': 0, 'errors': 0, 'reconnects': 0
                 }
+                # Initialize advanced monitoring structures
+                self.throughput_history[port_name] = deque()
+                self.error_history[port_name] = deque()
+                self.queue_latency_samples[port_name] = deque()
+                self.connection_attempts[port_name] = 0
+                self.connection_successes[port_name] = 0
+                self.total_downtime[port_name] = 0.0
+                self.last_disconnect_time[port_name] = None
             
             # Attempt to open the port
             try:
+                self.connection_attempts[port_name] += 1
                 self.logger.info(f"Opening port {port_name} for owner {owner_thread}")
                 port = serial.Serial(port_name, baud_rate, timeout=self.connection_timeout)
                 
@@ -101,13 +133,23 @@ class PortManager:
                 self.connections[port_name] = port
                 self.port_owners[port_name] = owner_thread
                 self.active_ports.add(port_name)
-                self.last_activity[port_name] = datetime.now()
+                current_time = datetime.now()
+                self.last_activity[port_name] = current_time
+                self.connection_start_times[port_name] = current_time
+                self.connection_successes[port_name] += 1
+                
+                # Calculate downtime if we were previously disconnected
+                if self.last_disconnect_time[port_name]:
+                    downtime = (current_time - self.last_disconnect_time[port_name]).total_seconds()
+                    self.total_downtime[port_name] += downtime
+                    self.last_disconnect_time[port_name] = None
                 
                 self.logger.info(f"Port {port_name} successfully acquired by {owner_thread}")
                 return True
                 
             except Exception as e:
                 self.error_counts[port_name] = self.error_counts.get(port_name, 0) + 1
+                self._record_error(port_name)
                 self.logger.error(f"Failed to open port {port_name} for {owner_thread}: {e}")
                 return False
     
@@ -144,6 +186,9 @@ class PortManager:
             self.connections[port_name] = None
             self.active_ports.discard(port_name)
             
+            # Record disconnect time for downtime calculation
+            self.last_disconnect_time[port_name] = datetime.now()
+            
             self.logger.info(f"Port {port_name} released by {owner_thread}")
             return True
     
@@ -171,12 +216,18 @@ class PortManager:
         with self.connection_locks[port_name]:
             try:
                 self.connections[port_name].write(data)
+                current_time = datetime.now()
                 self.port_stats[port_name]['bytes_written'] += len(data)
-                self.last_activity[port_name] = datetime.now()
+                self.last_activity[port_name] = current_time
+                
+                # Update throughput tracking
+                self._update_throughput(port_name, len(data), current_time, 'write')
+                
                 return True
                 
             except Exception as e:
                 self.port_stats[port_name]['errors'] += 1
+                self._record_error(port_name)
                 self.logger.error(f"Write error on port {port_name}: {e}")
                 return False
     
@@ -203,13 +254,19 @@ class PortManager:
                 if self.connections[port_name].in_waiting > 0:
                     data = self.connections[port_name].read(self.connections[port_name].in_waiting)
                     if data:
+                        current_time = datetime.now()
                         self.port_stats[port_name]['bytes_read'] += len(data)
-                        self.last_activity[port_name] = datetime.now()
+                        self.last_activity[port_name] = current_time
+                        
+                        # Update throughput tracking
+                        self._update_throughput(port_name, len(data), current_time, 'read')
+                        
                         return data
                 return None
                 
             except Exception as e:
                 self.port_stats[port_name]['errors'] += 1
+                self._record_error(port_name)
                 self.logger.error(f"Read error on port {port_name}: {e}")
                 return None
     
@@ -230,7 +287,9 @@ class PortManager:
         
         try:
             with self.queue_locks[target_port]:
-                self.data_queues[target_port].put_nowait(data)
+                # Record queue entry time for latency tracking
+                queue_entry = (data, datetime.now())
+                self.data_queues[target_port].put_nowait(queue_entry)
                 return True
                 
         except queue.Full:
@@ -252,7 +311,14 @@ class PortManager:
         
         try:
             with self.queue_locks[port_name]:
-                return self.data_queues[port_name].get(timeout=timeout)
+                queue_entry = self.data_queues[port_name].get(timeout=timeout)
+                if queue_entry:
+                    data, queue_time = queue_entry
+                    # Calculate and record queue latency
+                    latency_ms = (datetime.now() - queue_time).total_seconds() * 1000
+                    self._record_queue_latency(port_name, latency_ms)
+                    return data
+                return None
         except queue.Empty:
             return None
     
@@ -269,13 +335,26 @@ class PortManager:
                 is_connected = (port_name in self.active_ports and 
                               self.connections[port_name] is not None)
                 
+                # Get advanced metrics
+                throughput_metrics = self.get_throughput_metrics(port_name)
+                connection_metrics = self.get_connection_metrics(port_name)
+                error_metrics = self.get_error_rate_metrics(port_name)
+                queue_metrics = self.get_queue_metrics(port_name)
+                
                 status[port_name] = {
+                    # Basic status
                     'connected': is_connected,
                     'owner': self.port_owners.get(port_name, None),
                     'stats': self.port_stats.get(port_name, {}),
                     'last_activity': self.last_activity.get(port_name),
                     'queue_size': self.data_queues[port_name].qsize() if port_name in self.data_queues else 0,
-                    'error_count': self.error_counts.get(port_name, 0)
+                    'error_count': self.error_counts.get(port_name, 0),
+                    
+                    # Advanced metrics
+                    'throughput': throughput_metrics,
+                    'connection_reliability': connection_metrics,
+                    'error_metrics': error_metrics,
+                    'queue_performance': queue_metrics
                 }
             
             return status
@@ -308,6 +387,184 @@ class PortManager:
                     pass
             
             self.logger.info("PortManager cleanup completed")
+    
+    def _update_throughput(self, port_name: str, bytes_count: int, timestamp: datetime, operation: str):
+        """Update throughput tracking for a port."""
+        if port_name not in self.throughput_history:
+            self.throughput_history[port_name] = deque()
+        
+        # Add new data point
+        self.throughput_history[port_name].append((timestamp, bytes_count, operation))
+        
+        # Remove old data points outside the window
+        cutoff_time = timestamp - timedelta(seconds=self.throughput_window_seconds)
+        while (self.throughput_history[port_name] and 
+               self.throughput_history[port_name][0][0] < cutoff_time):
+            self.throughput_history[port_name].popleft()
+    
+    def _record_error(self, port_name: str):
+        """Record an error timestamp for error rate calculation."""
+        if port_name not in self.error_history:
+            self.error_history[port_name] = deque()
+        
+        current_time = datetime.now()
+        self.error_history[port_name].append(current_time)
+        
+        # Remove old error records outside the window
+        cutoff_time = current_time - timedelta(seconds=self.error_window_seconds)
+        while (self.error_history[port_name] and 
+               self.error_history[port_name][0] < cutoff_time):
+            self.error_history[port_name].popleft()
+    
+    def _record_queue_latency(self, port_name: str, latency_ms: float):
+        """Record queue latency sample."""
+        if port_name not in self.queue_latency_samples:
+            self.queue_latency_samples[port_name] = deque()
+        
+        self.queue_latency_samples[port_name].append(latency_ms)
+        
+        # Keep only recent samples
+        while len(self.queue_latency_samples[port_name]) > self.queue_latency_window:
+            self.queue_latency_samples[port_name].popleft()
+    
+    def get_throughput_metrics(self, port_name: str) -> Dict[str, float]:
+        """Calculate current throughput metrics for a port."""
+        if port_name not in self.throughput_history:
+            return {'bytes_per_second': 0.0, 'read_bps': 0.0, 'write_bps': 0.0}
+        
+        current_time = datetime.now()
+        cutoff_time = current_time - timedelta(seconds=self.throughput_window_seconds)
+        
+        total_bytes = 0
+        read_bytes = 0
+        write_bytes = 0
+        
+        for timestamp, bytes_count, operation in self.throughput_history[port_name]:
+            if timestamp >= cutoff_time:
+                total_bytes += bytes_count
+                if operation == 'read':
+                    read_bytes += bytes_count
+                else:
+                    write_bytes += bytes_count
+        
+        # Calculate bytes per second
+        time_window = min(self.throughput_window_seconds, 
+                         (current_time - self.throughput_history[port_name][0][0]).total_seconds()
+                         if self.throughput_history[port_name] else 1)
+        
+        return {
+            'bytes_per_second': total_bytes / max(time_window, 1),
+            'read_bps': read_bytes / max(time_window, 1),
+            'write_bps': write_bytes / max(time_window, 1)
+        }
+    
+    def get_connection_metrics(self, port_name: str) -> Dict[str, Any]:
+        """Calculate connection reliability metrics for a port."""
+        if port_name not in self.connection_attempts:
+            return {}
+        
+        current_time = datetime.now()
+        
+        # Calculate connection success rate
+        attempts = self.connection_attempts[port_name]
+        successes = self.connection_successes[port_name]
+        success_rate = (successes / attempts * 100) if attempts > 0 else 0
+        
+        # Calculate uptime percentage
+        total_time = (current_time - self.system_start_time).total_seconds()
+        downtime = self.total_downtime[port_name]
+        if self.last_disconnect_time[port_name]:  # Currently disconnected
+            downtime += (current_time - self.last_disconnect_time[port_name]).total_seconds()
+        
+        uptime_percentage = ((total_time - downtime) / total_time * 100) if total_time > 0 else 0
+        
+        # Calculate MTBF (Mean Time Between Failures)
+        failures = attempts - successes
+        mtbf_hours = (total_time / 3600 / failures) if failures > 0 else float('inf')
+        
+        # Time since last activity
+        last_activity = self.last_activity.get(port_name)
+        seconds_since_activity = (current_time - last_activity).total_seconds() if last_activity else float('inf')
+        
+        return {
+            'connection_success_rate': round(success_rate, 2),
+            'uptime_percentage': round(uptime_percentage, 2),
+            'mtbf_hours': round(mtbf_hours, 2) if mtbf_hours != float('inf') else None,
+            'seconds_since_last_activity': round(seconds_since_activity, 1),
+            'total_connection_attempts': attempts,
+            'successful_connections': successes,
+            'is_currently_connected': port_name in self.active_ports
+        }
+    
+    def get_error_rate_metrics(self, port_name: str) -> Dict[str, float]:
+        """Calculate error rate metrics for a port."""
+        if port_name not in self.error_history:
+            return {'errors_per_hour': 0.0, 'error_trend': 'stable'}
+        
+        current_time = datetime.now()
+        
+        # Count errors in the last hour
+        recent_errors = len(self.error_history[port_name])
+        errors_per_hour = recent_errors
+        
+        # Simple trend analysis - compare last 30 minutes to previous 30 minutes
+        half_window = self.error_window_seconds // 2
+        half_cutoff = current_time - timedelta(seconds=half_window)
+        
+        recent_half_errors = sum(1 for error_time in self.error_history[port_name] 
+                                if error_time >= half_cutoff)
+        older_half_errors = recent_errors - recent_half_errors
+        
+        if older_half_errors == 0 and recent_half_errors == 0:
+            trend = 'stable'
+        elif older_half_errors == 0:
+            trend = 'increasing'
+        elif recent_half_errors == 0:
+            trend = 'decreasing'
+        else:
+            ratio = recent_half_errors / older_half_errors
+            if ratio > 1.5:
+                trend = 'increasing'
+            elif ratio < 0.5:
+                trend = 'decreasing'
+            else:
+                trend = 'stable'
+        
+        return {
+            'errors_per_hour': errors_per_hour,
+            'error_trend': trend
+        }
+    
+    def get_queue_metrics(self, port_name: str) -> Dict[str, Any]:
+        """Calculate queue performance metrics for a port."""
+        if port_name not in self.data_queues:
+            return {}
+        
+        current_queue_size = self.data_queues[port_name].qsize()
+        queue_utilization = (current_queue_size / self.max_queue_size * 100)
+        
+        # Calculate latency statistics
+        latency_stats = {}
+        if port_name in self.queue_latency_samples and self.queue_latency_samples[port_name]:
+            samples = list(self.queue_latency_samples[port_name])
+            latency_stats = {
+                'avg_latency_ms': round(sum(samples) / len(samples), 2),
+                'max_latency_ms': round(max(samples), 2),
+                'min_latency_ms': round(min(samples), 2)
+            }
+        else:
+            latency_stats = {
+                'avg_latency_ms': 0.0,
+                'max_latency_ms': 0.0,
+                'min_latency_ms': 0.0
+            }
+        
+        return {
+            'current_queue_size': current_queue_size,
+            'queue_utilization_percent': round(queue_utilization, 1),
+            'max_queue_size': self.max_queue_size,
+            **latency_stats
+        }
 
 
 class SerialRouterCore:
@@ -341,6 +598,11 @@ class SerialRouterCore:
         # Thread restart tracking
         self.thread_restart_counts: Dict[str, int] = {}
         self.thread_restart_window_start = datetime.now()
+        
+        # System-level monitoring
+        self.router_start_time: Optional[datetime] = None
+        self.data_loss_events = 0
+        self.peak_throughput = 0.0
         
         # Setup logging
         self._setup_logging()
@@ -703,6 +965,7 @@ class SerialRouterCore:
         
         self.running = True
         self.shutdown_requested = False
+        self.router_start_time = datetime.now()
         
         # Initialize statistics
         self.bytes_transferred.clear()
@@ -760,12 +1023,29 @@ class SerialRouterCore:
         self.logger.info("SerialRouter stopped")
     
     def get_status(self) -> Dict[str, Any]:
-        """Get comprehensive router status including PortManager details."""
+        """Get comprehensive router status including advanced monitoring metrics."""
+        current_time = datetime.now()
+        
         # Get basic router status
         active_threads = len([t for t in self.routing_threads if t.is_alive()])
         
         # Get detailed port status from PortManager
         port_status = self.port_manager.get_port_status()
+        
+        # Calculate system uptime
+        uptime_seconds = 0
+        if self.router_start_time:
+            uptime_seconds = (current_time - self.router_start_time).total_seconds()
+        
+        # Calculate total system throughput
+        total_current_throughput = 0
+        for port_name, port_info in port_status.items():
+            if 'throughput' in port_info:
+                total_current_throughput += port_info['throughput'].get('bytes_per_second', 0)
+        
+        # Update peak throughput
+        if total_current_throughput > self.peak_throughput:
+            self.peak_throughput = total_current_throughput
         
         # Combine PortManager stats with router stats for comprehensive view
         combined_bytes_transferred = self.bytes_transferred.copy()
@@ -782,7 +1062,43 @@ class SerialRouterCore:
                     'reconnects': stats.get('reconnects', 0)
                 }
         
+        # Calculate critical metrics for dashboard
+        connected_ports = sum(1 for port_info in port_status.values() 
+                             if port_info.get('connected', False))
+        total_ports = len(port_status)
+        
+        # Get time since last activity across all ports
+        most_recent_activity = None
+        for port_info in port_status.values():
+            last_activity = port_info.get('last_activity')
+            if last_activity:
+                if most_recent_activity is None or last_activity > most_recent_activity:
+                    most_recent_activity = last_activity
+        
+        seconds_since_last_activity = 0
+        if most_recent_activity:
+            seconds_since_last_activity = (current_time - most_recent_activity).total_seconds()
+        
+        # Calculate total error rates
+        total_errors_per_hour = 0
+        for port_info in port_status.values():
+            if 'error_metrics' in port_info:
+                total_errors_per_hour += port_info['error_metrics'].get('errors_per_hour', 0)
+        
+        # Calculate average queue utilization
+        total_queue_utilization = 0
+        queue_count = 0
+        for port_info in port_status.values():
+            if 'queue_performance' in port_info:
+                util = port_info['queue_performance'].get('queue_utilization_percent', 0)
+                if util is not None:
+                    total_queue_utilization += util
+                    queue_count += 1
+        
+        avg_queue_utilization = total_queue_utilization / queue_count if queue_count > 0 else 0
+        
         return {
+            # Core system status
             "running": self.running,
             "incoming_port": self.incoming_port,
             "outgoing_ports": self.outgoing_ports,
@@ -790,6 +1106,18 @@ class SerialRouterCore:
             "bytes_transferred": combined_bytes_transferred,
             "error_counts": self.error_counts.copy(),
             "thread_restart_counts": self.thread_restart_counts.copy(),
+            
+            # Critical monitoring dashboard metrics
+            "critical_metrics": {
+                "system_uptime_hours": round(uptime_seconds / 3600, 2),
+                "active_connections": f"{connected_ports}/{total_ports}",
+                "current_throughput_bps": round(total_current_throughput, 0),
+                "data_loss_events_24h": self.data_loss_events,  # TODO: implement 24h window
+                "error_rate_per_hour": round(total_errors_per_hour, 2),
+                "seconds_since_last_activity": round(seconds_since_last_activity, 1),
+                "avg_queue_utilization_percent": round(avg_queue_utilization, 1),
+                "peak_throughput_bps": round(self.peak_throughput, 0)
+            },
             
             # Enhanced PortManager status information
             "port_manager_status": port_status,
@@ -799,7 +1127,11 @@ class SerialRouterCore:
                     "owner": port_info.get('owner', None),
                     "last_activity": port_info.get('last_activity'),
                     "queue_size": port_info.get('queue_size', 0),
-                    "error_count": port_info.get('error_count', 0)
+                    "error_count": port_info.get('error_count', 0),
+                    "throughput_bps": port_info.get('throughput', {}).get('bytes_per_second', 0),
+                    "uptime_percent": port_info.get('connection_reliability', {}).get('uptime_percentage', 0),
+                    "mtbf_hours": port_info.get('connection_reliability', {}).get('mtbf_hours'),
+                    "queue_latency_ms": port_info.get('queue_performance', {}).get('avg_latency_ms', 0)
                 }
                 for port_name, port_info in port_status.items()
             },
@@ -814,9 +1146,45 @@ class SerialRouterCore:
                 ),
                 "total_queue_backlog": sum(
                     port_info.get('queue_size', 0) for port_info in port_status.values()
-                )
+                ),
+                "system_load_percent": min(100, avg_queue_utilization),
+                "overall_health_status": self._calculate_health_status(port_status, connected_ports, total_ports)
             }
         }
+    
+    def _calculate_health_status(self, port_status: Dict, connected_ports: int, total_ports: int) -> str:
+        """Calculate overall system health status."""
+        if connected_ports < total_ports:
+            return "CRITICAL"
+        
+        # Check error rates
+        high_error_rate = any(
+            port_info.get('error_metrics', {}).get('errors_per_hour', 0) > 10
+            for port_info in port_status.values()
+        )
+        
+        if high_error_rate:
+            return "WARNING"
+        
+        # Check queue utilization
+        high_queue_usage = any(
+            port_info.get('queue_performance', {}).get('queue_utilization_percent', 0) > 80
+            for port_info in port_status.values()
+        )
+        
+        if high_queue_usage:
+            return "WARNING"
+        
+        # Check recent activity
+        any_recent_activity = any(
+            port_info.get('connection_reliability', {}).get('seconds_since_last_activity', float('inf')) < 60
+            for port_info in port_status.values()
+        )
+        
+        if any_recent_activity:
+            return "EXCELLENT"
+        else:
+            return "GOOD"
 
 
 def signal_handler(signum, frame):

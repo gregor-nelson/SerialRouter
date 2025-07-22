@@ -23,10 +23,12 @@ from PyQt6.QtWidgets import (
     QGridLayout, QSpinBox, QProgressBar, QSplitter
 )
 from PyQt6.QtCore import QThread, pyqtSignal, QTimer, Qt
-from PyQt6.QtGui import QFont, QPalette
+from PyQt6.QtGui import QFont, QPalette, QIcon
 
 import serial.tools.list_ports
 from src.core.router_engine import SerialRouterCore
+from src.gui.resources import resource_manager
+from src.gui.components import RibbonToolbar, ConnectionDiagramWidget, EnhancedStatusWidget
 
 
 class LogHandler(logging.Handler):
@@ -98,6 +100,7 @@ class SerialRouterMainWindow(QMainWindow):
         # Initialize UI
         self.init_ui()
         self.setup_logging()
+        self.apply_theme()
         self.load_configuration()
         self.refresh_available_ports()
         
@@ -110,36 +113,49 @@ class SerialRouterMainWindow(QMainWindow):
     def init_ui(self):
         """Initialize the user interface."""
         self.setWindowTitle("SerialRouter v2.0 - Production Control")
-        self.setFixedSize(650, 750)
+        self.setMinimumSize(880, 600)
+        # Don't set maximum size to preserve maximize functionality
+        self.resize(880, 600)
         
-        # Central widget with splitter
+        
+        # Set application icon
+        app_icon = resource_manager.get_app_icon()
+        if not app_icon.isNull():
+            self.setWindowIcon(app_icon)
+        
+        # Create ribbon toolbar
+        self.ribbon = RibbonToolbar()
+        self.addToolBar(self.ribbon)
+        
+        # Connect ribbon signals
+        self.connect_ribbon_signals()
+        
+        # Central widget with main layout
         central_widget = QWidget()
         self.setCentralWidget(central_widget)
         main_layout = QVBoxLayout(central_widget)
+        main_layout.setSpacing(10)
+        main_layout.setContentsMargins(10, 10, 10, 10)
         
-        splitter = QSplitter(Qt.Orientation.Vertical)
-        main_layout.addWidget(splitter)
+        # Main content area with horizontal splitter
+        content_splitter = QSplitter(Qt.Orientation.Horizontal)
         
-        # Top section - Configuration and Control
-        top_widget = QWidget()
-        top_layout = QVBoxLayout(top_widget)
+        # Left panel - Configuration
+        left_panel = QWidget()
+        left_panel.setMaximumWidth(350)
+        left_panel.setMinimumWidth(300)
+        self.create_configuration_panel(left_panel)
+        content_splitter.addWidget(left_panel)
         
-        # Configuration Group
-        self.create_configuration_group(top_layout)
+        # Right panel - Monitoring with nested vertical layout
+        right_panel = QWidget()
+        self.create_monitoring_panel(right_panel)
+        content_splitter.addWidget(right_panel)
         
-        # Process Control Group  
-        self.create_control_group(top_layout)
+        # Set horizontal splitter proportions (35% left, 65% right)
+        content_splitter.setSizes([350, 650])
         
-        # Status Monitoring Group
-        self.create_monitoring_group(top_layout)
-        
-        splitter.addWidget(top_widget)
-        
-        # Bottom section - Activity Log
-        self.create_activity_log_group(splitter)
-        
-        # Set splitter proportions (70% top, 30% bottom)
-        splitter.setSizes([525, 225])
+        main_layout.addWidget(content_splitter)
         
     def create_configuration_group(self, parent_layout):
         """Create the port configuration group."""
@@ -150,11 +166,10 @@ class SerialRouterMainWindow(QMainWindow):
         config_layout.addWidget(QLabel("Incoming Port:"), 0, 0)
         self.incoming_port_combo = QComboBox()
         self.incoming_port_combo.setMinimumWidth(120)
+        # Connect port selection changes to diagram updates
+        self.incoming_port_combo.currentTextChanged.connect(self.on_incoming_port_changed)
         config_layout.addWidget(self.incoming_port_combo, 0, 1)
         
-        self.refresh_ports_btn = QPushButton("Refresh")
-        self.refresh_ports_btn.clicked.connect(self.refresh_available_ports)
-        config_layout.addWidget(self.refresh_ports_btn, 0, 2)
         
         # Incoming Port Baud Rate
         config_layout.addWidget(QLabel("Incoming Baud:"), 1, 0)
@@ -167,7 +182,7 @@ class SerialRouterMainWindow(QMainWindow):
         # Outgoing Ports (Fixed)
         config_layout.addWidget(QLabel("Outgoing Ports:"), 2, 0)
         outgoing_label = QLabel("COM131, COM141 (Fixed)")
-        outgoing_label.setStyleSheet("color: #555; font-style: italic;")
+        outgoing_label.setProperty("class", "description")
         config_layout.addWidget(outgoing_label, 2, 1)
         
         # Outgoing Port Baud Rate
@@ -178,134 +193,217 @@ class SerialRouterMainWindow(QMainWindow):
         self.outgoing_baud_spin.setSingleStep(1200)
         config_layout.addWidget(self.outgoing_baud_spin, 3, 1)
         
+        # Add control buttons at bottom of configuration panel
+        control_frame = QFrame()
+        control_layout = QVBoxLayout(control_frame)
+        control_layout.setSpacing(15)
+        control_layout.setContentsMargins(0, 0, 0, 0)
+        
+        # Enhanced Status display
+        status_group = QGroupBox("Router Status")
+        status_layout = QVBoxLayout(status_group)
+        
+        # Enhanced status widget
+        self.enhanced_status = EnhancedStatusWidget()
+        status_layout.addWidget(self.enhanced_status)
+        
+        control_layout.addWidget(status_group)
+        
+        # Connection diagram
+        diagram_group = QGroupBox("Port Connections")
+        diagram_layout = QVBoxLayout(diagram_group)
+        
+        # Connection diagram widget
+        self.connection_diagram = ConnectionDiagramWidget()
+        diagram_layout.addWidget(self.connection_diagram)
+        
+        control_layout.addWidget(diagram_group)
+        
+        
         parent_layout.addWidget(config_group)
+        parent_layout.addWidget(control_frame)
         
+    def create_configuration_panel(self, parent_widget):
+        """Create the left configuration panel."""
+        layout = QVBoxLayout(parent_widget)
+        layout.setSpacing(15)
+        layout.setContentsMargins(10, 10, 10, 10)
+        
+        # Configuration Group
+        self.create_configuration_group(layout)
+        
+        layout.addStretch()
+    
+    def create_monitoring_panel(self, parent_widget):
+        """Create the right monitoring panel with nested vertical splitter."""
+        layout = QVBoxLayout(parent_widget)
+        layout.setSpacing(0)
+        layout.setContentsMargins(0, 0, 0, 0)
+        
+        # Create vertical splitter for monitoring stats and activity log
+        vertical_splitter = QSplitter(Qt.Orientation.Vertical)
+        
+        # Top section - Status Monitoring
+        monitoring_widget = QWidget()
+        monitoring_layout = QVBoxLayout(monitoring_widget)
+        monitoring_layout.setSpacing(15)
+        monitoring_layout.setContentsMargins(10, 10, 10, 10)
+        self.create_monitoring_group(monitoring_layout)
+        # Remove stretch from parent - will be handled in child container
+        vertical_splitter.addWidget(monitoring_widget)
+        
+        # Bottom section - Activity Log
+        log_widget = QWidget()
+        self.create_activity_log_panel(log_widget)
+        vertical_splitter.addWidget(log_widget)
+        
+        # Set vertical splitter proportions (60% monitoring, 40% log) and enable dynamic resizing
+        vertical_splitter.setSizes([360, 240])
+        vertical_splitter.setStretchFactor(0, 1)  # Monitoring section can expand
+        vertical_splitter.setStretchFactor(1, 0)  # Log section maintains size preference
+        
+        layout.addWidget(vertical_splitter)
+    
+    def connect_ribbon_signals(self):
+        """Connect ribbon toolbar signals to existing methods."""
+        self.ribbon.start_routing.connect(self.start_routing)
+        self.ribbon.stop_routing.connect(self.stop_routing)
+        self.ribbon.configure_ports.connect(self.show_port_configuration)
+        self.ribbon.save_config.connect(self.save_configuration)
+        self.ribbon.load_config.connect(self.load_configuration)
+        self.ribbon.refresh_ports.connect(self.refresh_available_ports)
+        self.ribbon.view_stats.connect(self.show_routing_stats)
+        self.ribbon.clear_log.connect(self.clear_activity_log)
+        self.ribbon.show_help.connect(self.show_help_information)
+    
+    def show_port_configuration(self):
+        """Show port configuration (placeholder for future enhancement)."""
+        self.add_log_message("Port configuration dialog would open here")
+    
+    def show_routing_stats(self):
+        """Show detailed routing statistics (placeholder for future enhancement)."""
+        if self.router_core:
+            status = self.router_core.get_status()
+            self.add_log_message(f"Routing Statistics: {status.get('active_threads', 0)}/3 threads active")
+        else:
+            self.add_log_message("Router not active - no statistics available")
+    
+    def show_help_information(self):
+        """Show help information (placeholder for future enhancement)."""
+        self.add_log_message("SerialRouter v2.0 - Routes incoming port to COM131 & COM141")
+        self.add_log_message("Use START ROUTING to begin, STOP ROUTING to end")
+    
+    def on_incoming_port_changed(self, port_name: str):
+        """Handle incoming port selection changes."""
+        if hasattr(self, 'connection_diagram') and port_name:
+            self.connection_diagram.set_incoming_port(port_name)
+    
     def create_control_group(self, parent_layout):
-        """Create the process control group."""
-        control_group = QGroupBox("Process Control")
-        control_layout = QHBoxLayout(control_group)
-        
-        # Start Button
-        self.start_btn = QPushButton("Start Routing")
-        self.start_btn.clicked.connect(self.start_routing)
-        self.start_btn.setStyleSheet("""
-            QPushButton {
-                background-color: #4CAF50;
-                color: white;
-                font-weight: bold;
-                padding: 8px;
-                border-radius: 4px;
-                border: none;
-            }
-            QPushButton:hover {
-                background-color: #45a049;
-            }
-            QPushButton:disabled {
-                background-color: #cccccc;
-                color: #666666;
-            }
-        """)
-        control_layout.addWidget(self.start_btn)
-        
-        # Stop Button
-        self.stop_btn = QPushButton("Stop Routing")
-        self.stop_btn.clicked.connect(self.stop_routing)
-        self.stop_btn.setEnabled(False)
-        self.stop_btn.setStyleSheet("""
-            QPushButton {
-                background-color: #f44336;
-                color: white;
-                font-weight: bold;
-                padding: 8px;
-                border-radius: 4px;
-                border: none;
-            }
-            QPushButton:hover {
-                background-color: #da190b;
-            }
-            QPushButton:disabled {
-                background-color: #cccccc;
-                color: #666666;
-            }
-        """)
-        control_layout.addWidget(self.stop_btn)
-        
-        # Status Indicator
-        self.status_indicator = QLabel("●")
-        self.status_indicator.setStyleSheet("color: red; font-size: 24px; font-weight: bold;")
-        control_layout.addWidget(self.status_indicator)
-        
-        self.status_text = QLabel("Disconnected")
-        self.status_text.setStyleSheet("font-weight: bold; color: red;")
-        control_layout.addWidget(self.status_text)
-        
-        control_layout.addStretch()
-        
-        # Configuration Actions
-        self.save_config_btn = QPushButton("Save Config")
-        self.save_config_btn.clicked.connect(self.save_configuration)
-        control_layout.addWidget(self.save_config_btn)
-        
-        self.load_config_btn = QPushButton("Load Config") 
-        self.load_config_btn.clicked.connect(self.load_configuration)
-        control_layout.addWidget(self.load_config_btn)
-        
-        parent_layout.addWidget(control_group)
+        """Legacy method - functionality moved to configuration panel."""
+        pass
         
     def create_monitoring_group(self, parent_layout):
-        """Create the real-time monitoring group."""
+        """Create the real-time monitoring group with advanced metrics."""
         monitor_group = QGroupBox("Live Monitoring")
         monitor_layout = QGridLayout(monitor_group)
         
-        # Thread Health
-        monitor_layout.addWidget(QLabel("Thread Health:"), 0, 0)
-        self.thread_status_label = QLabel("0/3 Active")
-        self.thread_status_label.setStyleSheet("font-weight: bold;")
-        monitor_layout.addWidget(self.thread_status_label, 0, 1)
+        # Critical System Status (Row 0)
+        monitor_layout.addWidget(QLabel("System Uptime:"), 0, 0)
+        self.uptime_label = QLabel("0 hours")
+        self.uptime_label.setProperty("class", "uptime-display")
+        monitor_layout.addWidget(self.uptime_label, 0, 1)
         
-        # Bytes Transferred
-        monitor_layout.addWidget(QLabel("Data Transfer:"), 1, 0)
+        monitor_layout.addWidget(QLabel("Active Connections:"), 0, 2)
+        self.connections_label = QLabel("0/3")
+        self.connections_label.setProperty("class", "connection-display")
+        monitor_layout.addWidget(self.connections_label, 0, 3)
+        
+        # Throughput Metrics (Row 1)
+        monitor_layout.addWidget(QLabel("Current Throughput:"), 1, 0)
+        self.throughput_label = QLabel("0 bytes/sec")
+        self.throughput_label.setProperty("class", "throughput-display")
+        monitor_layout.addWidget(self.throughput_label, 1, 1)
+        
+        monitor_layout.addWidget(QLabel("Last Activity:"), 1, 2)
+        self.last_activity_label = QLabel("N/A")
+        self.last_activity_label.setProperty("class", "activity-display")
+        monitor_layout.addWidget(self.last_activity_label, 1, 3)
+        
+        # Data Loss and Errors (Row 2)
+        monitor_layout.addWidget(QLabel("Data Loss Events:"), 2, 0)
+        self.data_loss_label = QLabel("0")
+        self.data_loss_label.setProperty("class", "data-loss-display")
+        monitor_layout.addWidget(self.data_loss_label, 2, 1)
+        
+        monitor_layout.addWidget(QLabel("Error Rate:"), 2, 2)
+        self.error_rate_label = QLabel("0.0/hour")
+        self.error_rate_label.setProperty("class", "error-rate-display")
+        monitor_layout.addWidget(self.error_rate_label, 2, 3)
+        
+        # Queue and Performance (Row 3)
+        monitor_layout.addWidget(QLabel("Queue Utilization:"), 3, 0)
+        self.queue_util_label = QLabel("0%")
+        self.queue_util_label.setProperty("class", "queue-display")
+        monitor_layout.addWidget(self.queue_util_label, 3, 1)
+        
+        monitor_layout.addWidget(QLabel("Health Status:"), 3, 2)
+        self.health_status_label = QLabel("UNKNOWN")
+        self.health_status_label.setProperty("class", "health-display")
+        monitor_layout.addWidget(self.health_status_label, 3, 3)
+        
+        # Legacy Data Transfer Section (Rows 4-7)
+        separator = QLabel("─" * 40)
+        separator.setProperty("class", "separator")
+        monitor_layout.addWidget(separator, 4, 0, 1, 4)
+        
+        monitor_layout.addWidget(QLabel("Data Transfer Details:"), 5, 0, 1, 4)
         
         # Incoming -> Outgoing
-        monitor_layout.addWidget(QLabel("IN → OUT:"), 2, 0)
+        monitor_layout.addWidget(QLabel("IN → OUT:"), 6, 0)
         self.bytes_in_out_label = QLabel("0 bytes")
-        monitor_layout.addWidget(self.bytes_in_out_label, 2, 1)
+        monitor_layout.addWidget(self.bytes_in_out_label, 6, 1)
         
         # COM131 -> Incoming
-        monitor_layout.addWidget(QLabel("131 → IN:"), 3, 0)
+        monitor_layout.addWidget(QLabel("131 → IN:"), 6, 2)
         self.bytes_131_in_label = QLabel("0 bytes")
-        monitor_layout.addWidget(self.bytes_131_in_label, 3, 1)
+        monitor_layout.addWidget(self.bytes_131_in_label, 6, 3)
         
         # COM141 -> Incoming  
-        monitor_layout.addWidget(QLabel("141 → IN:"), 4, 0)
+        monitor_layout.addWidget(QLabel("141 → IN:"), 7, 0)
         self.bytes_141_in_label = QLabel("0 bytes")
-        monitor_layout.addWidget(self.bytes_141_in_label, 4, 1)
+        monitor_layout.addWidget(self.bytes_141_in_label, 7, 1)
         
-        # Error Counts
-        monitor_layout.addWidget(QLabel("Total Errors:"), 5, 0)
+        # Thread Status
+        monitor_layout.addWidget(QLabel("Thread Health:"), 7, 2)
+        self.thread_status_label = QLabel("0/3 Active")
+        self.thread_status_label.setProperty("class", "thread-status")
+        monitor_layout.addWidget(self.thread_status_label, 7, 3)
+        
+        # Legacy Error and Restart Counts (Row 8)
+        monitor_layout.addWidget(QLabel("Total Errors:"), 8, 0)
         self.error_count_label = QLabel("0")
-        self.error_count_label.setStyleSheet("font-weight: bold;")
-        monitor_layout.addWidget(self.error_count_label, 5, 1)
+        self.error_count_label.setProperty("class", "error-count")
+        monitor_layout.addWidget(self.error_count_label, 8, 1)
         
-        # Thread Restarts
-        monitor_layout.addWidget(QLabel("Thread Restarts:"), 6, 0)
+        monitor_layout.addWidget(QLabel("Thread Restarts:"), 8, 2)
         self.restart_count_label = QLabel("0")
-        monitor_layout.addWidget(self.restart_count_label, 6, 1)
+        monitor_layout.addWidget(self.restart_count_label, 8, 3)
+        
+        # Add stretch within the monitor_group to expand whitespace below stats
+        monitor_layout.addWidget(QWidget(), 9, 0, 1, 4)  # Empty widget as spacer
+        monitor_layout.setRowStretch(9, 1)  # Make row 9 expandable
         
         parent_layout.addWidget(monitor_group)
         
-    def create_activity_log_group(self, parent_widget):
-        """Create the activity log group."""
+    def create_activity_log_panel(self, parent_widget):
+        """Create the activity log panel for the right pane."""
+        layout = QVBoxLayout(parent_widget)
+        layout.setSpacing(10)
+        layout.setContentsMargins(10, 10, 10, 10)
+        
         log_group = QGroupBox("Activity Log")
         log_layout = QVBoxLayout(log_group)
         
-        # Log controls
-        log_controls = QHBoxLayout()
-        self.clear_log_btn = QPushButton("Clear Log")
-        self.clear_log_btn.clicked.connect(self.clear_activity_log)
-        log_controls.addWidget(self.clear_log_btn)
-        log_controls.addStretch()
-        log_layout.addLayout(log_controls)
         
         # Log display
         self.activity_log = QTextEdit()
@@ -313,7 +411,7 @@ class SerialRouterMainWindow(QMainWindow):
         self.activity_log.setReadOnly(True)
         log_layout.addWidget(self.activity_log)
         
-        parent_widget.addWidget(log_group)
+        layout.addWidget(log_group)
         
     def setup_logging(self):
         """Setup custom logging handler for activity log."""
@@ -351,17 +449,14 @@ class SerialRouterMainWindow(QMainWindow):
                 self.incoming_port_combo.addItems(port_names)
                 # Always set COM54 as the default selection
                 self.incoming_port_combo.setCurrentText("COM54")
-                self.start_btn.setEnabled(not self.is_routing_active())
             else:
                 self.incoming_port_combo.addItem("COM54")
-                self.start_btn.setEnabled(not self.is_routing_active())
                 
             self.add_log_message(f"Found {len(port_names)} COM ports: {', '.join(port_names) if port_names else 'None'} (COM54 hardcoded for testing)")
             
         except Exception as e:
             self.add_log_message(f"Error refreshing ports: {str(e)}")
             self.incoming_port_combo.addItem("COM54")
-            self.start_btn.setEnabled(not self.is_routing_active())
             
     def is_routing_active(self) -> bool:
         """Check if routing is currently active."""
@@ -437,55 +532,90 @@ class SerialRouterMainWindow(QMainWindow):
                     self.router_core.logger.removeHandler(self.log_handler)
                 self.router_core = None
         else:
-            # Operation failed, restore UI to stopped state
-            self.set_ui_state_stopped()
+            # Operation failed, show error state then transition to stopped
+            self.enhanced_status.set_state(EnhancedStatusWidget.STATE_ERROR)
+            # After a brief delay, transition to stopped state
+            QTimer.singleShot(2000, self.set_ui_state_stopped)
             if self.router_core and self.log_handler:
                 self.router_core.logger.removeHandler(self.log_handler)
             self.router_core = None
             
     def set_ui_state_starting(self):
         """Set UI to starting state."""
-        self.start_btn.setEnabled(False)
-        self.start_btn.setText("Starting...")
-        self.stop_btn.setEnabled(False)
-        self.status_indicator.setStyleSheet("color: orange; font-size: 24px; font-weight: bold;")
-        self.status_text.setText("Starting...")
-        self.status_text.setStyleSheet("font-weight: bold; color: orange;")
+        self.ribbon.set_routing_state(False)
+        self.ribbon.set_busy(True)
+        self.enhanced_status.set_state(EnhancedStatusWidget.STATE_STARTING)
         
     def set_ui_state_running(self):
         """Set UI to running state."""
-        self.start_btn.setEnabled(False)
-        self.start_btn.setText("Start Routing")
-        self.stop_btn.setEnabled(True)
-        self.status_indicator.setStyleSheet("color: green; font-size: 24px; font-weight: bold;")
-        self.status_text.setText("Routing Active")
-        self.status_text.setStyleSheet("font-weight: bold; color: green;")
+        self.ribbon.set_routing_state(True)
+        self.ribbon.set_busy(False)
+        self.enhanced_status.set_state(EnhancedStatusWidget.STATE_ACTIVE)
+        
+        # Update connection diagram with active state
+        self.update_connection_diagram_state()
         
     def set_ui_state_stopping(self):
         """Set UI to stopping state."""
-        self.start_btn.setEnabled(False)
-        self.stop_btn.setEnabled(False)
-        self.stop_btn.setText("Stopping...")
-        self.status_indicator.setStyleSheet("color: orange; font-size: 24px; font-weight: bold;")
-        self.status_text.setText("Stopping...")
-        self.status_text.setStyleSheet("font-weight: bold; color: orange;")
+        self.ribbon.set_routing_state(False)
+        self.ribbon.set_busy(True)
+        self.enhanced_status.set_state(EnhancedStatusWidget.STATE_STOPPING)
         
     def set_ui_state_stopped(self):
         """Set UI to stopped state."""
-        self.start_btn.setEnabled(True)
-        self.start_btn.setText("Start Routing")
-        self.stop_btn.setEnabled(False) 
-        self.stop_btn.setText("Stop Routing")
-        self.status_indicator.setStyleSheet("color: red; font-size: 24px; font-weight: bold;")
-        self.status_text.setText("Disconnected")
-        self.status_text.setStyleSheet("font-weight: bold; color: red;")
+        self.ribbon.set_routing_state(False)
+        self.ribbon.set_busy(False)
+        self.enhanced_status.set_state(EnhancedStatusWidget.STATE_OFFLINE)
+        
+        # Reset connection diagram to inactive state
+        self.connection_diagram.set_connection_states({
+            "COM131": False,
+            "COM141": False
+        })
+        
+    def update_connection_diagram_state(self):
+        """Update connection diagram based on current router status."""
+        if not self.router_core:
+            return
+            
+        try:
+            status = self.router_core.get_status()
+            port_connections = status.get("port_connections", {})
+            
+            # Update connection states based on actual port status
+            connection_states = {}
+            for port in ["COM131", "COM141"]:
+                if port in port_connections:
+                    connection_states[port] = port_connections[port].get("connected", False)
+                else:
+                    connection_states[port] = False
+                    
+            self.connection_diagram.set_connection_states(connection_states)
+            
+        except Exception as e:
+            # Fallback to basic active state
+            self.connection_diagram.set_connection_states({
+                "COM131": True,
+                "COM141": True
+            })
         
     def update_status_display(self):
-        """Update the real-time status display."""
+        """Update the real-time status display with advanced metrics."""
         if not self.router_core:
             # Reset displays when not running
+            self.uptime_label.setText("0 hours")
+            self.connections_label.setText("0/3")
+            self.throughput_label.setText("0 bytes/sec")
+            self.last_activity_label.setText("N/A")
+            self.data_loss_label.setText("0")
+            self.error_rate_label.setText("0.0/hour")
+            self.queue_util_label.setText("0%")
+            self.health_status_label.setText("OFFLINE")
+            self.health_status_label.setProperty("class", "health-display status-error")
+            
+            # Legacy displays
             self.thread_status_label.setText("0/3 Active")
-            self.thread_status_label.setStyleSheet("font-weight: bold; color: red;")
+            self.thread_status_label.setProperty("class", "thread-status status-error")
             self.bytes_in_out_label.setText("0 bytes")
             self.bytes_131_in_label.setText("0 bytes") 
             self.bytes_141_in_label.setText("0 bytes")
@@ -495,16 +625,116 @@ class SerialRouterMainWindow(QMainWindow):
             
         try:
             status = self.router_core.get_status()
+            critical_metrics = status.get("critical_metrics", {})
             
-            # Thread health
+            # Update connection diagram state
+            self.update_connection_diagram_state()
+            
+            # Update Critical Metrics Display
+            
+            # System uptime
+            uptime_hours = critical_metrics.get("system_uptime_hours", 0)
+            if uptime_hours < 1:
+                uptime_minutes = uptime_hours * 60
+                self.uptime_label.setText(f"{uptime_minutes:.1f} min")
+            elif uptime_hours < 24:
+                self.uptime_label.setText(f"{uptime_hours:.1f} hours")
+            else:
+                uptime_days = uptime_hours / 24
+                self.uptime_label.setText(f"{uptime_days:.1f} days")
+            
+            # Active connections
+            connections_status = critical_metrics.get("active_connections", "0/3")
+            self.connections_label.setText(connections_status)
+            if connections_status.startswith("3/3"):
+                self.connections_label.setProperty("class", "connection-display status-success")
+            elif "0/3" in connections_status:
+                self.connections_label.setProperty("class", "connection-display status-error")
+            else:
+                self.connections_label.setProperty("class", "connection-display status-warning")
+            
+            # Current throughput
+            throughput_bps = critical_metrics.get("current_throughput_bps", 0)
+            if throughput_bps > 1024:
+                self.throughput_label.setText(f"{throughput_bps/1024:.1f} KB/sec")
+            else:
+                self.throughput_label.setText(f"{throughput_bps:.0f} bytes/sec")
+            
+            if throughput_bps > 0:
+                self.throughput_label.setProperty("class", "throughput-display status-success")
+            else:
+                self.throughput_label.setProperty("class", "throughput-display status-warning")
+            
+            # Last activity
+            seconds_since_activity = critical_metrics.get("seconds_since_last_activity", float('inf'))
+            if seconds_since_activity == float('inf'):
+                self.last_activity_label.setText("Never")
+                self.last_activity_label.setProperty("class", "activity-display status-error")
+            elif seconds_since_activity < 60:
+                self.last_activity_label.setText(f"{seconds_since_activity:.1f}s ago")
+                self.last_activity_label.setProperty("class", "activity-display status-success")
+            elif seconds_since_activity < 3600:
+                minutes = seconds_since_activity / 60
+                self.last_activity_label.setText(f"{minutes:.1f}m ago")
+                self.last_activity_label.setProperty("class", "activity-display status-warning")
+            else:
+                hours = seconds_since_activity / 3600
+                self.last_activity_label.setText(f"{hours:.1f}h ago")
+                self.last_activity_label.setProperty("class", "activity-display status-error")
+            
+            # Data loss events
+            data_loss = critical_metrics.get("data_loss_events_24h", 0)
+            self.data_loss_label.setText(str(data_loss))
+            if data_loss == 0:
+                self.data_loss_label.setProperty("class", "data-loss-display status-success")
+            else:
+                self.data_loss_label.setProperty("class", "data-loss-display status-error")
+            
+            # Error rate
+            error_rate = critical_metrics.get("error_rate_per_hour", 0)
+            self.error_rate_label.setText(f"{error_rate:.1f}/hour")
+            if error_rate == 0:
+                self.error_rate_label.setProperty("class", "error-rate-display status-success")
+            elif error_rate < 5:
+                self.error_rate_label.setProperty("class", "error-rate-display status-warning")
+            else:
+                self.error_rate_label.setProperty("class", "error-rate-display status-error")
+            
+            # Queue utilization
+            queue_util = critical_metrics.get("avg_queue_utilization_percent", 0)
+            self.queue_util_label.setText(f"{queue_util:.1f}%")
+            if queue_util < 50:
+                self.queue_util_label.setProperty("class", "queue-display status-success")
+            elif queue_util < 80:
+                self.queue_util_label.setProperty("class", "queue-display status-warning")
+            else:
+                self.queue_util_label.setProperty("class", "queue-display status-error")
+            
+            # Health status
+            system_health = status.get("system_health", {})
+            health_status = system_health.get("overall_health_status", "UNKNOWN")
+            self.health_status_label.setText(health_status)
+            
+            if health_status == "EXCELLENT":
+                self.health_status_label.setProperty("class", "health-display status-excellent")
+            elif health_status == "GOOD":
+                self.health_status_label.setProperty("class", "health-display status-success")
+            elif health_status == "WARNING":
+                self.health_status_label.setProperty("class", "health-display status-warning")
+            elif health_status == "CRITICAL":
+                self.health_status_label.setProperty("class", "health-display status-error")
+            else:
+                self.health_status_label.setProperty("class", "health-display status-unknown")
+            
+            # Legacy Thread health display
             active_threads = status.get("active_threads", 0)
             self.thread_status_label.setText(f"{active_threads}/3 Active")
             if active_threads == 3:
-                self.thread_status_label.setStyleSheet("font-weight: bold; color: green;")
+                self.thread_status_label.setProperty("class", "thread-status status-success")
             elif active_threads > 0:
-                self.thread_status_label.setStyleSheet("font-weight: bold; color: orange;")
+                self.thread_status_label.setProperty("class", "thread-status status-warning")
             else:
-                self.thread_status_label.setStyleSheet("font-weight: bold; color: red;")
+                self.thread_status_label.setProperty("class", "thread-status status-error")
                 
             # Bytes transferred - Updated for new PortManager architecture
             bytes_data = status.get("bytes_transferred", {})
@@ -558,9 +788,9 @@ class SerialRouterMainWindow(QMainWindow):
             
             self.error_count_label.setText(str(total_errors))
             if total_errors > 0:
-                self.error_count_label.setStyleSheet("font-weight: bold; color: red;")
+                self.error_count_label.setProperty("class", "error-count status-error")
             else:
-                self.error_count_label.setStyleSheet("font-weight: bold; color: green;")
+                self.error_count_label.setProperty("class", "error-count status-success")
                 
             # Thread restart counts - Safe sum for mixed data types
             restart_data = status.get("thread_restart_counts", {})
@@ -657,6 +887,18 @@ class SerialRouterMainWindow(QMainWindow):
             self.control_thread.wait(3000)  # Wait up to 3 seconds
             
         event.accept()
+    
+    def apply_theme(self):
+        """Apply the Windows theme to the application."""
+        theme_css = resource_manager.load_theme()
+        if theme_css:
+            self.setStyleSheet(theme_css)
+            # Force style refresh for all widgets with custom properties
+            self.style().unpolish(self)
+            self.style().polish(self)
+            print("Windows theme applied successfully")
+        else:
+            print("Warning: Could not load Windows theme, using default styling")
 
 
 def main():
@@ -667,6 +909,12 @@ def main():
     app.setApplicationName("SerialRouter")
     app.setApplicationVersion("2.0")
     app.setOrganizationName("SerialRouter")
+    
+    # Set application icon globally
+    from src.gui.resources import resource_manager
+    app_icon = resource_manager.get_app_icon()
+    if not app_icon.isNull():
+        app.setWindowIcon(app_icon)
     
     # Create and show main window
     window = SerialRouterMainWindow()

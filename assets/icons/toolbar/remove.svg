@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+  <!-- Remove/Delete icon -->
+  <circle cx="16" cy="16" r="14" fill="#DC3545" stroke="#C82333" stroke-width="1"/>
+  <path d="M10 16 L22 16" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round"/>
+</svg>
