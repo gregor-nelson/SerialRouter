@@ -15,7 +15,6 @@ import serial
 import threading
 import time
 import sys
-import json
 import os
 import logging
 from logging.handlers import RotatingFileHandler
@@ -570,14 +569,16 @@ class PortManager:
 class SerialRouterCore:
     """Production-hardened serial router core with auto-recovery capabilities."""
     
-    def __init__(self, config_path: str = "config/serial_router_config.json"):
-        # Configuration
-        self.config = self._load_config(config_path)
-        self.incoming_port: str = self.config["incoming_port"]
-        self.incoming_baud: int = self.config["incoming_baud"]
-        self.outgoing_baud: int = self.config["outgoing_baud"]
-        self.timeout: float = self.config["timeout"]
-        self.retry_delay_max: int = self.config["retry_delay_max"]
+    def __init__(self, incoming_port: str = "COM54", incoming_baud: int = 115200, outgoing_baud: int = 115200):
+        # Hardcoded static configuration
+        self.timeout: float = 0.1
+        self.retry_delay_max: int = 30
+        self.log_level: str = "INFO"
+        
+        # Dynamic configuration from GUI
+        self.incoming_port: str = incoming_port
+        self.incoming_baud: int = incoming_baud
+        self.outgoing_baud: int = outgoing_baud
         
         # Fixed outgoing ports
         self.outgoing_ports = ["COM131", "COM141"]
@@ -610,37 +611,12 @@ class SerialRouterCore:
         # Initialize centralized port manager
         self.port_manager = PortManager(self.logger)
         
-        self.logger.info(f"SerialRouter initialized with config: {self.config}")
-        
-    def _load_config(self, config_path: str) -> Dict[str, Any]:
-        """Load configuration from JSON file with fallback to defaults."""
-        default_config = {
-            "incoming_port": "COM88",
-            "incoming_baud": 115200,
-            "outgoing_baud": 115200,
-            "timeout": 0.1,
-            "retry_delay_max": 30,
-            "log_level": "INFO"
-        }
-        
-        if os.path.exists(config_path):
-            try:
-                with open(config_path, 'r') as f:
-                    user_config = json.load(f)
-                    default_config.update(user_config)
-                    print(f"Loaded config from {config_path}")
-            except Exception as e:
-                print(f"Error loading config from {config_path}: {e}")
-                print("Using default configuration")
-        else:
-            print(f"Config file {config_path} not found, using defaults")
-            
-        return default_config
+        self.logger.info(f"SerialRouter initialized - Port: {self.incoming_port}, Baud: {self.incoming_baud}/{self.outgoing_baud}")
     
     def _setup_logging(self):
         """Setup file logging with rotation."""
         self.logger = logging.getLogger('SerialRouter')
-        self.logger.setLevel(getattr(logging, self.config["log_level"]))
+        self.logger.setLevel(getattr(logging, self.log_level))
         
         # Clear any existing handlers
         self.logger.handlers.clear()
@@ -845,7 +821,7 @@ class SerialRouterCore:
                 # Release any previously acquired ports
                 for prev_port, prev_owner in acquired_ports:
                     self.port_manager.release_port(prev_port, prev_owner)
-                return
+                return False
         
         # All ports acquired successfully, now start threads
         self.logger.info("All ports acquired, starting routing threads...")
@@ -877,6 +853,7 @@ class SerialRouterCore:
             self.thread_heartbeats[thread.name] = datetime.now()
         
         self.logger.info(f"Started {len(self.routing_threads)} routing threads with centralized port management")
+        return True
     
     def _watchdog_monitor(self):
         """Monitor thread health and restart dead threads."""
@@ -972,7 +949,11 @@ class SerialRouterCore:
         self.error_counts.clear()
         
         # Start routing threads
-        self._start_routing_threads()
+        if not self._start_routing_threads():
+            self.logger.error("SerialRouter failed to start - critical ports unavailable")
+            self.running = False
+            self.shutdown_requested = True
+            return False
         
         # Start watchdog monitor
         self.watchdog_thread = threading.Thread(target=self._watchdog_monitor, name="Watchdog")
@@ -980,6 +961,7 @@ class SerialRouterCore:
         self.watchdog_thread.start()
         
         self.logger.info("SerialRouter started successfully")
+        return True
     
     def stop(self):
         """Stop the serial router gracefully with proper PortManager cleanup."""

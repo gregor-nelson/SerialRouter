@@ -1,4 +1,10 @@
-/* Windows 10/11 Style Theme for com0com Manager */
+/* Windows 10/11 Style Theme for SerialRouter */
+
+/* Global Typography */
+* {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    font-size: 11px;
+}
 
 /* Main Application Colors */
 QMainWindow {
@@ -72,7 +78,6 @@ QPushButton {
     border: 1px solid #d9d9d9;
     border-radius: 0px;
     padding: 6px 12px;
-    font-size: 11px;
     min-height: 20px;
 }
 
@@ -139,7 +144,7 @@ QToolBar RibbonGroup {
 
 QToolBar RibbonGroup QLabel {
     color: #666666;
-    font-size: 8px;
+    font-size: 9px;
     padding: 2px;
 }
 
@@ -150,7 +155,6 @@ QTreeWidget {
     border-radius: 0px;
     selection-background-color: #e1f0ff;
     outline: none;
-    font-size: 11px;
 }
 
 QTreeWidget::item {
@@ -192,7 +196,6 @@ QHeaderView::section {
     border-bottom: 1px solid #d9d9d9;
     padding: 6px 8px;
     font-weight: bold;
-    font-size: 11px;
 }
 
 QHeaderView::section:hover {
@@ -252,7 +255,6 @@ QLineEdit {
     border: 1px solid #d9d9d9;
     border-radius: 0px;
     padding: 4px 6px;
-    font-size: 11px;
 }
 
 QLineEdit:focus {
@@ -270,7 +272,6 @@ QComboBox {
     border: 1px solid #d9d9d9;
     border-radius: 0px;
     padding: 4px 6px;
-    font-size: 11px;
     min-width: 100px;
 }
 
@@ -303,7 +304,6 @@ QSpinBox, QDoubleSpinBox {
     border: 1px solid #d9d9d9;
     border-radius: 0px;
     padding: 4px 6px;
-    font-size: 11px;
 }
 
 QSpinBox:focus, QDoubleSpinBox:focus {
@@ -312,7 +312,6 @@ QSpinBox:focus, QDoubleSpinBox:focus {
 
 QCheckBox {
     spacing: 6px;
-    font-size: 11px;
 }
 
 QCheckBox::indicator {
@@ -339,7 +338,7 @@ QTextEdit {
     border: 1px solid #d9d9d9;
     border-radius: 0px;
     font-family: 'Consolas', 'Courier New', monospace;
-    font-size: 10px;
+    font-size: 12px;
 }
 
 QTextEdit:focus {
@@ -351,7 +350,6 @@ QStatusBar {
     background-color: #f8f8f8;
     border-top: 1px solid #d9d9d9;
     color: #333333;
-    font-size: 11px;
 }
 
 QStatusBar::item {
@@ -364,7 +362,6 @@ QProgressBar {
     border: 1px solid #d9d9d9;
     border-radius: 0px;
     text-align: center;
-    font-size: 10px;
     height: 18px;
 }
 
@@ -402,7 +399,6 @@ QTabBar::tab {
     border-bottom: none;
     padding: 6px 12px;
     margin-right: 2px;
-    font-size: 11px;
 }
 
 QTabBar::tab:selected {
@@ -417,7 +413,6 @@ QTabBar::tab:hover:!selected {
 /* Labels */
 QLabel {
     color: #333333;
-    font-size: 11px;
 }
 
 /* Form Layout */
@@ -439,7 +434,7 @@ QSplitter::handle:hover {
 
 /* Context specific styles */
 QLabel[class="title"] {
-    font-size: 14px;
+    font-size: 13px;
     font-weight: bold;
     color: #0078d4;
 }

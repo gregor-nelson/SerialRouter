@@ -29,14 +29,13 @@ class RibbonButton(QPushButton):
                 self.setIcon(icon)
                 self.setIconSize(QSize(16, 16))
         
-        # Style the button for ribbon appearance
+        # Style the button for ribbon appearance (font will inherit from theme)
         self.setStyleSheet("""
             QPushButton {
                 text-align: center;
                 border: 1px solid #d9d9d9;
                 border-radius: 3px;
                 background: #f0f0f0;
-                font-size: 10px;
                 padding: 2px;
             }
             QPushButton:hover {
@@ -96,8 +95,6 @@ class RibbonToolbar(QToolBar):
     start_routing = pyqtSignal()
     stop_routing = pyqtSignal()
     configure_ports = pyqtSignal()
-    save_config = pyqtSignal()
-    load_config = pyqtSignal()
     refresh_ports = pyqtSignal()
     view_stats = pyqtSignal()
     clear_log = pyqtSignal()
@@ -162,16 +159,7 @@ class RibbonToolbar(QToolBar):
         self.configure_button = RibbonButton("Setup", "configure")
         self.configure_button.setToolTip("Configure port settings")
         
-        self.save_button = RibbonButton("Save", "new")  # Using 'new' as save icon
-        self.save_button.setToolTip("Save current configuration")
-        
-        self.load_button = RibbonButton("Load", "reload")
-        self.load_button.setToolTip("Load saved configuration")
-        
         self.config_group.add_button(self.configure_button)
-        self.config_group.add_separator()
-        self.config_group.add_button(self.save_button)
-        self.config_group.add_button(self.load_button)
         
         # Monitoring group
         self.monitoring_group = RibbonGroup("Monitoring")
@@ -188,7 +176,7 @@ class RibbonToolbar(QToolBar):
         # System group
         self.system_group = RibbonGroup("System")
         
-        self.clear_button = RibbonButton("Clear Log", "remove")
+        self.clear_button = RibbonButton("Clear", "remove")
         self.clear_button.setToolTip("Clear activity log")
         
         self.help_button = RibbonButton("Help", "preinstall")  # Using preinstall as help icon
@@ -212,8 +200,6 @@ class RibbonToolbar(QToolBar):
         self.start_button.clicked.connect(self.start_routing.emit)
         self.stop_button.clicked.connect(self.stop_routing.emit)
         self.configure_button.clicked.connect(self.configure_ports.emit)
-        self.save_button.clicked.connect(self.save_config.emit)
-        self.load_button.clicked.connect(self.load_config.emit)
         self.refresh_button.clicked.connect(self.refresh_ports.emit)
         self.stats_button.clicked.connect(self.view_stats.emit)
         self.clear_button.clicked.connect(self.clear_log.emit)
@@ -226,15 +212,12 @@ class RibbonToolbar(QToolBar):
         
         # Disable configuration changes while routing
         self.configure_button.setEnabled(not is_routing)
-        self.save_button.setEnabled(not is_routing)
-        self.load_button.setEnabled(not is_routing)
     
     def set_busy(self, busy: bool):
         """Enable/disable buttons based on busy state."""
         buttons = [
             self.start_button, self.stop_button, self.configure_button,
-            self.save_button, self.load_button, self.stats_button,
-            self.clear_button, self.help_button
+            self.stats_button, self.clear_button, self.help_button
         ]
         
         for button in buttons:

@@ -13,6 +13,7 @@ Features:
 import sys
 import json
 import logging
+import subprocess
 import time
 from datetime import datetime
 from typing import Dict, Any, Optional
@@ -29,6 +30,7 @@ import serial.tools.list_ports
 from src.core.router_engine import SerialRouterCore
 from src.gui.resources import resource_manager
 from src.gui.components import RibbonToolbar, ConnectionDiagramWidget, EnhancedStatusWidget
+from src.gui.components.dialogs.about_dialog import AboutDialog
 
 
 class LogHandler(logging.Handler):
@@ -63,8 +65,11 @@ class RouterControlThread(QThread):
         """Execute the router operation in background thread."""
         try:
             if self.operation == 'start':
-                self.router_core.start()
-                self.operation_complete.emit(True, "Router started successfully")
+                success = self.router_core.start()
+                if success:
+                    self.operation_complete.emit(True, "Router started successfully")
+                else:
+                    self.operation_complete.emit(False, "Router failed to start - check port connections")
             elif self.operation == 'stop':
                 self.router_core.stop()
                 self.operation_complete.emit(True, "Router stopped successfully")
@@ -101,7 +106,6 @@ class SerialRouterMainWindow(QMainWindow):
         self.init_ui()
         self.setup_logging()
         self.apply_theme()
-        self.load_configuration()
         self.refresh_available_ports()
         
         # Connect log signal to handler
@@ -269,29 +273,74 @@ class SerialRouterMainWindow(QMainWindow):
         self.ribbon.start_routing.connect(self.start_routing)
         self.ribbon.stop_routing.connect(self.stop_routing)
         self.ribbon.configure_ports.connect(self.show_port_configuration)
-        self.ribbon.save_config.connect(self.save_configuration)
-        self.ribbon.load_config.connect(self.load_configuration)
         self.ribbon.refresh_ports.connect(self.refresh_available_ports)
         self.ribbon.view_stats.connect(self.show_routing_stats)
         self.ribbon.clear_log.connect(self.clear_activity_log)
         self.ribbon.show_help.connect(self.show_help_information)
     
     def show_port_configuration(self):
-        """Show port configuration (placeholder for future enhancement)."""
-        self.add_log_message("Port configuration dialog would open here")
+        """Launch com0com setup utility."""
+        try:
+            subprocess.Popen([r"C:\Program Files (x86)\com0com\setupg.exe"], 
+                            creationflags=subprocess.DETACHED_PROCESS)
+            self.add_log_message("Launched com0com setup utility")
+        except Exception as e:
+            self.add_log_message(f"Could not launch setup utility: {str(e)}")
     
     def show_routing_stats(self):
-        """Show detailed routing statistics (placeholder for future enhancement)."""
-        if self.router_core:
-            status = self.router_core.get_status()
-            self.add_log_message(f"Routing Statistics: {status.get('active_threads', 0)}/3 threads active")
-        else:
+        """Show historical performance and reliability statistics."""
+        if not self.router_core:
             self.add_log_message("Router not active - no statistics available")
+            return
+        
+        try:
+            status = self.router_core.get_status()
+            
+            self.add_log_message("=== Router Performance Report ===")
+            
+            # Data transfer totals
+            bytes_transferred = status.get('bytes_transferred', {})
+            for direction, bytes_count in bytes_transferred.items():
+                if isinstance(bytes_count, int):
+                    if bytes_count > 1024:
+                        self.add_log_message(f"Total {direction}: {bytes_count:,} bytes ({bytes_count/1024:.1f} KB)")
+                    else:
+                        self.add_log_message(f"Total {direction}: {bytes_count} bytes")
+            
+            # Performance metrics
+            critical_metrics = status.get('critical_metrics', {})
+            peak_bps = critical_metrics.get('peak_throughput_bps', 0)
+            self.add_log_message(f"Peak throughput: {peak_bps:,} bps")
+            
+            # Reliability
+            restart_counts = status.get('thread_restart_counts', {})
+            total_restarts = 0
+            for key, value in restart_counts.items():
+                if isinstance(value, int):
+                    total_restarts += value
+            self.add_log_message(f"Thread restarts: {total_restarts} total")
+            
+            # Runtime
+            uptime = critical_metrics.get('system_uptime_hours', 0)
+            self.add_log_message(f"Runtime: {uptime:.2f} hours")
+            
+        except Exception as e:
+            self.add_log_message(f"Could not retrieve statistics: {str(e)}")
     
     def show_help_information(self):
-        """Show help information (placeholder for future enhancement)."""
-        self.add_log_message("SerialRouter v2.0 - Routes incoming port to COM131 & COM141")
-        self.add_log_message("Use START ROUTING to begin, STOP ROUTING to end")
+        """Show about dialog and add helpful console information."""
+        # Show about dialog
+        AboutDialog.show_about(self)
+        
+        # Add stylized console log information
+        self.add_log_message("╔══════════════════════════════════════════════════════════════════╗")
+        self.add_log_message("║                   SerialRouter v2.0 - Operation Guide            ║")
+        self.add_log_message("╠══════════════════════════════════════════════════════════════════╣")
+        self.add_log_message("║ • Routes incoming port to COM131 & COM141 (virtual port pairs)   ║")
+        self.add_log_message("║ • Connect applications to COM132 & COM142 (paired endpoints)     ║")
+        self.add_log_message("║ • Select START ROUTING to begin, STOP ROUTING to end             ║")
+        self.add_log_message("║ • Configure incoming port before starting operations             ║")
+        self.add_log_message("╚══════════════════════════════════════════════════════════════════╝")
     
     def on_incoming_port_changed(self, port_name: str):
         """Handle incoming port selection changes."""
@@ -347,7 +396,7 @@ class SerialRouterMainWindow(QMainWindow):
         monitor_layout.addWidget(self.queue_util_label, 3, 1)
         
         monitor_layout.addWidget(QLabel("Health Status:"), 3, 2)
-        self.health_status_label = QLabel("UNKNOWN")
+        self.health_status_label = QLabel("Unknown")
         self.health_status_label.setProperty("class", "health-display")
         monitor_layout.addWidget(self.health_status_label, 3, 3)
         
@@ -407,7 +456,6 @@ class SerialRouterMainWindow(QMainWindow):
         
         # Log display
         self.activity_log = QTextEdit()
-        self.activity_log.setFont(QFont("Courier", 9))
         self.activity_log.setReadOnly(True)
         log_layout.addWidget(self.activity_log)
         
@@ -472,13 +520,12 @@ class SerialRouterMainWindow(QMainWindow):
             # Apply current configuration
             config = self.get_current_config()
             
-            # Initialize router core with config
-            self.router_core = SerialRouterCore("config/serial_router_config.json")
-            
-            # Update router config
-            self.router_core.incoming_port = config["incoming_port"]
-            self.router_core.incoming_baud = config["incoming_baud"] 
-            self.router_core.outgoing_baud = config["outgoing_baud"]
+            # Initialize router core with GUI values
+            self.router_core = SerialRouterCore(
+                incoming_port=config["incoming_port"],
+                incoming_baud=config["incoming_baud"],
+                outgoing_baud=config["outgoing_baud"]
+            )
             
             # Setup logging integration
             if self.log_handler:
@@ -831,41 +878,6 @@ class SerialRouterMainWindow(QMainWindow):
             "log_level": "INFO"
         }
         
-    def save_configuration(self):
-        """Save current configuration to JSON file."""
-        try:
-            config = self.get_current_config()
-            with open("config/serial_router_config.json", "w") as f:
-                json.dump(config, f, indent=2)
-            self.add_log_message("Configuration saved to serial_router_config.json")
-        except Exception as e:
-            self.add_log_message(f"Failed to save configuration: {str(e)}")
-            
-    def load_configuration(self):
-        """Load configuration from JSON file."""
-        try:
-            with open("config/serial_router_config.json", "r") as f:
-                config = json.load(f)
-                
-            # Update UI controls
-            if "incoming_port" in config:
-                port_name = config["incoming_port"]
-                index = self.incoming_port_combo.findText(port_name)
-                if index >= 0:
-                    self.incoming_port_combo.setCurrentIndex(index)
-                    
-            if "incoming_baud" in config:
-                self.incoming_baud_spin.setValue(config["incoming_baud"])
-                
-            if "outgoing_baud" in config:
-                self.outgoing_baud_spin.setValue(config["outgoing_baud"])
-                
-            self.add_log_message("Configuration loaded from serial_router_config.json")
-            
-        except FileNotFoundError:
-            self.add_log_message("Configuration file not found, using defaults")
-        except Exception as e:
-            self.add_log_message(f"Failed to load configuration: {str(e)}")
             
     def clear_activity_log(self):
         """Clear the activity log."""

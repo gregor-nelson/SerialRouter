@@ -33,9 +33,7 @@ class ConnectionDiagramWidget(QWidget):
         
         # Colors from theme - no dictionary needed
         
-        # Typography matching QGroupBox titles exactly (CSS 11px = 8pt at 96 DPI)
-        self.font_port = QFont("Segoe UI", 8, QFont.Weight.Bold)  # Match QGroupBox title styling
-        self.font_label = QFont("Segoe UI", 8, QFont.Weight.Bold)  # Match QGroupBox title styling
+        # Font properties will be set dynamically in paint methods
         
     def set_connection_states(self, states: dict):
         """Update connection states and trigger repaint."""
@@ -146,8 +144,11 @@ class ConnectionDiagramWidget(QWidget):
         painter.setPen(QPen(border_color, 2))  # 2px like QGroupBox border
         painter.drawRoundedRect(node_rect, 0, 0)  # 0px radius like theme
         
-        # Draw text with toolbar font styling
-        painter.setFont(self.font_port)  # 10px Segoe UI
+        # Draw text with theme font styling
+        font = QFont()
+        font.setBold(True)
+        font.setPointSize(10)
+        painter.setFont(font)
         painter.setPen(QPen(QColor('#333333')))
         painter.drawText(node_rect, Qt.AlignmentFlag.AlignCenter, text)
         
@@ -497,9 +498,12 @@ class ConnectionDiagramWidget(QWidget):
         
     def draw_labels(self, painter, rect):
         """Draw minimal labels that don't overlap."""
-        painter.setFont(self.font_label)
+        font = QFont()
+        font.setBold(True)
+        font.setPointSize(10)
+        painter.setFont(font)
         painter.setPen(QPen(QColor('#0078d4')))  # Blue accent like QGroupBox::title
         
         # Single bottom label with minimal padding to prevent text overflow
         label_rect = QRect(rect.left() + 12, rect.bottom() - 18, rect.width() - 24, 14)  # Increased text area to prevent overflow
-        painter.drawText(label_rect, Qt.AlignmentFlag.AlignCenter, "Apps connect to COM132 & COM142")
+        painter.drawText(label_rect, Qt.AlignmentFlag.AlignCenter, "Connect -> COM 132 & 142")

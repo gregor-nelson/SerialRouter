@@ -41,8 +41,7 @@ class EnhancedStatusWidget(QWidget):
             'border': QColor('#d9d9d9')
         }
         
-        # Typography
-        self.font_status = QFont("Segoe UI", 10, QFont.Weight.Bold)
+        # Font properties will be set dynamically in paint method
         
         # Animation for pulsing states
         self.pulse_animation = QPropertyAnimation(self, b"pulse_opacity")
@@ -52,7 +51,7 @@ class EnhancedStatusWidget(QWidget):
         
         # State text mapping
         self.state_texts = {
-            self.STATE_OFFLINE: "Service Offline",
+            self.STATE_OFFLINE: "Offline",
             self.STATE_STARTING: "Starting Service...",
             self.STATE_ACTIVE: "Routing Active", 
             self.STATE_STOPPING: "Stopping Service...",
@@ -143,8 +142,11 @@ class EnhancedStatusWidget(QWidget):
         painter.setPen(QPen(state_color.darker(150), 1))
         painter.drawEllipse(indicator_x, indicator_y, indicator_size, indicator_size)
         
-        # Draw status text
-        painter.setFont(self.font_status)
+        # Draw status text with theme font
+        font = QFont()
+        font.setBold(True)
+        font.setPointSize(10)
+        painter.setFont(font)
         painter.setPen(QPen(self.colors['text']))
         
         text_rect = rect.adjusted(indicator_x + indicator_size + 12, 0, -10, 0)
