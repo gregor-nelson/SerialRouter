@@ -9,7 +9,7 @@ import os
 import time
 import shutil
 
-def build(clean=False):
+def build(clean=False, no_uac=False):
     """Build the SerialRouter executable using PyInstaller"""
     # Try to remove existing build directory
     dist_dir = r".\dist\Port Router"
@@ -28,8 +28,11 @@ def build(clean=False):
         "--distpath", "dist",
         "--workpath", "build", 
         "--specpath", ".",
-        "--uac-admin",
     ]
+    
+    # Add UAC admin flag unless disabled
+    if not no_uac:
+        cmd.append("--uac-admin")
     
     if clean:
         cmd.append("--clean")
@@ -43,7 +46,6 @@ def build(clean=False):
         "--optimize=1",  # Safe optimization level
         "--noupx",       # Disable UPX if present
         "--icon", r".\assets\icons\app_icon.ico",
-        "--version-file", "version_info.txt",
         
         # Include all necessary data files (Windows uses semicolon separator)
         "--add-data", r"src;src",
@@ -78,17 +80,19 @@ def build(clean=False):
         "--exclude-module", "PyQt6.QtMultimedia",
         "--exclude-module", "PyQt6.QtNetwork",
         "--exclude-module", "PyQt6.QtOpenGL",
-        
-        "--name", "Port Router",
-        r".\main.py"
     ])
     
     # Add strip flag only if available
     if strip_available:
-        cmd.insert(-2, "--strip")  # Insert before name and main.py
+        cmd.append("--strip")
         print("MinGW strip found - using --strip for smaller binaries")
     else:
         print("MinGW strip not found - skipping --strip (install MinGW for smaller binaries)")
+    
+    cmd.extend([
+        "--name", "Port Router",
+        r".\main.py"
+    ])
     
     print("Building SerialRouter executable...")
     print(f"Command: {' '.join(cmd)}")
@@ -114,6 +118,7 @@ if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser(description='Build SerialRouter executable')
     parser.add_argument('--clean', action='store_true', help='Force clean build (slower)')
+    parser.add_argument('--no-uac', action='store_true', help='Build without UAC admin rights requirement')
     args = parser.parse_args()
     
-    sys.exit(build(clean=args.clean))
+    sys.exit(build(clean=args.clean, no_uac=args.no_uac))
