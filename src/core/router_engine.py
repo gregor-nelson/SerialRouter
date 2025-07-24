@@ -574,7 +574,8 @@ class SerialRouterCore:
         # Configuration
         self.config = self._load_config(config_path)
         self.incoming_port: str = self.config["incoming_port"]
-        self.baud_rate: int = self.config["baud_rate"]
+        self.incoming_baud: int = self.config["incoming_baud"]
+        self.outgoing_baud: int = self.config["outgoing_baud"]
         self.timeout: float = self.config["timeout"]
         self.retry_delay_max: int = self.config["retry_delay_max"]
         
@@ -615,7 +616,8 @@ class SerialRouterCore:
         """Load configuration from JSON file with fallback to defaults."""
         default_config = {
             "incoming_port": "COM88",
-            "baud_rate": 115200,
+            "incoming_baud": 115200,
+            "outgoing_baud": 115200,
             "timeout": 0.1,
             "retry_delay_max": 30,
             "log_level": "INFO"
@@ -828,9 +830,9 @@ class SerialRouterCore:
         
         # Acquire ports in sequence to prevent race conditions
         ports_to_acquire = [
-            (self.incoming_port, self.baud_rate, "IncomingPortOwner"),
-            ("COM131", self.baud_rate, "Port131Owner"),
-            ("COM141", self.baud_rate, "Port141Owner")
+            (self.incoming_port, self.incoming_baud, "IncomingPortOwner"),
+            ("COM131", self.outgoing_baud, "Port131Owner"),
+            ("COM141", self.outgoing_baud, "Port141Owner")
         ]
         
         acquired_ports = []
@@ -959,7 +961,7 @@ class SerialRouterCore:
             return
         
         self.logger.info(f"Starting SerialRouter - {self.incoming_port} <-> COM131 & COM141")
-        self.logger.info(f"Baud rate (all ports): {self.baud_rate}")
+        self.logger.info(f"Incoming baud: {self.incoming_baud}, Outgoing baud: {self.outgoing_baud}")
         
         self.running = True
         self.shutdown_requested = False

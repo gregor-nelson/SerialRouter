@@ -3025,154 +3025,75 @@
 [2025-07-22 13:40:53] [INFO] [IncomingPortOwner] COM54->131&141: Resetting byte counter at 1000143 bytes
 [2025-07-22 13:46:30] [INFO] [IncomingPortOwner] COM54->131&141: Resetting byte counter at 1000011 bytes
 [2025-07-22 13:52:09] [INFO] [IncomingPortOwner] COM54->131&141: Resetting byte counter at 1000011 bytes
-[2025-07-24 11:02:29] [INFO] [MainThread] PortManager initialized with advanced monitoring
-[2025-07-24 11:02:29] [INFO] [MainThread] SerialRouter initialized with config: {'incoming_port': 'COM54', 'incoming_baud': 115200, 'outgoing_baud': 115200, 'timeout': 0.1, 'retry_delay_max': 30, 'log_level': 'INFO'}
-[2025-07-24 11:02:29] [INFO] [Dummy-1] Starting SerialRouter - COM54 <-> COM131 & COM141
-[2025-07-24 11:02:29] [INFO] [Dummy-1] Incoming baud: 114000, Outgoing baud: 114000
-[2025-07-24 11:02:29] [INFO] [Dummy-1] Acquiring port ownership for all routing threads...
-[2025-07-24 11:02:29] [INFO] [Dummy-1] Opening port COM54 for owner IncomingPortOwner
-[2025-07-24 11:02:29] [ERROR] [Dummy-1] Failed to open port COM54 for IncomingPortOwner: could not open port 'COM54': FileNotFoundError(2, 'The system cannot find the file specified.', None, 2)
-[2025-07-24 11:02:29] [ERROR] [Dummy-1] Failed to acquire COM54 for IncomingPortOwner
-[2025-07-24 11:02:29] [INFO] [Watchdog] Watchdog monitor started
-[2025-07-24 11:02:29] [INFO] [Dummy-1] SerialRouter started successfully
-[2025-07-24 11:02:33] [INFO] [Dummy-2] Stopping SerialRouter...
-[2025-07-24 11:02:35] [INFO] [Dummy-2] Releasing port ownership...
-[2025-07-24 11:02:35] [WARNING] [Dummy-2] Attempted to release unowned port COM54 by IncomingPortOwner
-[2025-07-24 11:02:35] [WARNING] [Dummy-2] Failed to release COM54 from IncomingPortOwner
-[2025-07-24 11:02:35] [WARNING] [Dummy-2] Attempted to release unowned port COM131 by Port131Owner
-[2025-07-24 11:02:35] [WARNING] [Dummy-2] Failed to release COM131 from Port131Owner
-[2025-07-24 11:02:35] [WARNING] [Dummy-2] Attempted to release unowned port COM141 by Port141Owner
-[2025-07-24 11:02:35] [WARNING] [Dummy-2] Failed to release COM141 from Port141Owner
-[2025-07-24 11:02:35] [INFO] [Dummy-2] SerialRouter stopped
-[2025-07-24 11:02:59] [INFO] [MainThread] PortManager initialized with advanced monitoring
-[2025-07-24 11:02:59] [INFO] [MainThread] SerialRouter initialized with config: {'incoming_port': 'COM54', 'incoming_baud': 115200, 'outgoing_baud': 115200, 'timeout': 0.1, 'retry_delay_max': 30, 'log_level': 'INFO'}
-[2025-07-24 11:02:59] [INFO] [Dummy-3] Starting SerialRouter - COM23 <-> COM131 & COM141
-[2025-07-24 11:02:59] [INFO] [Dummy-3] Incoming baud: 114000, Outgoing baud: 114000
-[2025-07-24 11:02:59] [INFO] [Dummy-3] Acquiring port ownership for all routing threads...
-[2025-07-24 11:02:59] [INFO] [Dummy-3] Opening port COM23 for owner IncomingPortOwner
-[2025-07-24 11:03:04] [ERROR] [Dummy-3] Failed to open port COM23 for IncomingPortOwner: could not open port 'COM23': OSError(22, 'Insufficient system resources exist to complete the requested service.', None, 1450)
-[2025-07-24 11:03:04] [ERROR] [Dummy-3] Failed to acquire COM23 for IncomingPortOwner
-[2025-07-24 11:03:04] [INFO] [Watchdog] Watchdog monitor started
-[2025-07-24 12:15:36] [INFO] [MainThread] PortManager initialized with advanced monitoring
-[2025-07-24 12:15:36] [INFO] [MainThread] SerialRouter initialized with config: {'incoming_port': 'COM54', 'incoming_baud': 115200, 'outgoing_baud': 115200, 'timeout': 0.1, 'retry_delay_max': 30, 'log_level': 'INFO'}
-[2025-07-24 12:15:36] [INFO] [Dummy-1] Starting SerialRouter - COM22 <-> COM131 & COM141
-[2025-07-24 12:15:36] [INFO] [Dummy-1] Incoming baud: 109200, Outgoing baud: 112800
-[2025-07-24 12:15:36] [INFO] [Dummy-1] Acquiring port ownership for all routing threads...
-[2025-07-24 12:15:36] [INFO] [Dummy-1] Opening port COM22 for owner IncomingPortOwner
-[2025-07-24 12:15:41] [ERROR] [Dummy-1] Failed to open port COM22 for IncomingPortOwner: could not open port 'COM22': OSError(22, 'Insufficient system resources exist to complete the requested service.', None, 1450)
-[2025-07-24 12:15:41] [ERROR] [Dummy-1] Failed to acquire COM22 for IncomingPortOwner
-[2025-07-24 12:15:41] [INFO] [Watchdog] Watchdog monitor started
-[2025-07-24 12:15:41] [INFO] [Dummy-1] SerialRouter started successfully
-[2025-07-24 12:15:48] [INFO] [Dummy-2] Stopping SerialRouter...
-[2025-07-24 12:15:50] [INFO] [Dummy-2] Releasing port ownership...
-[2025-07-24 12:15:50] [WARNING] [Dummy-2] Attempted to release unowned port COM22 by IncomingPortOwner
-[2025-07-24 12:15:50] [WARNING] [Dummy-2] Failed to release COM22 from IncomingPortOwner
-[2025-07-24 12:15:50] [WARNING] [Dummy-2] Attempted to release unowned port COM131 by Port131Owner
-[2025-07-24 12:15:50] [WARNING] [Dummy-2] Failed to release COM131 from Port131Owner
-[2025-07-24 12:15:50] [WARNING] [Dummy-2] Attempted to release unowned port COM141 by Port141Owner
-[2025-07-24 12:15:50] [WARNING] [Dummy-2] Failed to release COM141 from Port141Owner
-[2025-07-24 12:15:50] [INFO] [Dummy-2] SerialRouter stopped
-[2025-07-24 12:53:56] [INFO] [MainThread] PortManager initialized with advanced monitoring
-[2025-07-24 12:53:56] [INFO] [MainThread] SerialRouter initialized with config: {'incoming_port': 'COM54', 'incoming_baud': 115200, 'outgoing_baud': 115200, 'timeout': 0.1, 'retry_delay_max': 30, 'log_level': 'INFO'}
-[2025-07-24 12:53:56] [INFO] [Dummy-1] Starting SerialRouter - COM54 <-> COM131 & COM141
-[2025-07-24 12:53:56] [INFO] [Dummy-1] Incoming baud: 115200, Outgoing baud: 116400
-[2025-07-24 12:53:56] [INFO] [Dummy-1] Acquiring port ownership for all routing threads...
-[2025-07-24 12:53:56] [INFO] [Dummy-1] Opening port COM54 for owner IncomingPortOwner
-[2025-07-24 12:53:56] [ERROR] [Dummy-1] Failed to open port COM54 for IncomingPortOwner: could not open port 'COM54': FileNotFoundError(2, 'The system cannot find the file specified.', None, 2)
-[2025-07-24 12:53:56] [ERROR] [Dummy-1] Failed to acquire COM54 for IncomingPortOwner
-[2025-07-24 12:53:56] [INFO] [Watchdog] Watchdog monitor started
-[2025-07-24 12:53:56] [INFO] [Dummy-1] SerialRouter started successfully
-[2025-07-24 12:53:58] [INFO] [Dummy-2] Stopping SerialRouter...
-[2025-07-24 12:54:00] [INFO] [Dummy-2] Releasing port ownership...
-[2025-07-24 12:54:00] [WARNING] [Dummy-2] Attempted to release unowned port COM54 by IncomingPortOwner
-[2025-07-24 12:54:00] [WARNING] [Dummy-2] Failed to release COM54 from IncomingPortOwner
-[2025-07-24 12:54:00] [WARNING] [Dummy-2] Attempted to release unowned port COM131 by Port131Owner
-[2025-07-24 12:54:00] [WARNING] [Dummy-2] Failed to release COM131 from Port131Owner
-[2025-07-24 12:54:00] [WARNING] [Dummy-2] Attempted to release unowned port COM141 by Port141Owner
-[2025-07-24 12:54:00] [WARNING] [Dummy-2] Failed to release COM141 from Port141Owner
-[2025-07-24 12:54:00] [INFO] [Dummy-2] SerialRouter stopped
-[2025-07-24 13:09:37] [INFO] [MainThread] PortManager initialized with advanced monitoring
-[2025-07-24 13:09:37] [INFO] [MainThread] SerialRouter initialized with config: {'incoming_port': 'COM54', 'baud_rate': 115200, 'timeout': 0.1, 'retry_delay_max': 30, 'log_level': 'INFO'}
-[2025-07-24 13:11:00] [INFO] [MainThread] PortManager initialized with advanced monitoring
-[2025-07-24 13:11:00] [INFO] [MainThread] SerialRouter initialized with config: {'incoming_port': 'COM54', 'baud_rate': 115200, 'timeout': 0.1, 'retry_delay_max': 30, 'log_level': 'INFO', 'incoming_baud': 9600, 'outgoing_baud': 115200}
-[2025-07-24 13:11:25] [INFO] [MainThread] PortManager initialized with advanced monitoring
-[2025-07-24 13:11:25] [INFO] [MainThread] SerialRouter initialized with config: {'incoming_port': 'COM54', 'baud_rate': 9600, 'timeout': 0.1, 'retry_delay_max': 30, 'log_level': 'INFO', 'incoming_baud': 9600, 'outgoing_baud': 115200}
-[2025-07-24 13:24:34] [INFO] [MainThread] PortManager initialized with advanced monitoring
-[2025-07-24 13:24:34] [INFO] [MainThread] SerialRouter initialized with config: {'incoming_port': 'COM54', 'baud_rate': 115200, 'timeout': 0.1, 'retry_delay_max': 30, 'log_level': 'INFO'}
-[2025-07-24 13:28:03] [INFO] [MainThread] PortManager initialized with advanced monitoring
-[2025-07-24 13:28:03] [INFO] [MainThread] SerialRouter initialized with config: {'incoming_port': 'COM54', 'baud_rate': 115200, 'timeout': 0.1, 'retry_delay_max': 30, 'log_level': 'INFO'}
-[2025-07-24 13:29:08] [INFO] [MainThread] PortManager initialized with advanced monitoring
-[2025-07-24 13:29:08] [INFO] [MainThread] SerialRouter initialized with config: {'incoming_port': 'COM54', 'baud_rate': 115200, 'timeout': 0.1, 'retry_delay_max': 30, 'log_level': 'INFO'}
-[2025-07-24 13:29:19] [INFO] [MainThread] PortManager initialized with advanced monitoring
-[2025-07-24 13:29:19] [INFO] [MainThread] SerialRouter initialized with config: {'incoming_port': 'COM54', 'baud_rate': 115200, 'timeout': 0.1, 'retry_delay_max': 30, 'log_level': 'INFO'}
-[2025-07-24 13:30:35] [INFO] [MainThread] PortManager initialized with advanced monitoring
-[2025-07-24 13:30:35] [INFO] [MainThread] SerialRouter initialized with config: {'incoming_port': 'COM54', 'baud_rate': 115200, 'timeout': 0.1, 'retry_delay_max': 30, 'log_level': 'INFO'}
-[2025-07-24 13:30:35] [INFO] [MainThread] PortManager initialized with advanced monitoring
-[2025-07-24 13:30:35] [INFO] [MainThread] SerialRouter initialized with config: {'incoming_port': 'COM88', 'baud_rate': 115200, 'timeout': 0.1, 'retry_delay_max': 30, 'log_level': 'INFO'}
-[2025-07-24 13:30:52] [INFO] [MainThread] PortManager initialized with advanced monitoring
-[2025-07-24 13:30:52] [INFO] [MainThread] SerialRouter initialized with config: {'incoming_port': 'COM54', 'baud_rate': 115200, 'timeout': 0.1, 'retry_delay_max': 30, 'log_level': 'INFO'}
-[2025-07-24 13:30:52] [INFO] [MainThread] Starting SerialRouter - COM54 <-> COM131 & COM141
-[2025-07-24 13:30:52] [INFO] [MainThread] Baud rate (all ports): 115200
-[2025-07-24 13:30:52] [INFO] [MainThread] Acquiring port ownership for all routing threads...
-[2025-07-24 13:30:52] [INFO] [MainThread] Opening port COM54 for owner IncomingPortOwner
-[2025-07-24 13:30:52] [ERROR] [MainThread] Failed to open port COM54 for IncomingPortOwner: could not open port 'COM54': FileNotFoundError(2, 'The system cannot find the file specified.', None, 2)
-[2025-07-24 13:30:52] [ERROR] [MainThread] Failed to acquire COM54 for IncomingPortOwner
-[2025-07-24 13:30:52] [INFO] [Watchdog] Watchdog monitor started
-[2025-07-24 13:30:52] [INFO] [MainThread] SerialRouter started successfully
-[2025-07-24 13:30:53] [INFO] [MainThread] Stopping SerialRouter...
-[2025-07-24 13:30:55] [INFO] [MainThread] Releasing port ownership...
-[2025-07-24 13:30:55] [WARNING] [MainThread] Attempted to release unowned port COM54 by IncomingPortOwner
-[2025-07-24 13:30:55] [WARNING] [MainThread] Failed to release COM54 from IncomingPortOwner
-[2025-07-24 13:30:55] [WARNING] [MainThread] Attempted to release unowned port COM131 by Port131Owner
-[2025-07-24 13:30:55] [WARNING] [MainThread] Failed to release COM131 from Port131Owner
-[2025-07-24 13:30:55] [WARNING] [MainThread] Attempted to release unowned port COM141 by Port141Owner
-[2025-07-24 13:30:55] [WARNING] [MainThread] Failed to release COM141 from Port141Owner
-[2025-07-24 13:30:55] [INFO] [MainThread] SerialRouter stopped
-[2025-07-24 13:31:17] [INFO] [MainThread] PortManager initialized with advanced monitoring
-[2025-07-24 13:31:17] [INFO] [MainThread] SerialRouter initialized with config: {'incoming_port': 'COM54', 'baud_rate': 115200, 'timeout': 0.1, 'retry_delay_max': 30, 'log_level': 'INFO'}
-[2025-07-24 13:31:17] [INFO] [MainThread] Test INFO message
-[2025-07-24 13:31:17] [WARNING] [MainThread] Test WARNING message
-[2025-07-24 13:31:17] [ERROR] [MainThread] Test ERROR message
-[2025-07-24 13:31:42] [INFO] [MainThread] PortManager initialized with advanced monitoring
-[2025-07-24 13:31:42] [INFO] [MainThread] SerialRouter initialized with config: {'incoming_port': 'COM88', 'baud_rate': 115200, 'timeout': 0.1, 'retry_delay_max': 30, 'log_level': 'INFO'}
-[2025-07-24 13:31:42] [INFO] [MainThread] PortManager initialized with advanced monitoring
-[2025-07-24 13:31:42] [INFO] [MainThread] SerialRouter initialized with config: {'incoming_port': 'COM99', 'baud_rate': 115200, 'timeout': 0.1, 'retry_delay_max': 30, 'log_level': 'INFO'}
-[2025-07-24 13:31:42] [INFO] [MainThread] PortManager initialized with advanced monitoring
-[2025-07-24 13:31:42] [INFO] [MainThread] SerialRouter initialized with config: {'incoming_port': 'COM999', 'baud_rate': 9600, 'timeout': 0.1, 'retry_delay_max': 30, 'log_level': 'INFO'}
-[2025-07-24 13:31:42] [INFO] [MainThread] Starting SerialRouter - COM999 <-> COM131 & COM141
-[2025-07-24 13:31:42] [INFO] [MainThread] Baud rate (all ports): 9600
-[2025-07-24 13:31:42] [INFO] [MainThread] Acquiring port ownership for all routing threads...
-[2025-07-24 13:31:42] [INFO] [MainThread] Opening port COM999 for owner IncomingPortOwner
-[2025-07-24 13:31:42] [ERROR] [MainThread] Failed to open port COM999 for IncomingPortOwner: could not open port 'COM999': FileNotFoundError(2, 'The system cannot find the file specified.', None, 2)
-[2025-07-24 13:31:42] [ERROR] [MainThread] Failed to acquire COM999 for IncomingPortOwner
-[2025-07-24 13:31:42] [INFO] [Watchdog] Watchdog monitor started
-[2025-07-24 13:31:42] [INFO] [MainThread] SerialRouter started successfully
-[2025-07-24 13:31:42] [INFO] [MainThread] Stopping SerialRouter...
-[2025-07-24 13:31:44] [INFO] [MainThread] Releasing port ownership...
-[2025-07-24 13:31:44] [WARNING] [MainThread] Attempted to release unowned port COM999 by IncomingPortOwner
-[2025-07-24 13:31:44] [WARNING] [MainThread] Failed to release COM999 from IncomingPortOwner
-[2025-07-24 13:31:44] [WARNING] [MainThread] Attempted to release unowned port COM131 by Port131Owner
-[2025-07-24 13:31:44] [WARNING] [MainThread] Failed to release COM131 from Port131Owner
-[2025-07-24 13:31:44] [WARNING] [MainThread] Attempted to release unowned port COM141 by Port141Owner
-[2025-07-24 13:31:44] [WARNING] [MainThread] Failed to release COM141 from Port141Owner
-[2025-07-24 13:31:44] [INFO] [MainThread] SerialRouter stopped
-[2025-07-24 13:31:44] [INFO] [MainThread] PortManager initialized with advanced monitoring
-[2025-07-24 13:31:44] [INFO] [MainThread] SerialRouter initialized with config: {'incoming_port': 'COM54', 'baud_rate': 115200, 'timeout': 0.1, 'retry_delay_max': 30, 'log_level': 'INFO'}
-[2025-07-24 13:31:44] [INFO] [MainThread] Starting SerialRouter - COM54 <-> COM131 & COM141
-[2025-07-24 13:31:44] [INFO] [MainThread] Baud rate (all ports): 115200
-[2025-07-24 13:31:44] [INFO] [MainThread] Acquiring port ownership for all routing threads...
-[2025-07-24 13:31:44] [INFO] [MainThread] Opening port COM54 for owner IncomingPortOwner
-[2025-07-24 13:31:44] [ERROR] [MainThread] Failed to open port COM54 for IncomingPortOwner: could not open port 'COM54': FileNotFoundError(2, 'The system cannot find the file specified.', None, 2)
-[2025-07-24 13:31:44] [ERROR] [MainThread] Failed to acquire COM54 for IncomingPortOwner
-[2025-07-24 13:31:44] [INFO] [Watchdog] Watchdog monitor started
-[2025-07-24 13:31:44] [INFO] [MainThread] SerialRouter started successfully
-[2025-07-24 13:31:44] [WARNING] [MainThread] Router is already running
-[2025-07-24 13:31:44] [INFO] [MainThread] Stopping SerialRouter...
-[2025-07-24 13:31:46] [INFO] [MainThread] Releasing port ownership...
-[2025-07-24 13:31:46] [WARNING] [MainThread] Attempted to release unowned port COM54 by IncomingPortOwner
-[2025-07-24 13:31:46] [WARNING] [MainThread] Failed to release COM54 from IncomingPortOwner
-[2025-07-24 13:31:46] [WARNING] [MainThread] Attempted to release unowned port COM131 by Port131Owner
-[2025-07-24 13:31:46] [WARNING] [MainThread] Failed to release COM131 from Port131Owner
-[2025-07-24 13:31:46] [WARNING] [MainThread] Attempted to release unowned port COM141 by Port141Owner
-[2025-07-24 13:31:46] [WARNING] [MainThread] Failed to release COM141 from Port141Owner
-[2025-07-24 13:31:46] [INFO] [MainThread] SerialRouter stopped
+[2025-07-24 14:16:39] [INFO] [MainThread] PortManager initialized with advanced monitoring
+[2025-07-24 14:16:39] [INFO] [MainThread] SerialRouter initialized with config: {'incoming_port': 'COM54', 'incoming_baud': 115200, 'outgoing_baud': 115200, 'timeout': 0.1, 'retry_delay_max': 30, 'log_level': 'INFO'}
+[2025-07-24 14:16:39] [INFO] [Dummy-1] Starting SerialRouter - COM54 <-> COM131 & COM141
+[2025-07-24 14:16:39] [INFO] [Dummy-1] Incoming baud: 115200, Outgoing baud: 115200
+[2025-07-24 14:16:39] [INFO] [Dummy-1] Acquiring port ownership for all routing threads...
+[2025-07-24 14:16:39] [INFO] [Dummy-1] Opening port COM54 for owner IncomingPortOwner
+[2025-07-24 14:16:39] [INFO] [Dummy-1] Port COM54 successfully acquired by IncomingPortOwner
+[2025-07-24 14:16:39] [INFO] [Dummy-1] Successfully acquired COM54 for IncomingPortOwner
+[2025-07-24 14:16:39] [INFO] [Dummy-1] Opening port COM131 for owner Port131Owner
+[2025-07-24 14:16:39] [INFO] [Dummy-1] Port COM131 successfully acquired by Port131Owner
+[2025-07-24 14:16:39] [INFO] [Dummy-1] Successfully acquired COM131 for Port131Owner
+[2025-07-24 14:16:39] [INFO] [Dummy-1] Opening port COM141 for owner Port141Owner
+[2025-07-24 14:16:39] [INFO] [Dummy-1] Port COM141 successfully acquired by Port141Owner
+[2025-07-24 14:16:39] [INFO] [Dummy-1] Successfully acquired COM141 for Port141Owner
+[2025-07-24 14:16:39] [INFO] [Dummy-1] All ports acquired, starting routing threads...
+[2025-07-24 14:16:39] [INFO] [IncomingPortOwner] Starting incoming port handler: COM54->131&141
+[2025-07-24 14:16:39] [INFO] [Port131Owner] Starting outgoing port handler: COM131->Incoming
+[2025-07-24 14:16:39] [INFO] [Port141Owner] Starting outgoing port handler: COM141->Incoming
+[2025-07-24 14:16:39] [INFO] [Dummy-1] Started 3 routing threads with centralized port management
+[2025-07-24 14:16:39] [INFO] [Watchdog] Watchdog monitor started
+[2025-07-24 14:16:39] [INFO] [Dummy-1] SerialRouter started successfully
+[2025-07-24 14:16:47] [INFO] [Dummy-2] Stopping SerialRouter...
+[2025-07-24 14:16:47] [INFO] [Port131Owner] COM131->Incoming handler shutting down
+[2025-07-24 14:16:47] [INFO] [Port141Owner] COM141->Incoming handler shutting down
+[2025-07-24 14:16:47] [INFO] [IncomingPortOwner] COM54->131&141 handler shutting down
+[2025-07-24 14:16:49] [INFO] [Dummy-2] Releasing port ownership...
+[2025-07-24 14:16:49] [INFO] [Dummy-2] Port COM54 connection closed by IncomingPortOwner
+[2025-07-24 14:16:49] [INFO] [Dummy-2] Port COM54 released by IncomingPortOwner
+[2025-07-24 14:16:49] [INFO] [Dummy-2] Successfully released COM54 from IncomingPortOwner
+[2025-07-24 14:16:49] [INFO] [Dummy-2] Port COM131 connection closed by Port131Owner
+[2025-07-24 14:16:49] [INFO] [Dummy-2] Port COM131 released by Port131Owner
+[2025-07-24 14:16:49] [INFO] [Dummy-2] Successfully released COM131 from Port131Owner
+[2025-07-24 14:16:49] [INFO] [Dummy-2] Port COM141 connection closed by Port141Owner
+[2025-07-24 14:16:49] [INFO] [Dummy-2] Port COM141 released by Port141Owner
+[2025-07-24 14:16:49] [INFO] [Dummy-2] Successfully released COM141 from Port141Owner
+[2025-07-24 14:16:49] [INFO] [Dummy-2] SerialRouter stopped
+[2025-07-24 14:16:52] [INFO] [MainThread] PortManager initialized with advanced monitoring
+[2025-07-24 14:16:52] [INFO] [MainThread] SerialRouter initialized with config: {'incoming_port': 'COM54', 'incoming_baud': 115200, 'outgoing_baud': 115200, 'timeout': 0.1, 'retry_delay_max': 30, 'log_level': 'INFO'}
+[2025-07-24 14:16:52] [INFO] [Dummy-3] Starting SerialRouter - COM54 <-> COM131 & COM141
+[2025-07-24 14:16:52] [INFO] [Dummy-3] Incoming baud: 115200, Outgoing baud: 115200
+[2025-07-24 14:16:52] [INFO] [Dummy-3] Acquiring port ownership for all routing threads...
+[2025-07-24 14:16:52] [INFO] [Dummy-3] Opening port COM54 for owner IncomingPortOwner
+[2025-07-24 14:16:52] [INFO] [Dummy-3] Port COM54 successfully acquired by IncomingPortOwner
+[2025-07-24 14:16:52] [INFO] [Dummy-3] Successfully acquired COM54 for IncomingPortOwner
+[2025-07-24 14:16:52] [INFO] [Dummy-3] Opening port COM131 for owner Port131Owner
+[2025-07-24 14:16:52] [INFO] [Dummy-3] Port COM131 successfully acquired by Port131Owner
+[2025-07-24 14:16:52] [INFO] [Dummy-3] Successfully acquired COM131 for Port131Owner
+[2025-07-24 14:16:52] [INFO] [Dummy-3] Opening port COM141 for owner Port141Owner
+[2025-07-24 14:16:52] [INFO] [Dummy-3] Port COM141 successfully acquired by Port141Owner
+[2025-07-24 14:16:52] [INFO] [Dummy-3] Successfully acquired COM141 for Port141Owner
+[2025-07-24 14:16:52] [INFO] [Dummy-3] All ports acquired, starting routing threads...
+[2025-07-24 14:16:52] [INFO] [IncomingPortOwner] Starting incoming port handler: COM54->131&141
+[2025-07-24 14:16:52] [INFO] [Port131Owner] Starting outgoing port handler: COM131->Incoming
+[2025-07-24 14:16:52] [INFO] [Port141Owner] Starting outgoing port handler: COM141->Incoming
+[2025-07-24 14:16:52] [INFO] [Dummy-3] Started 3 routing threads with centralized port management
+[2025-07-24 14:16:52] [INFO] [Watchdog] Watchdog monitor started
+[2025-07-24 14:16:52] [INFO] [Dummy-3] SerialRouter started successfully
+[2025-07-24 14:17:01] [INFO] [Dummy-4] Stopping SerialRouter...
+[2025-07-24 14:17:01] [INFO] [Port141Owner] COM141->Incoming handler shutting down
+[2025-07-24 14:17:01] [INFO] [Port131Owner] COM131->Incoming handler shutting down
+[2025-07-24 14:17:01] [INFO] [IncomingPortOwner] COM54->131&141 handler shutting down
+[2025-07-24 14:17:02] [INFO] [Dummy-4] Releasing port ownership...
+[2025-07-24 14:17:02] [INFO] [Dummy-4] Port COM54 connection closed by IncomingPortOwner
+[2025-07-24 14:17:02] [INFO] [Dummy-4] Port COM54 released by IncomingPortOwner
+[2025-07-24 14:17:02] [INFO] [Dummy-4] Successfully released COM54 from IncomingPortOwner
+[2025-07-24 14:17:02] [INFO] [Dummy-4] Port COM131 connection closed by Port131Owner
+[2025-07-24 14:17:02] [INFO] [Dummy-4] Port COM131 released by Port131Owner
+[2025-07-24 14:17:02] [INFO] [Dummy-4] Successfully released COM131 from Port131Owner
+[2025-07-24 14:17:02] [INFO] [Dummy-4] Port COM141 connection closed by Port141Owner
+[2025-07-24 14:17:02] [INFO] [Dummy-4] Port COM141 released by Port141Owner
+[2025-07-24 14:17:02] [INFO] [Dummy-4] Successfully released COM141 from Port141Owner
+[2025-07-24 14:17:02] [INFO] [Dummy-4] SerialRouter stopped

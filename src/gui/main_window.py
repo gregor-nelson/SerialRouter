@@ -14,8 +14,6 @@ import sys
 import json
 import logging
 import time
-import subprocess
-import os
 from datetime import datetime
 from typing import Dict, Any, Optional
 
@@ -31,7 +29,6 @@ import serial.tools.list_ports
 from src.core.router_engine import SerialRouterCore
 from src.gui.resources import resource_manager
 from src.gui.components import RibbonToolbar, ConnectionDiagramWidget, EnhancedStatusWidget
-from src.gui.components.dialogs.about_dialog import AboutDialog
 
 
 class LogHandler(logging.Handler):
@@ -174,20 +171,27 @@ class SerialRouterMainWindow(QMainWindow):
         config_layout.addWidget(self.incoming_port_combo, 0, 1)
         
         
-        # Baud Rate (All Ports)
-        config_layout.addWidget(QLabel("Baud Rate (All Ports):"), 1, 0)
-        self.baud_rate_combo = QComboBox()
-        baud_rates = [1200, 2400, 4800, 9600, 14400, 19200, 38400, 57600, 115200, 230400, 460800, 921600]
-        for rate in baud_rates:
-            self.baud_rate_combo.addItem(str(rate))
-        self.baud_rate_combo.setCurrentText("115200")
-        config_layout.addWidget(self.baud_rate_combo, 1, 1)
+        # Incoming Port Baud Rate
+        config_layout.addWidget(QLabel("Incoming Baud:"), 1, 0)
+        self.incoming_baud_spin = QSpinBox()
+        self.incoming_baud_spin.setRange(1200, 921600)
+        self.incoming_baud_spin.setValue(115200)
+        self.incoming_baud_spin.setSingleStep(1200)
+        config_layout.addWidget(self.incoming_baud_spin, 1, 1)
         
         # Outgoing Ports (Fixed)
         config_layout.addWidget(QLabel("Outgoing Ports:"), 2, 0)
         outgoing_label = QLabel("COM131, COM141 (Fixed)")
         outgoing_label.setProperty("class", "description")
         config_layout.addWidget(outgoing_label, 2, 1)
+        
+        # Outgoing Port Baud Rate
+        config_layout.addWidget(QLabel("Outgoing Baud:"), 3, 0)
+        self.outgoing_baud_spin = QSpinBox()
+        self.outgoing_baud_spin.setRange(1200, 921600) 
+        self.outgoing_baud_spin.setValue(115200)
+        self.outgoing_baud_spin.setSingleStep(1200)
+        config_layout.addWidget(self.outgoing_baud_spin, 3, 1)
         
         # Add control buttons at bottom of configuration panel
         control_frame = QFrame()
@@ -273,25 +277,8 @@ class SerialRouterMainWindow(QMainWindow):
         self.ribbon.show_help.connect(self.show_help_information)
     
     def show_port_configuration(self):
-        """Launch setupbc.exe for com0com port configuration."""
-        setupbc_path = r"C:\Program Files (x86)\com0c0m\setupbc.exe"
-        
-        try:
-            if not os.path.exists(setupbc_path):
-                self.add_log_message("ERROR: setupbc.exe not found at expected location")
-                self.add_log_message(f"Expected path: {setupbc_path}")
-                return
-            
-            self.add_log_message("Launching com0com Setup (setupbc.exe)...")
-            subprocess.Popen(setupbc_path, shell=True)
-            self.add_log_message("Successfully launched setupbc.exe")
-            
-        except FileNotFoundError:
-            self.add_log_message("ERROR: setupbc.exe not found - com0com may not be installed")
-        except PermissionError:
-            self.add_log_message("ERROR: Permission denied launching setupbc.exe - try running as administrator")
-        except Exception as e:
-            self.add_log_message(f"ERROR: Failed to launch setupbc.exe - {str(e)}")
+        """Show port configuration (placeholder for future enhancement)."""
+        self.add_log_message("Port configuration dialog would open here")
     
     def show_routing_stats(self):
         """Show detailed routing statistics (placeholder for future enhancement)."""
@@ -302,10 +289,9 @@ class SerialRouterMainWindow(QMainWindow):
             self.add_log_message("Router not active - no statistics available")
     
     def show_help_information(self):
-        """Show the about dialog with application information and log help messages."""
+        """Show help information (placeholder for future enhancement)."""
         self.add_log_message("SerialRouter v2.0 - Routes incoming port to COM131 & COM141")
         self.add_log_message("Use START ROUTING to begin, STOP ROUTING to end")
-        AboutDialog.show_about(self)
     
     def on_incoming_port_changed(self, port_name: str):
         """Handle incoming port selection changes."""
@@ -317,31 +303,33 @@ class SerialRouterMainWindow(QMainWindow):
         pass
         
     def create_monitoring_group(self, parent_layout):
-        """Create the real-time monitoring group with reorganized sections."""
+        """Create the real-time monitoring group with advanced metrics."""
         monitor_group = QGroupBox("Live Monitoring")
         monitor_layout = QGridLayout(monitor_group)
         
-        # Section 1: System Health & Status
+        # Critical System Status (Row 0)
         monitor_layout.addWidget(QLabel("System Uptime:"), 0, 0)
         self.uptime_label = QLabel("0 hours")
         self.uptime_label.setProperty("class", "uptime-display")
         monitor_layout.addWidget(self.uptime_label, 0, 1)
         
-        monitor_layout.addWidget(QLabel("Health Status:"), 0, 2)
-        self.health_status_label = QLabel("Unknown")
-        self.health_status_label.setProperty("class", "health-display")
-        monitor_layout.addWidget(self.health_status_label, 0, 3)
-        
-        monitor_layout.addWidget(QLabel("Active Connections:"), 1, 0)
+        monitor_layout.addWidget(QLabel("Active Connections:"), 0, 2)
         self.connections_label = QLabel("0/3")
         self.connections_label.setProperty("class", "connection-display")
-        monitor_layout.addWidget(self.connections_label, 1, 1)
+        monitor_layout.addWidget(self.connections_label, 0, 3)
         
-        monitor_layout.addWidget(QLabel("Thread Health:"), 1, 2)
-        self.thread_status_label = QLabel("0/3 Active")
-        self.thread_status_label.setProperty("class", "thread-status")
-        monitor_layout.addWidget(self.thread_status_label, 1, 3)
+        # Throughput Metrics (Row 1)
+        monitor_layout.addWidget(QLabel("Current Throughput:"), 1, 0)
+        self.throughput_label = QLabel("0 bytes/sec")
+        self.throughput_label.setProperty("class", "throughput-display")
+        monitor_layout.addWidget(self.throughput_label, 1, 1)
         
+        monitor_layout.addWidget(QLabel("Last Activity:"), 1, 2)
+        self.last_activity_label = QLabel("N/A")
+        self.last_activity_label.setProperty("class", "activity-display")
+        monitor_layout.addWidget(self.last_activity_label, 1, 3)
+        
+        # Data Loss and Errors (Row 2)
         monitor_layout.addWidget(QLabel("Data Loss Events:"), 2, 0)
         self.data_loss_label = QLabel("0")
         self.data_loss_label.setProperty("class", "data-loss-display")
@@ -352,45 +340,54 @@ class SerialRouterMainWindow(QMainWindow):
         self.error_rate_label.setProperty("class", "error-rate-display")
         monitor_layout.addWidget(self.error_rate_label, 2, 3)
         
-        monitor_layout.addWidget(QLabel("Total Errors:"), 3, 0)
-        self.error_count_label = QLabel("0")
-        self.error_count_label.setProperty("class", "error-count")
-        monitor_layout.addWidget(self.error_count_label, 3, 1)
+        # Queue and Performance (Row 3)
+        monitor_layout.addWidget(QLabel("Queue Utilization:"), 3, 0)
+        self.queue_util_label = QLabel("0%")
+        self.queue_util_label.setProperty("class", "queue-display")
+        monitor_layout.addWidget(self.queue_util_label, 3, 1)
         
-        monitor_layout.addWidget(QLabel("Thread Restarts:"), 3, 2)
-        self.restart_count_label = QLabel("0")
-        monitor_layout.addWidget(self.restart_count_label, 3, 3)
+        monitor_layout.addWidget(QLabel("Health Status:"), 3, 2)
+        self.health_status_label = QLabel("UNKNOWN")
+        self.health_status_label.setProperty("class", "health-display")
+        monitor_layout.addWidget(self.health_status_label, 3, 3)
         
-        # Separator between sections
+        # Legacy Data Transfer Section (Rows 4-7)
         separator = QLabel("─" * 40)
         separator.setProperty("class", "separator")
         monitor_layout.addWidget(separator, 4, 0, 1, 4)
         
-        monitor_layout.addWidget(QLabel("Data Transfer & Performance:"), 5, 0, 1, 4)
+        monitor_layout.addWidget(QLabel("Data Transfer Details:"), 5, 0, 1, 4)
         
-        # Section 2: Data Transfer & Performance
-        monitor_layout.addWidget(QLabel("Current Throughput:"), 6, 0)
-        self.throughput_label = QLabel("0 bytes/sec")
-        self.throughput_label.setProperty("class", "throughput-display")
-        monitor_layout.addWidget(self.throughput_label, 6, 1)
-        
-        monitor_layout.addWidget(QLabel("Last Activity:"), 6, 2)
-        self.last_activity_label = QLabel("N/A")
-        self.last_activity_label.setProperty("class", "activity-display")
-        monitor_layout.addWidget(self.last_activity_label, 6, 3)
-        
-        monitor_layout.addWidget(QLabel("Queue Utilization:"), 7, 0)
-        self.queue_util_label = QLabel("0%")
-        self.queue_util_label.setProperty("class", "queue-display")
-        monitor_layout.addWidget(self.queue_util_label, 7, 1)
-        
-        monitor_layout.addWidget(QLabel("IN → OUT:"), 7, 2)
+        # Incoming -> Outgoing
+        monitor_layout.addWidget(QLabel("IN → OUT:"), 6, 0)
         self.bytes_in_out_label = QLabel("0 bytes")
-        monitor_layout.addWidget(self.bytes_in_out_label, 7, 3)
+        monitor_layout.addWidget(self.bytes_in_out_label, 6, 1)
         
-        monitor_layout.addWidget(QLabel("Return Data:"), 8, 0)
-        self.bytes_return_label = QLabel("COM131: 0 bytes  COM141: 0 bytes")
-        monitor_layout.addWidget(self.bytes_return_label, 8, 1, 1, 3)
+        # COM131 -> Incoming
+        monitor_layout.addWidget(QLabel("131 → IN:"), 6, 2)
+        self.bytes_131_in_label = QLabel("0 bytes")
+        monitor_layout.addWidget(self.bytes_131_in_label, 6, 3)
+        
+        # COM141 -> Incoming  
+        monitor_layout.addWidget(QLabel("141 → IN:"), 7, 0)
+        self.bytes_141_in_label = QLabel("0 bytes")
+        monitor_layout.addWidget(self.bytes_141_in_label, 7, 1)
+        
+        # Thread Status
+        monitor_layout.addWidget(QLabel("Thread Health:"), 7, 2)
+        self.thread_status_label = QLabel("0/3 Active")
+        self.thread_status_label.setProperty("class", "thread-status")
+        monitor_layout.addWidget(self.thread_status_label, 7, 3)
+        
+        # Legacy Error and Restart Counts (Row 8)
+        monitor_layout.addWidget(QLabel("Total Errors:"), 8, 0)
+        self.error_count_label = QLabel("0")
+        self.error_count_label.setProperty("class", "error-count")
+        monitor_layout.addWidget(self.error_count_label, 8, 1)
+        
+        monitor_layout.addWidget(QLabel("Thread Restarts:"), 8, 2)
+        self.restart_count_label = QLabel("0")
+        monitor_layout.addWidget(self.restart_count_label, 8, 3)
         
         # Add stretch within the monitor_group to expand whitespace below stats
         monitor_layout.addWidget(QWidget(), 9, 0, 1, 4)  # Empty widget as spacer
@@ -480,7 +477,8 @@ class SerialRouterMainWindow(QMainWindow):
             
             # Update router config
             self.router_core.incoming_port = config["incoming_port"]
-            self.router_core.baud_rate = config["baud_rate"]
+            self.router_core.incoming_baud = config["incoming_baud"] 
+            self.router_core.outgoing_baud = config["outgoing_baud"]
             
             # Setup logging integration
             if self.log_handler:
@@ -769,7 +767,7 @@ class SerialRouterMainWindow(QMainWindow):
                 
                 # Update labels with PortManager data if routing stats are empty
                 if total_bytes == 0:
-                    # Show PortManager port stats as fallback - keep existing logic
+                    # Show PortManager port stats as fallback
                     for port_name in [incoming_port, "COM131", "COM141"]:
                         if port_name in port_connections:
                             # This provides additional monitoring even when no data flows
@@ -826,7 +824,8 @@ class SerialRouterMainWindow(QMainWindow):
         """Get current configuration from UI controls."""
         return {
             "incoming_port": self.incoming_port_combo.currentText(),  # Use actual selected port
-            "baud_rate": int(self.baud_rate_combo.currentText()),
+            "incoming_baud": self.incoming_baud_spin.value(),
+            "outgoing_baud": self.outgoing_baud_spin.value(),
             "timeout": 0.1,
             "retry_delay_max": 30,
             "log_level": "INFO"
@@ -855,11 +854,11 @@ class SerialRouterMainWindow(QMainWindow):
                 if index >= 0:
                     self.incoming_port_combo.setCurrentIndex(index)
                     
-            # Set baud rate from config
-            if "baud_rate" in config:
-                self.baud_rate_combo.setCurrentText(str(config["baud_rate"]))
-            else:
-                self.baud_rate_combo.setCurrentText("115200")
+            if "incoming_baud" in config:
+                self.incoming_baud_spin.setValue(config["incoming_baud"])
+                
+            if "outgoing_baud" in config:
+                self.outgoing_baud_spin.setValue(config["outgoing_baud"])
                 
             self.add_log_message("Configuration loaded from serial_router_config.json")
             

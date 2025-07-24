@@ -40,7 +40,8 @@ Configuration is managed via `config/serial_router_config.json`:
 ```json
 {
   "incoming_port": "COM54",
-  "baud_rate": 115200,
+  "incoming_baud": 115200,
+  "outgoing_baud": 115200,
   "timeout": 0.1,
   "retry_delay_max": 30,
   "log_level": "INFO"
