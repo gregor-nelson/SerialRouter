@@ -1155,7 +1155,7 @@ class SerialRouterCore:
     def _calculate_health_status(self, port_status: Dict, connected_ports: int, total_ports: int) -> str:
         """Calculate overall system health status."""
         if connected_ports < total_ports:
-            return "CRITICAL"
+            return "Critical"
         
         # Check error rates
         high_error_rate = any(
@@ -1164,7 +1164,7 @@ class SerialRouterCore:
         )
         
         if high_error_rate:
-            return "WARNING"
+            return "Warning"
         
         # Check queue utilization
         high_queue_usage = any(
@@ -1173,7 +1173,7 @@ class SerialRouterCore:
         )
         
         if high_queue_usage:
-            return "WARNING"
+            return "Warning"
         
         # Check recent activity
         any_recent_activity = any(
@@ -1182,9 +1182,9 @@ class SerialRouterCore:
         )
         
         if any_recent_activity:
-            return "EXCELLENT"
+            return "Good"
         else:
-            return "GOOD"
+            return "Ok"
 
 
 def signal_handler(signum, frame):

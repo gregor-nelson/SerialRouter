@@ -610,7 +610,7 @@ class SerialRouterMainWindow(QMainWindow):
             self.data_loss_label.setText("0")
             self.error_rate_label.setText("0.0/hour")
             self.queue_util_label.setText("0%")
-            self.health_status_label.setText("OFFLINE")
+            self.health_status_label.setText("Offline")
             self.health_status_label.setProperty("class", "health-display status-error")
             
             # Legacy displays
