@@ -29,16 +29,17 @@ class EnhancedStatusWidget(QWidget):
         self._current_state = self.STATE_OFFLINE
         self._pulse_opacity = 1.0
         
-        # Windows theme colors
+        # Use default palette colors
+        palette = self.palette()
         self.colors = {
-            'offline': QColor('#d9d9d9'),      # Gray
-            'starting': QColor('#ff8c00'),     # Orange  
-            'active': QColor('#107c10'),       # Green
-            'stopping': QColor('#ff8c00'),     # Orange
-            'error': QColor('#d13438'),        # Red
-            'background': QColor('#ffffff'),
-            'text': QColor('#333333'),
-            'border': QColor('#d9d9d9')
+            'offline': palette.mid().color(),
+            'starting': palette.highlight().color(),
+            'active': palette.highlight().color(),
+            'stopping': palette.highlight().color(),
+            'error': palette.highlight().color(),
+            'background': palette.base().color(),
+            'text': palette.text().color(),
+            'border': palette.mid().color()
         }
         
         # Font properties will be set dynamically in paint method
@@ -49,7 +50,7 @@ class EnhancedStatusWidget(QWidget):
         self.pulse_animation.setLoopCount(-1)  # Infinite loop
         self.pulse_animation.setEasingCurve(QEasingCurve.Type.InOutSine)
         
-        # State text mapping
+        # State text mapping with connection info
         self.state_texts = {
             self.STATE_OFFLINE: "Offline",
             self.STATE_STARTING: "Starting Service...",
@@ -57,6 +58,9 @@ class EnhancedStatusWidget(QWidget):
             self.STATE_STOPPING: "Stopping Service...",
             self.STATE_ERROR: "Service Error"
         }
+        
+        # Connection status
+        self.connection_status = "0/2 ports connected"
         
     @pyqtProperty(float)
     def pulse_opacity(self):
@@ -80,6 +84,11 @@ class EnhancedStatusWidget(QWidget):
         else:
             self.stop_pulse_animation()
             
+        self.update()
+        
+    def set_connection_status(self, connected_ports: int, total_ports: int = 2):
+        """Update the connection status display."""
+        self.connection_status = f"{connected_ports}/{total_ports} ports connected"
         self.update()
         
     def start_pulse_animation(self):
@@ -112,46 +121,49 @@ class EnhancedStatusWidget(QWidget):
         
         rect = self.rect()
         
-        # Draw background
-        painter.fillRect(rect, self.colors['background'])
-        
-        # Draw border (consistent with GroupBox styling)
-        border_pen = QPen(self.colors['border'], 1)
-        painter.setPen(border_pen)
-        painter.drawRect(rect.adjusted(0, 0, -1, -1))
-        
         # Draw status content
         self.draw_status_indicator(painter, rect)
         
     def draw_status_indicator(self, painter, rect):
         """Draw the main status indicator with clean Windows styling."""
-        # Status indicator circle position
-        indicator_x = rect.left() + 15
-        indicator_y = rect.center().y() - 8
-        indicator_size = 16
+        # Status indicator circle position (LED-style) - moved higher
+        indicator_x = rect.left() + 8
+        indicator_y = rect.top() + 8
+        indicator_size = 20
         
         # Get state color
         state_color = self.get_state_color()
         
-        # Draw status circle with subtle gradient
-        gradient = QLinearGradient(0, indicator_y, 0, indicator_y + indicator_size)
-        gradient.setColorAt(0.0, state_color.lighter(120))
-        gradient.setColorAt(1.0, state_color)
-        
-        painter.setBrush(QBrush(gradient))
-        painter.setPen(QPen(state_color.darker(150), 1))
+        # Draw simple LED-style indicator (solid circle with border)
+        painter.setBrush(QBrush(state_color))
+        painter.setPen(QPen(state_color.darker(160), 2))
         painter.drawEllipse(indicator_x, indicator_y, indicator_size, indicator_size)
         
-        # Draw status text with theme font
-        font = QFont()
-        font.setBold(True)
-        font.setPointSize(10)
-        painter.setFont(font)
+        # Primary status text - aligned with indicator (moved higher)
         painter.setPen(QPen(self.colors['text']))
+        primary_font = self.font()
+        primary_font.setPointSize(primary_font.pointSize() + 1)
+        primary_font.setBold(True)
+        painter.setFont(primary_font)
         
-        text_rect = rect.adjusted(indicator_x + indicator_size + 12, 0, -10, 0)
+        text_x = indicator_x + indicator_size + 8
+        # Align text with indicator center
+        text_y = indicator_y + (indicator_size // 2)
+        primary_text_rect = rect.adjusted(text_x, text_y - rect.center().y(), -10, 0)
         status_text = self.state_texts[self._current_state]
-        painter.drawText(text_rect, Qt.AlignmentFlag.AlignVCenter, status_text)
+        painter.drawText(primary_text_rect, Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignLeft, status_text)
+        
+        # Secondary connection info - positioned below with more space
+        if self._current_state == self.STATE_ACTIVE:
+            secondary_font = self.font()
+            secondary_font.setPointSize(secondary_font.pointSize() - 1)
+            painter.setFont(secondary_font)
+            painter.setPen(QPen(self.colors['text'].darker(150)))
+            
+            # Position secondary text below primary text with more space
+            secondary_y = text_y + 14
+            secondary_rect = rect.adjusted(text_x, secondary_y - rect.center().y(), -10, 0)
+            painter.drawText(secondary_rect, Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignLeft, self.connection_status)
         
         # Add state-specific visual elements
         if self._current_state == self.STATE_ACTIVE:
@@ -160,22 +172,22 @@ class EnhancedStatusWidget(QWidget):
             self.draw_error_indicator(painter, indicator_x, indicator_y, indicator_size)
             
     def draw_active_indicator(self, painter, x, y, size):
-        """Draw checkmark for active state."""
-        painter.setPen(QPen(QColor('#ffffff'), 2))
+        """Draw subtle checkmark for active state."""
+        painter.setPen(QPen(self.palette().base().color(), 2))
         
-        # Simple checkmark
-        check_size = size // 3
+        # Smaller, cleaner checkmark
+        check_size = size // 4
         check_x = x + size // 2 - check_size // 2
         check_y = y + size // 2 - check_size // 4
         
-        painter.drawLine(check_x, check_y, check_x + check_size//2, check_y + check_size//2)
-        painter.drawLine(check_x + check_size//2, check_y + check_size//2, check_x + check_size, check_y - check_size//4)
+        painter.drawLine(check_x, check_y + 1, check_x + check_size//2, check_y + check_size//2 + 1)
+        painter.drawLine(check_x + check_size//2, check_y + check_size//2 + 1, check_x + check_size, check_y - check_size//4 + 1)
         
     def draw_error_indicator(self, painter, x, y, size):
-        """Draw X for error state."""
-        painter.setPen(QPen(QColor('#ffffff'), 2))
+        """Draw subtle X for error state."""
+        painter.setPen(QPen(self.palette().base().color(), 2))
         
-        # Simple X
-        margin = size // 4
+        # Smaller, cleaner X
+        margin = size // 3
         painter.drawLine(x + margin, y + margin, x + size - margin, y + size - margin)
         painter.drawLine(x + size - margin, y + margin, x + margin, y + size - margin)

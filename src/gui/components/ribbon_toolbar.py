@@ -19,8 +19,6 @@ class RibbonButton(QPushButton):
     def __init__(self, text: str, icon_name: str = None, parent=None):
         super().__init__(parent)
         self.setText(text)
-        self.setMinimumSize(80, 60)
-        self.setMaximumSize(100, 80)
         
         # Set icon if provided using resource manager
         if icon_name:
@@ -29,28 +27,7 @@ class RibbonButton(QPushButton):
                 self.setIcon(icon)
                 self.setIconSize(QSize(16, 16))
         
-        # Style the button for ribbon appearance (font will inherit from theme)
-        self.setStyleSheet("""
-            QPushButton {
-                text-align: center;
-                border: 1px solid #d9d9d9;
-                border-radius: 3px;
-                background: #f0f0f0;
-                padding: 2px;
-            }
-            QPushButton:hover {
-                background: #e5f3ff;
-                border-color: #0078d4;
-            }
-            QPushButton:pressed {
-                background: #cce8ff;
-            }
-            QPushButton:disabled {
-                background: #f5f5f5;
-                color: #a0a0a0;
-                border-color: #e0e0e0;
-            }
-        """)
+        # Use default button styling
 
 
 class RibbonGroup(QFrame):
@@ -59,7 +36,6 @@ class RibbonGroup(QFrame):
     def __init__(self, title: str, parent=None):
         super().__init__(parent)
         self.setFrameStyle(QFrame.Shape.NoFrame)
-        self.setStyleSheet("QFrame { border: none; }")
         self.setup_ui(title)
     
     def setup_ui(self, title: str):
@@ -71,7 +47,7 @@ class RibbonGroup(QFrame):
         # Buttons area
         self.buttons_widget = QWidget()
         self.buttons_layout = QHBoxLayout(self.buttons_widget)
-        self.buttons_layout.setSpacing(2)
+        self.buttons_layout.setSpacing(4)
         self.buttons_layout.setContentsMargins(0, 0, 0, 0)
         
         layout.addWidget(self.buttons_widget)
@@ -123,32 +99,12 @@ class RibbonToolbar(QToolBar):
         
         self.start_button = RibbonButton("Start", "enable")
         self.start_button.setToolTip("Start serial port routing")
-        self.start_button.setStyleSheet(self.start_button.styleSheet() + """
-            QPushButton {
-                background: #e6f7e6;
-                color: #2d5a2d;
-                font-weight: bold;
-            }
-            QPushButton:hover {
-                background: #d4edd4;
-                border-color: #28a228;
-            }
-        """)
+        # Use default button styling
         
         self.stop_button = RibbonButton("Stop", "disable")
         self.stop_button.setToolTip("Stop serial port routing")
         self.stop_button.setEnabled(False)
-        self.stop_button.setStyleSheet(self.stop_button.styleSheet() + """
-            QPushButton {
-                background: #ffe6e6;
-                color: #5a2d2d;
-                font-weight: bold;
-            }
-            QPushButton:hover {
-                background: #ffd4d4;
-                border-color: #d42828;
-            }
-        """)
+        # Use default button styling
         
         self.control_group.add_button(self.start_button)
         self.control_group.add_button(self.stop_button)

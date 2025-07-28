@@ -15,6 +15,7 @@ import json
 import logging
 import subprocess
 import time
+import threading
 from datetime import datetime
 from typing import Dict, Any, Optional
 
@@ -78,6 +79,9 @@ class RouterControlThread(QThread):
                 
         except Exception as e:
             self.operation_complete.emit(False, f"Operation failed: {str(e)}")
+        finally:
+            # Critical: Clear router reference to prevent memory leaks
+            self.router_core = None
 
 
 class SerialRouterMainWindow(QMainWindow):
@@ -93,6 +97,8 @@ class SerialRouterMainWindow(QMainWindow):
         self.router_core: Optional[SerialRouterCore] = None
         self.control_thread: Optional[RouterControlThread] = None
         self.log_handler: Optional[LogHandler] = None
+        self._router_state_lock = threading.Lock()  # Thread synchronisation to prevent concurrent state modification during router operations
+        self._router_state_changing = False
         
         # Monitoring
         self.status_timer = QTimer()
@@ -206,6 +212,7 @@ class SerialRouterMainWindow(QMainWindow):
         # Enhanced Status display
         status_group = QGroupBox("Router Status")
         status_layout = QVBoxLayout(status_group)
+        status_layout.setContentsMargins(5, 5, 5, 0)  # Remove bottom margin
         
         # Enhanced status widget
         self.enhanced_status = EnhancedStatusWidget()
@@ -218,8 +225,19 @@ class SerialRouterMainWindow(QMainWindow):
         diagram_layout = QVBoxLayout(diagram_group)
         
         # Connection diagram widget
-        self.connection_diagram = ConnectionDiagramWidget()
-        diagram_layout.addWidget(self.connection_diagram)
+        try:
+            self.connection_diagram = ConnectionDiagramWidget()
+            diagram_layout.addWidget(self.connection_diagram)
+        except Exception as e:
+            print(f"Error creating ConnectionDiagramWidget: {e}")
+            import traceback
+            traceback.print_exc()
+            # Create a simple placeholder label instead
+            placeholder = QLabel("Connection Diagram (Error Loading)")
+            placeholder.setMinimumHeight(200)
+            placeholder.setStyleSheet("background-color: #f0f0f0; border: 1px solid #ccc; text-align: center;")
+            diagram_layout.addWidget(placeholder)
+            self.connection_diagram = None
         
         control_layout.addWidget(diagram_group)
         
@@ -345,7 +363,8 @@ class SerialRouterMainWindow(QMainWindow):
     def on_incoming_port_changed(self, port_name: str):
         """Handle incoming port selection changes."""
         if hasattr(self, 'connection_diagram') and port_name:
-            self.connection_diagram.set_incoming_port(port_name)
+            if self.connection_diagram:
+                self.connection_diagram.set_incoming_port(port_name)
     
     def create_control_group(self, parent_layout):
         """Legacy method - functionality moved to configuration panel."""
@@ -457,6 +476,13 @@ class SerialRouterMainWindow(QMainWindow):
         # Log display
         self.activity_log = QTextEdit()
         self.activity_log.setReadOnly(True)
+        
+        # Set monospace font for proper Unicode box-drawing character alignment
+        # Windows-optimized font stack for clean, modern appearance
+        monospace_font = QFont("Cascadia Code, Cascadia Mono, Consolas, 'Courier New', monospace")
+        monospace_font.setStyleHint(QFont.StyleHint.TypeWriter)
+        self.activity_log.setFont(monospace_font)
+        
         log_layout.addWidget(self.activity_log)
         
         layout.addWidget(log_group)
@@ -506,16 +532,41 @@ class SerialRouterMainWindow(QMainWindow):
             self.add_log_message(f"Error refreshing ports: {str(e)}")
             self.incoming_port_combo.addItem("COM54")
             
+    def validate_selected_port(self) -> bool:
+        """Simple port validation - string check only to avoid port conflicts."""
+        port = self.incoming_port_combo.currentText()
+        return port and port not in ["No COM ports available", "Error reading ports"]
+        
+    def cleanup_router_core(self):
+        """Simple cleanup helper for router core and logging handler."""
+        if self.router_core:
+            try:
+                # Critical fix: stop the router engine to properly release ports and threads
+                if self.router_core.running:
+                    self.router_core.stop()
+                # Remove log handler after stopping
+                if self.log_handler:
+                    self.router_core.logger.removeHandler(self.log_handler)
+            except ValueError:
+                pass  # Handler was already removed
+            except Exception as e:
+                self.add_log_message(f"Warning: Router cleanup failed: {str(e)}")
+        self.router_core = None
+        
     def is_routing_active(self) -> bool:
         """Check if routing is currently active."""
         return self.router_core is not None and self.router_core.running
         
     def start_routing(self):
         """Start the serial routing process."""
-        if self.incoming_port_combo.currentText() in ["No COM ports available", "Error reading ports"]:
-            self.add_log_message("Cannot start: No valid COM ports available")
+        if not self.validate_selected_port():
+            self.add_log_message("Cannot start: Selected port is not available")
             return
             
+        with self._router_state_lock:  # Ensure atomic state change to prevent concurrent router operations
+            if self._router_state_changing:
+                return  # Operation already in progress
+            self._router_state_changing = True
         try:
             # Apply current configuration
             config = self.get_current_config()
@@ -533,6 +584,18 @@ class SerialRouterMainWindow(QMainWindow):
                 
             self.add_log_message(f"Starting router: {config['incoming_port']} <-> COM131 & COM141")
             
+            # Clean up existing thread first to prevent leaks
+            if hasattr(self, 'control_thread') and self.control_thread:
+                if self.control_thread.isRunning():
+                    self.control_thread.quit()
+                    if not self.control_thread.wait(3000):
+                        self.add_log_message("WARNING: Control thread did not terminate cleanly")
+                        self.control_thread.terminate()
+                        self.control_thread.wait(1000)
+                # Proper cleanup: ensure thread is fully stopped before clearing reference
+                self.control_thread.deleteLater()  # Qt cleanup for thread object
+                self.control_thread = None
+            
             # Start router in background thread
             self.control_thread = RouterControlThread()
             self.control_thread.operation_complete.connect(self.on_operation_complete)
@@ -544,15 +607,33 @@ class SerialRouterMainWindow(QMainWindow):
             
         except Exception as e:
             self.add_log_message(f"Failed to start routing: {str(e)}")
+            self.cleanup_router_core()
+            self._router_state_changing = False
             
     def stop_routing(self):
         """Stop the serial routing process."""
         if not self.router_core:
             return
             
+        with self._router_state_lock:  # Ensure atomic state change to prevent concurrent router operations
+            if self._router_state_changing:
+                return  # Operation already in progress
+            self._router_state_changing = True
         self.add_log_message("Stopping serial routing...")
         
         try:
+            # Clean up existing thread first to prevent leaks
+            if hasattr(self, 'control_thread') and self.control_thread:
+                if self.control_thread.isRunning():
+                    self.control_thread.quit()
+                    if not self.control_thread.wait(3000):
+                        self.add_log_message("WARNING: Control thread did not terminate cleanly")
+                        self.control_thread.terminate()
+                        self.control_thread.wait(1000)
+                # Proper cleanup: ensure thread is fully stopped before clearing reference
+                self.control_thread.deleteLater()  # Qt cleanup for thread object
+                self.control_thread = None
+            
             # Stop router in background thread
             self.control_thread = RouterControlThread()
             self.control_thread.operation_complete.connect(self.on_operation_complete)
@@ -564,6 +645,7 @@ class SerialRouterMainWindow(QMainWindow):
             
         except Exception as e:
             self.add_log_message(f"Error stopping routing: {str(e)}")
+            self._router_state_changing = False
             
     def on_operation_complete(self, success: bool, message: str):
         """Handle completion of router operations."""
@@ -572,20 +654,22 @@ class SerialRouterMainWindow(QMainWindow):
         if success:
             if "started" in message.lower():
                 self.set_ui_state_running()
+                self._router_state_changing = False
             elif "stopped" in message.lower():
                 self.set_ui_state_stopped()
-                # Remove logging handler
-                if self.router_core and self.log_handler:
-                    self.router_core.logger.removeHandler(self.log_handler)
-                self.router_core = None
+                self.cleanup_router_core()
+                self._router_state_changing = False
         else:
             # Operation failed, show error state then transition to stopped
             self.enhanced_status.set_state(EnhancedStatusWidget.STATE_ERROR)
             # After a brief delay, transition to stopped state
-            QTimer.singleShot(2000, self.set_ui_state_stopped)
-            if self.router_core and self.log_handler:
-                self.router_core.logger.removeHandler(self.log_handler)
-            self.router_core = None
+            QTimer.singleShot(2000, self._handle_failed_operation)  # Direct method reference prevents reference issues
+            
+    def _handle_failed_operation(self):
+        """Handle failed router operations with proper cleanup."""
+        self.set_ui_state_stopped()
+        self.cleanup_router_core()
+        self._router_state_changing = False
             
     def set_ui_state_starting(self):
         """Set UI to starting state."""
@@ -615,10 +699,11 @@ class SerialRouterMainWindow(QMainWindow):
         self.enhanced_status.set_state(EnhancedStatusWidget.STATE_OFFLINE)
         
         # Reset connection diagram to inactive state
-        self.connection_diagram.set_connection_states({
-            "COM131": False,
-            "COM141": False
-        })
+        if self.connection_diagram:
+            self.connection_diagram.set_connection_states({
+                "COM131": False,
+                "COM141": False
+            })
         
     def update_connection_diagram_state(self):
         """Update connection diagram based on current router status."""
@@ -637,18 +722,20 @@ class SerialRouterMainWindow(QMainWindow):
                 else:
                     connection_states[port] = False
                     
-            self.connection_diagram.set_connection_states(connection_states)
+            if self.connection_diagram:
+                self.connection_diagram.set_connection_states(connection_states)
             
         except Exception as e:
             # Fallback to basic active state
-            self.connection_diagram.set_connection_states({
-                "COM131": True,
-                "COM141": True
-            })
+            if self.connection_diagram:
+                self.connection_diagram.set_connection_states({
+                    "COM131": True,
+                    "COM141": True
+                })
         
     def update_status_display(self):
         """Update the real-time status display with advanced metrics."""
-        if not self.router_core:
+        if not self.router_core or self._router_state_changing:
             # Reset displays when not running
             self.uptime_label.setText("0 hours")
             self.connections_label.setText("0/3")
@@ -861,10 +948,12 @@ class SerialRouterMainWindow(QMainWindow):
                         self.thread_status_label.setText(current_text + connection_status)
             
         except Exception as e:
-            # Log status update errors for debugging (but don't spam GUI)
+            # More specific error tracking without spamming
             import time
-            if not hasattr(self, '_last_status_error_time') or (time.time() - self._last_status_error_time) > 30:
-                self.add_log_message(f"Status update error: {str(e)}")
+            error_type = type(e).__name__
+            if not hasattr(self, '_last_status_error') or self._last_status_error != error_type:
+                self.add_log_message(f"Status error ({error_type}): {str(e)[:100]}")
+                self._last_status_error = error_type
                 self._last_status_error_time = time.time()
             
     def get_current_config(self) -> Dict[str, Any]:
@@ -885,19 +974,36 @@ class SerialRouterMainWindow(QMainWindow):
         self.add_log_message("Activity log cleared")
         
     def closeEvent(self, event):
-        """Handle application close event."""
-        if self.is_routing_active():
-            self.add_log_message("Shutting down router...")
-            if self.router_core:
-                self.router_core.stop()
-                
-        # Stop status timer
+        """Handle application close event with robust shutdown."""
+        self.add_log_message("Application shutdown initiated...")
+        
+        # Stop status timer first to prevent updates during shutdown
         self.status_timer.stop()
         
-        # Clean up threads
+        # Shutdown router if active
+        if self.is_routing_active():
+            self.add_log_message("Stopping router for shutdown...")
+            if self.router_core:
+                try:
+                    self.router_core.stop()
+                    # Give router time to clean up
+                    QApplication.processEvents()
+                    time.sleep(0.5)
+                except Exception as e:
+                    self.add_log_message(f"Error during router shutdown: {str(e)}")
+                
+        # Clean up control thread with force termination if needed
         if self.control_thread and self.control_thread.isRunning():
-            self.control_thread.wait(3000)  # Wait up to 3 seconds
-            
+            self.add_log_message("Waiting for control thread to terminate...")
+            self.control_thread.quit()
+            if not self.control_thread.wait(5000):  # Wait up to 5 seconds
+                self.add_log_message("Force terminating control thread...")
+                self.control_thread.terminate()
+                self.control_thread.wait(2000)
+                
+        # Final cleanup
+        self.cleanup_router_core()
+        self.add_log_message("Application shutdown complete")
         event.accept()
     
     def apply_theme(self):
@@ -916,6 +1022,9 @@ class SerialRouterMainWindow(QMainWindow):
 def main():
     """Main application entry point."""
     app = QApplication(sys.argv)
+    
+    # Set Fusion style for consistent cross-platform appearance
+    app.setStyle('Fusion')
     
     # Set application properties
     app.setApplicationName("SerialRouter")
