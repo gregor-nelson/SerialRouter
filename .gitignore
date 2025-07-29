@@ -2,6 +2,9 @@
 build/
 dist/
 
+# App data directories
+%APPDATA%/
+
 # PyInstaller spec files (generated)
 *.spec
 
@@ -34,3 +37,7 @@ desktop.ini
 *.tmp
 *.temp
 version_info.txt
+
+# Claude Code files
+CLAUDE.md
+.claude/
