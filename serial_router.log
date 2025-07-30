@@ -5782,3 +5782,1146 @@
 [2025-07-28 22:40:44] [INFO] [Dummy-2] Port COM141 released by Port141Owner
 [2025-07-28 22:40:44] [INFO] [Dummy-2] Successfully released COM141 from Port141Owner
 [2025-07-28 22:40:44] [INFO] [Dummy-2] SerialRouter stopped
+[2025-07-29 11:10:38] [INFO] [MainThread] PortManager initialized with advanced monitoring
+[2025-07-29 11:10:38] [INFO] [MainThread] SerialRouter initialized - Port: COM11, Baud: 115200/115200
+[2025-07-29 11:10:38] [INFO] [Dummy-1] Starting SerialRouter - COM11 <-> COM131 & COM141
+[2025-07-29 11:10:38] [INFO] [Dummy-1] Incoming baud: 115200, Outgoing baud: 115200
+[2025-07-29 11:10:38] [INFO] [Dummy-1] Acquiring port ownership for all routing threads...
+[2025-07-29 11:10:38] [INFO] [Dummy-1] Opening port COM11 for owner IncomingPortOwner
+[2025-07-29 11:10:38] [ERROR] [Dummy-1] Failed to open port COM11 for IncomingPortOwner: Cannot configure port, something went wrong. Original message: PermissionError(13, 'A device attached to the system is not functioning.', None, 31)
+[2025-07-29 11:10:38] [ERROR] [Dummy-1] Failed to acquire COM11 for IncomingPortOwner
+[2025-07-29 11:10:38] [ERROR] [Dummy-1] SerialRouter failed to start - critical ports unavailable
+[2025-07-29 11:10:46] [INFO] [MainThread] PortManager initialized with advanced monitoring
+[2025-07-29 11:10:46] [INFO] [MainThread] SerialRouter initialized - Port: COM8, Baud: 115200/115200
+[2025-07-29 11:10:46] [INFO] [Dummy-2] Starting SerialRouter - COM8 <-> COM131 & COM141
+[2025-07-29 11:10:46] [INFO] [Dummy-2] Incoming baud: 115200, Outgoing baud: 115200
+[2025-07-29 11:10:46] [INFO] [Dummy-2] Acquiring port ownership for all routing threads...
+[2025-07-29 11:10:46] [INFO] [Dummy-2] Opening port COM8 for owner IncomingPortOwner
+[2025-07-29 11:10:46] [INFO] [Dummy-2] Port COM8 successfully acquired by IncomingPortOwner
+[2025-07-29 11:10:46] [INFO] [Dummy-2] Successfully acquired COM8 for IncomingPortOwner
+[2025-07-29 11:10:46] [INFO] [Dummy-2] Opening port COM131 for owner Port131Owner
+[2025-07-29 11:10:46] [INFO] [Dummy-2] Port COM131 successfully acquired by Port131Owner
+[2025-07-29 11:10:46] [INFO] [Dummy-2] Successfully acquired COM131 for Port131Owner
+[2025-07-29 11:10:46] [INFO] [Dummy-2] Opening port COM141 for owner Port141Owner
+[2025-07-29 11:10:46] [INFO] [Dummy-2] Port COM141 successfully acquired by Port141Owner
+[2025-07-29 11:10:46] [INFO] [Dummy-2] Successfully acquired COM141 for Port141Owner
+[2025-07-29 11:10:46] [INFO] [Dummy-2] All ports acquired, starting routing threads...
+[2025-07-29 11:10:46] [INFO] [IncomingPortOwner] Starting incoming port handler: COM8->131&141
+[2025-07-29 11:10:46] [INFO] [Port131Owner] Starting outgoing port handler: COM131->Incoming
+[2025-07-29 11:10:46] [INFO] [Port141Owner] Starting outgoing port handler: COM141->Incoming
+[2025-07-29 11:10:46] [INFO] [Dummy-2] Started 3 routing threads with centralized port management
+[2025-07-29 11:10:46] [INFO] [Watchdog] Watchdog monitor started
+[2025-07-29 11:10:46] [INFO] [Dummy-2] SerialRouter started successfully
+[2025-07-29 11:10:49] [INFO] [Dummy-3] Stopping SerialRouter...
+[2025-07-29 11:10:49] [INFO] [Port131Owner] COM131->Incoming handler shutting down
+[2025-07-29 11:10:49] [INFO] [IncomingPortOwner] COM8->131&141 handler shutting down
+[2025-07-29 11:10:49] [INFO] [Port141Owner] COM141->Incoming handler shutting down
+[2025-07-29 11:10:51] [INFO] [Dummy-3] Releasing port ownership...
+[2025-07-29 11:10:51] [INFO] [Dummy-3] Port COM8 connection closed by IncomingPortOwner
+[2025-07-29 11:10:51] [INFO] [Dummy-3] Port COM8 released by IncomingPortOwner
+[2025-07-29 11:10:51] [INFO] [Dummy-3] Successfully released COM8 from IncomingPortOwner
+[2025-07-29 11:10:51] [INFO] [Dummy-3] Port COM131 connection closed by Port131Owner
+[2025-07-29 11:10:51] [INFO] [Dummy-3] Port COM131 released by Port131Owner
+[2025-07-29 11:10:51] [INFO] [Dummy-3] Successfully released COM131 from Port131Owner
+[2025-07-29 11:10:51] [INFO] [Dummy-3] Port COM141 connection closed by Port141Owner
+[2025-07-29 11:10:51] [INFO] [Dummy-3] Port COM141 released by Port141Owner
+[2025-07-29 11:10:51] [INFO] [Dummy-3] Successfully released COM141 from Port141Owner
+[2025-07-29 11:10:51] [INFO] [Dummy-3] SerialRouter stopped
+[2025-07-29 11:11:33] [INFO] [MainThread] PortManager initialized with advanced monitoring
+[2025-07-29 11:11:33] [INFO] [MainThread] SerialRouter initialized - Port: COM54, Baud: 115200/115200
+[2025-07-29 11:11:33] [INFO] [Dummy-1] Starting SerialRouter - COM54 <-> COM131 & COM141
+[2025-07-29 11:11:33] [INFO] [Dummy-1] Incoming baud: 115200, Outgoing baud: 115200
+[2025-07-29 11:11:33] [INFO] [Dummy-1] Acquiring port ownership for all routing threads...
+[2025-07-29 11:11:33] [INFO] [Dummy-1] Opening port COM54 for owner IncomingPortOwner
+[2025-07-29 11:11:33] [INFO] [Dummy-1] Port COM54 successfully acquired by IncomingPortOwner
+[2025-07-29 11:11:33] [INFO] [Dummy-1] Successfully acquired COM54 for IncomingPortOwner
+[2025-07-29 11:11:33] [INFO] [Dummy-1] Opening port COM131 for owner Port131Owner
+[2025-07-29 11:11:33] [INFO] [Dummy-1] Port COM131 successfully acquired by Port131Owner
+[2025-07-29 11:11:33] [INFO] [Dummy-1] Successfully acquired COM131 for Port131Owner
+[2025-07-29 11:11:33] [INFO] [Dummy-1] Opening port COM141 for owner Port141Owner
+[2025-07-29 11:11:33] [INFO] [Dummy-1] Port COM141 successfully acquired by Port141Owner
+[2025-07-29 11:11:33] [INFO] [Dummy-1] Successfully acquired COM141 for Port141Owner
+[2025-07-29 11:11:33] [INFO] [Dummy-1] All ports acquired, starting routing threads...
+[2025-07-29 11:11:33] [INFO] [IncomingPortOwner] Starting incoming port handler: COM54->131&141
+[2025-07-29 11:11:33] [INFO] [Port131Owner] Starting outgoing port handler: COM131->Incoming
+[2025-07-29 11:11:33] [INFO] [Port141Owner] Starting outgoing port handler: COM141->Incoming
+[2025-07-29 11:11:33] [INFO] [Dummy-1] Started 3 routing threads with centralized port management
+[2025-07-29 11:11:33] [INFO] [Watchdog] Watchdog monitor started
+[2025-07-29 11:11:33] [INFO] [Dummy-1] SerialRouter started successfully
+[2025-07-29 11:11:51] [INFO] [MainThread] Stopping SerialRouter...
+[2025-07-29 11:11:51] [INFO] [Port131Owner] COM131->Incoming handler shutting down
+[2025-07-29 11:11:51] [INFO] [Port141Owner] COM141->Incoming handler shutting down
+[2025-07-29 11:11:51] [INFO] [IncomingPortOwner] COM54->131&141 handler shutting down
+[2025-07-29 11:11:53] [INFO] [MainThread] Releasing port ownership...
+[2025-07-29 11:11:53] [INFO] [MainThread] Port COM54 connection closed by IncomingPortOwner
+[2025-07-29 11:11:53] [INFO] [MainThread] Port COM54 released by IncomingPortOwner
+[2025-07-29 11:11:53] [INFO] [MainThread] Successfully released COM54 from IncomingPortOwner
+[2025-07-29 11:11:53] [INFO] [MainThread] Port COM131 connection closed by Port131Owner
+[2025-07-29 11:11:53] [INFO] [MainThread] Port COM131 released by Port131Owner
+[2025-07-29 11:11:53] [INFO] [MainThread] Successfully released COM131 from Port131Owner
+[2025-07-29 11:11:53] [INFO] [MainThread] Port COM141 connection closed by Port141Owner
+[2025-07-29 11:11:53] [INFO] [MainThread] Port COM141 released by Port141Owner
+[2025-07-29 11:11:53] [INFO] [MainThread] Successfully released COM141 from Port141Owner
+[2025-07-29 11:11:53] [INFO] [MainThread] SerialRouter stopped
+[2025-07-29 11:19:08] [INFO] [MainThread] PortManager initialized with advanced monitoring
+[2025-07-29 11:19:08] [INFO] [MainThread] SerialRouter initialized - Port: COM54, Baud: 115200/115200
+[2025-07-29 11:19:08] [INFO] [Dummy-1] Starting SerialRouter - COM54 <-> COM131 & COM141
+[2025-07-29 11:19:08] [INFO] [Dummy-1] Incoming baud: 115200, Outgoing baud: 115200
+[2025-07-29 11:19:08] [INFO] [Dummy-1] Acquiring port ownership for all routing threads...
+[2025-07-29 11:19:08] [INFO] [Dummy-1] Opening port COM54 for owner IncomingPortOwner
+[2025-07-29 11:19:08] [INFO] [Dummy-1] Port COM54 successfully acquired by IncomingPortOwner
+[2025-07-29 11:19:08] [INFO] [Dummy-1] Successfully acquired COM54 for IncomingPortOwner
+[2025-07-29 11:19:08] [INFO] [Dummy-1] Opening port COM131 for owner Port131Owner
+[2025-07-29 11:19:08] [INFO] [Dummy-1] Port COM131 successfully acquired by Port131Owner
+[2025-07-29 11:19:08] [INFO] [Dummy-1] Successfully acquired COM131 for Port131Owner
+[2025-07-29 11:19:08] [INFO] [Dummy-1] Opening port COM141 for owner Port141Owner
+[2025-07-29 11:19:08] [INFO] [Dummy-1] Port COM141 successfully acquired by Port141Owner
+[2025-07-29 11:19:08] [INFO] [Dummy-1] Successfully acquired COM141 for Port141Owner
+[2025-07-29 11:19:08] [INFO] [Dummy-1] All ports acquired, starting routing threads...
+[2025-07-29 11:19:08] [INFO] [IncomingPortOwner] Starting incoming port handler: COM54->131&141
+[2025-07-29 11:19:08] [INFO] [Port131Owner] Starting outgoing port handler: COM131->Incoming
+[2025-07-29 11:19:08] [INFO] [Port141Owner] Starting outgoing port handler: COM141->Incoming
+[2025-07-29 11:19:08] [INFO] [Dummy-1] Started 3 routing threads with centralized port management
+[2025-07-29 11:19:08] [INFO] [Watchdog] Watchdog monitor started
+[2025-07-29 11:19:08] [INFO] [Dummy-1] SerialRouter started successfully
+[2025-07-29 11:19:10] [INFO] [Dummy-2] Stopping SerialRouter...
+[2025-07-29 11:19:10] [INFO] [Port131Owner] COM131->Incoming handler shutting down
+[2025-07-29 11:19:10] [INFO] [IncomingPortOwner] COM54->131&141 handler shutting down
+[2025-07-29 11:19:10] [INFO] [Port141Owner] COM141->Incoming handler shutting down
+[2025-07-29 11:19:12] [INFO] [Dummy-2] Releasing port ownership...
+[2025-07-29 11:19:12] [INFO] [Dummy-2] Port COM54 connection closed by IncomingPortOwner
+[2025-07-29 11:19:12] [INFO] [Dummy-2] Port COM54 released by IncomingPortOwner
+[2025-07-29 11:19:12] [INFO] [Dummy-2] Successfully released COM54 from IncomingPortOwner
+[2025-07-29 11:19:12] [INFO] [Dummy-2] Port COM131 connection closed by Port131Owner
+[2025-07-29 11:19:12] [INFO] [Dummy-2] Port COM131 released by Port131Owner
+[2025-07-29 11:19:12] [INFO] [Dummy-2] Successfully released COM131 from Port131Owner
+[2025-07-29 11:19:12] [INFO] [Dummy-2] Port COM141 connection closed by Port141Owner
+[2025-07-29 11:19:12] [INFO] [Dummy-2] Port COM141 released by Port141Owner
+[2025-07-29 11:19:12] [INFO] [Dummy-2] Successfully released COM141 from Port141Owner
+[2025-07-29 11:19:12] [INFO] [Dummy-2] SerialRouter stopped
+[2025-07-29 11:47:37] [INFO] [MainThread] PortManager initialized with advanced monitoring
+[2025-07-29 11:47:37] [INFO] [MainThread] SerialRouter initialized - Port: COM54, Baud: 115200/115200
+[2025-07-29 11:47:37] [INFO] [Dummy-1] Starting SerialRouter - COM54 <-> COM131 & COM141
+[2025-07-29 11:47:37] [INFO] [Dummy-1] Incoming baud: 115200, Outgoing baud: 115200
+[2025-07-29 11:47:37] [INFO] [Dummy-1] Acquiring port ownership for all routing threads...
+[2025-07-29 11:47:37] [INFO] [Dummy-1] Opening port COM54 for owner IncomingPortOwner
+[2025-07-29 11:47:38] [INFO] [Dummy-1] Port COM54 successfully acquired by IncomingPortOwner
+[2025-07-29 11:47:38] [INFO] [Dummy-1] Successfully acquired COM54 for IncomingPortOwner
+[2025-07-29 11:47:38] [INFO] [Dummy-1] Opening port COM131 for owner Port131Owner
+[2025-07-29 11:47:38] [INFO] [Dummy-1] Port COM131 successfully acquired by Port131Owner
+[2025-07-29 11:47:38] [INFO] [Dummy-1] Successfully acquired COM131 for Port131Owner
+[2025-07-29 11:47:38] [INFO] [Dummy-1] Opening port COM141 for owner Port141Owner
+[2025-07-29 11:47:38] [INFO] [Dummy-1] Port COM141 successfully acquired by Port141Owner
+[2025-07-29 11:47:38] [INFO] [Dummy-1] Successfully acquired COM141 for Port141Owner
+[2025-07-29 11:47:38] [INFO] [Dummy-1] All ports acquired, starting routing threads...
+[2025-07-29 11:47:38] [INFO] [IncomingPortOwner] Starting incoming port handler: COM54->131&141
+[2025-07-29 11:47:38] [INFO] [Port131Owner] Starting outgoing port handler: COM131->Incoming
+[2025-07-29 11:47:38] [INFO] [Port141Owner] Starting outgoing port handler: COM141->Incoming
+[2025-07-29 11:47:38] [INFO] [Dummy-1] Started 3 routing threads with centralized port management
+[2025-07-29 11:47:38] [INFO] [Watchdog] Watchdog monitor started
+[2025-07-29 11:47:38] [INFO] [Dummy-1] SerialRouter started successfully
+[2025-07-29 11:47:41] [INFO] [Dummy-2] Stopping SerialRouter...
+[2025-07-29 11:47:41] [INFO] [IncomingPortOwner] COM54->131&141 handler shutting down
+[2025-07-29 11:47:41] [INFO] [Port141Owner] COM141->Incoming handler shutting down
+[2025-07-29 11:47:41] [INFO] [Port131Owner] COM131->Incoming handler shutting down
+[2025-07-29 11:47:43] [INFO] [Dummy-2] Releasing port ownership...
+[2025-07-29 11:47:44] [INFO] [Dummy-2] Port COM54 connection closed by IncomingPortOwner
+[2025-07-29 11:47:44] [INFO] [Dummy-2] Port COM54 released by IncomingPortOwner
+[2025-07-29 11:47:44] [INFO] [Dummy-2] Successfully released COM54 from IncomingPortOwner
+[2025-07-29 11:47:44] [INFO] [Dummy-2] Port COM131 connection closed by Port131Owner
+[2025-07-29 11:47:44] [INFO] [Dummy-2] Port COM131 released by Port131Owner
+[2025-07-29 11:47:44] [INFO] [Dummy-2] Successfully released COM131 from Port131Owner
+[2025-07-29 11:47:44] [INFO] [Dummy-2] Port COM141 connection closed by Port141Owner
+[2025-07-29 11:47:44] [INFO] [Dummy-2] Port COM141 released by Port141Owner
+[2025-07-29 11:47:44] [INFO] [Dummy-2] Successfully released COM141 from Port141Owner
+[2025-07-29 11:47:44] [INFO] [Dummy-2] SerialRouter stopped
+[2025-07-29 11:53:23] [INFO] [MainThread] PortManager initialized with advanced monitoring
+[2025-07-29 11:53:23] [INFO] [MainThread] SerialRouter initialized - Port: COM224, Baud: 115200/115200
+[2025-07-29 11:53:23] [INFO] [Dummy-1] Starting SerialRouter - COM224 <-> COM131 & COM141
+[2025-07-29 11:53:23] [INFO] [Dummy-1] Incoming baud: 115200, Outgoing baud: 115200
+[2025-07-29 11:53:23] [INFO] [Dummy-1] Acquiring port ownership for all routing threads...
+[2025-07-29 11:53:23] [INFO] [Dummy-1] Opening port COM224 for owner IncomingPortOwner
+[2025-07-29 11:53:23] [INFO] [Dummy-1] Port COM224 successfully acquired by IncomingPortOwner
+[2025-07-29 11:53:23] [INFO] [Dummy-1] Successfully acquired COM224 for IncomingPortOwner
+[2025-07-29 11:53:23] [INFO] [Dummy-1] Opening port COM131 for owner Port131Owner
+[2025-07-29 11:53:23] [INFO] [Dummy-1] Port COM131 successfully acquired by Port131Owner
+[2025-07-29 11:53:23] [INFO] [Dummy-1] Successfully acquired COM131 for Port131Owner
+[2025-07-29 11:53:23] [INFO] [Dummy-1] Opening port COM141 for owner Port141Owner
+[2025-07-29 11:53:23] [INFO] [Dummy-1] Port COM141 successfully acquired by Port141Owner
+[2025-07-29 11:53:23] [INFO] [Dummy-1] Successfully acquired COM141 for Port141Owner
+[2025-07-29 11:53:23] [INFO] [Dummy-1] All ports acquired, starting routing threads...
+[2025-07-29 11:53:23] [INFO] [IncomingPortOwner] Starting incoming port handler: COM224->131&141
+[2025-07-29 11:53:23] [INFO] [Port131Owner] Starting outgoing port handler: COM131->Incoming
+[2025-07-29 11:53:23] [INFO] [Port141Owner] Starting outgoing port handler: COM141->Incoming
+[2025-07-29 11:53:23] [INFO] [Dummy-1] Started 3 routing threads with centralized port management
+[2025-07-29 11:53:23] [INFO] [Watchdog] Watchdog monitor started
+[2025-07-29 11:53:23] [INFO] [Dummy-1] SerialRouter started successfully
+[2025-07-29 11:59:05] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000039 bytes
+[2025-07-29 12:02:09] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000025 bytes
+[2025-07-29 12:05:13] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000210 bytes
+[2025-07-29 12:08:17] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000073 bytes
+[2025-07-29 12:11:21] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000118 bytes
+[2025-07-29 12:14:25] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000310 bytes
+[2025-07-29 12:17:29] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000247 bytes
+[2025-07-29 12:20:33] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000056 bytes
+[2025-07-29 12:23:37] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000068 bytes
+[2025-07-29 12:26:41] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000197 bytes
+[2025-07-29 12:29:46] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000187 bytes
+[2025-07-29 12:32:50] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000005 bytes
+[2025-07-29 12:35:55] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000059 bytes
+[2025-07-29 12:38:58] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000188 bytes
+[2025-07-29 12:42:01] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000153 bytes
+[2025-07-29 12:45:04] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000088 bytes
+[2025-07-29 12:48:06] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000194 bytes
+[2025-07-29 12:51:08] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000113 bytes
+[2025-07-29 12:54:11] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000326 bytes
+[2025-07-29 12:57:13] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000142 bytes
+[2025-07-29 13:00:15] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000049 bytes
+[2025-07-29 13:03:18] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000392 bytes
+[2025-07-29 13:06:20] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000245 bytes
+[2025-07-29 13:09:22] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000142 bytes
+[2025-07-29 13:12:24] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000144 bytes
+[2025-07-29 13:15:26] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000306 bytes
+[2025-07-29 13:18:28] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000168 bytes
+[2025-07-29 13:21:30] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000008 bytes
+[2025-07-29 13:24:33] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000305 bytes
+[2025-07-29 13:27:35] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000005 bytes
+[2025-07-29 13:30:38] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000202 bytes
+[2025-07-29 13:33:40] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000246 bytes
+[2025-07-29 13:36:43] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000020 bytes
+[2025-07-29 13:39:45] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000142 bytes
+[2025-07-29 13:42:48] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000202 bytes
+[2025-07-29 13:45:50] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000252 bytes
+[2025-07-29 13:48:52] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000147 bytes
+[2025-07-29 13:51:56] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000002 bytes
+[2025-07-29 13:55:00] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000023 bytes
+[2025-07-29 13:58:04] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000002 bytes
+[2025-07-29 14:01:08] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000128 bytes
+[2025-07-29 14:04:12] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000024 bytes
+[2025-07-29 14:07:15] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000268 bytes
+[2025-07-29 14:10:18] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000099 bytes
+[2025-07-29 14:13:21] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000196 bytes
+[2025-07-29 14:16:24] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000240 bytes
+[2025-07-29 14:19:27] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000032 bytes
+[2025-07-29 14:22:30] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000120 bytes
+[2025-07-29 14:25:33] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000145 bytes
+[2025-07-29 14:28:35] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000056 bytes
+[2025-07-29 14:31:38] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000133 bytes
+[2025-07-29 14:34:41] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000020 bytes
+[2025-07-29 14:37:44] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000107 bytes
+[2025-07-29 14:40:46] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000090 bytes
+[2025-07-29 14:43:49] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000364 bytes
+[2025-07-29 14:46:52] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000481 bytes
+[2025-07-29 14:49:54] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000168 bytes
+[2025-07-29 14:52:57] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000049 bytes
+[2025-07-29 14:56:00] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000223 bytes
+[2025-07-29 14:59:02] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000204 bytes
+[2025-07-29 15:02:05] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000415 bytes
+[2025-07-29 15:05:07] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000017 bytes
+[2025-07-29 15:08:10] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000096 bytes
+[2025-07-29 15:11:12] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000022 bytes
+[2025-07-29 15:14:15] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000386 bytes
+[2025-07-29 15:17:17] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000256 bytes
+[2025-07-29 15:20:20] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000248 bytes
+[2025-07-29 15:23:22] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000051 bytes
+[2025-07-29 15:26:25] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000144 bytes
+[2025-07-29 15:29:27] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000041 bytes
+[2025-07-29 15:32:30] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000256 bytes
+[2025-07-29 15:35:32] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000368 bytes
+[2025-07-29 15:38:35] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000099 bytes
+[2025-07-29 15:41:37] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000027 bytes
+[2025-07-29 15:44:39] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000157 bytes
+[2025-07-29 15:47:41] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000239 bytes
+[2025-07-29 15:50:43] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000155 bytes
+[2025-07-29 15:53:45] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000094 bytes
+[2025-07-29 15:56:47] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000081 bytes
+[2025-07-29 15:59:49] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000360 bytes
+[2025-07-29 16:02:51] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000072 bytes
+[2025-07-29 16:05:53] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000043 bytes
+[2025-07-29 16:08:56] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000264 bytes
+[2025-07-29 16:11:59] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000054 bytes
+[2025-07-29 16:15:02] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000041 bytes
+[2025-07-29 16:18:04] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000080 bytes
+[2025-07-29 16:21:07] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000058 bytes
+[2025-07-29 16:24:09] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000065 bytes
+[2025-07-29 16:27:12] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000063 bytes
+[2025-07-29 16:30:14] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000034 bytes
+[2025-07-29 16:33:17] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000157 bytes
+[2025-07-29 16:36:19] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000030 bytes
+[2025-07-29 16:39:22] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000052 bytes
+[2025-07-29 16:42:24] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000402 bytes
+[2025-07-29 16:45:27] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000112 bytes
+[2025-07-29 16:48:29] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000246 bytes
+[2025-07-29 16:51:32] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000279 bytes
+[2025-07-29 16:54:34] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000228 bytes
+[2025-07-29 16:57:36] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000091 bytes
+[2025-07-29 17:00:39] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000100 bytes
+[2025-07-29 17:03:41] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000168 bytes
+[2025-07-29 17:06:43] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000064 bytes
+[2025-07-29 17:09:45] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000156 bytes
+[2025-07-29 17:12:48] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000364 bytes
+[2025-07-29 17:15:50] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000046 bytes
+[2025-07-29 17:18:52] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000082 bytes
+[2025-07-29 17:21:55] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000200 bytes
+[2025-07-29 17:24:57] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000038 bytes
+[2025-07-29 17:28:00] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000235 bytes
+[2025-07-29 17:31:02] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000380 bytes
+[2025-07-29 17:34:04] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000115 bytes
+[2025-07-29 17:37:06] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000045 bytes
+[2025-07-29 17:40:08] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000040 bytes
+[2025-07-29 17:43:10] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000027 bytes
+[2025-07-29 17:46:13] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000288 bytes
+[2025-07-29 17:49:15] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000071 bytes
+[2025-07-29 17:52:17] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000058 bytes
+[2025-07-29 17:55:20] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000164 bytes
+[2025-07-29 17:58:22] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000091 bytes
+[2025-07-29 18:01:24] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000155 bytes
+[2025-07-29 18:04:26] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000013 bytes
+[2025-07-29 18:07:29] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000079 bytes
+[2025-07-29 18:10:31] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000272 bytes
+[2025-07-29 18:13:33] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000102 bytes
+[2025-07-29 18:16:35] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000246 bytes
+[2025-07-29 18:19:37] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000092 bytes
+[2025-07-29 18:22:39] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000111 bytes
+[2025-07-29 18:25:42] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000599 bytes
+[2025-07-29 18:28:44] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000074 bytes
+[2025-07-29 18:31:46] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000128 bytes
+[2025-07-29 18:34:49] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000003 bytes
+[2025-07-29 18:37:51] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000116 bytes
+[2025-07-29 18:40:53] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000065 bytes
+[2025-07-29 18:43:56] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000238 bytes
+[2025-07-29 18:46:59] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000170 bytes
+[2025-07-29 18:50:01] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000041 bytes
+[2025-07-29 18:53:04] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000291 bytes
+[2025-07-29 18:56:06] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000082 bytes
+[2025-07-29 18:59:09] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000042 bytes
+[2025-07-29 19:02:11] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000114 bytes
+[2025-07-29 19:05:14] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000073 bytes
+[2025-07-29 19:08:16] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000017 bytes
+[2025-07-29 19:11:19] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000372 bytes
+[2025-07-29 19:14:21] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000064 bytes
+[2025-07-29 19:17:24] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000012 bytes
+[2025-07-29 19:20:26] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000116 bytes
+[2025-07-29 19:23:29] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000224 bytes
+[2025-07-29 19:26:31] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000060 bytes
+[2025-07-29 19:29:34] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000023 bytes
+[2025-07-29 19:32:36] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000091 bytes
+[2025-07-29 19:35:39] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000092 bytes
+[2025-07-29 19:38:41] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000265 bytes
+[2025-07-29 19:41:43] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000001 bytes
+[2025-07-29 19:44:46] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000189 bytes
+[2025-07-29 19:47:48] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000194 bytes
+[2025-07-29 19:50:51] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000018 bytes
+[2025-07-29 19:53:53] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000038 bytes
+[2025-07-29 19:56:55] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000202 bytes
+[2025-07-29 19:59:58] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000067 bytes
+[2025-07-29 20:03:00] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000131 bytes
+[2025-07-29 20:06:03] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000300 bytes
+[2025-07-29 20:09:05] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000052 bytes
+[2025-07-29 20:12:08] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000150 bytes
+[2025-07-29 20:15:10] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000272 bytes
+[2025-07-29 20:18:12] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000272 bytes
+[2025-07-29 20:21:14] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000040 bytes
+[2025-07-29 20:24:16] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000060 bytes
+[2025-07-29 20:27:19] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000052 bytes
+[2025-07-29 20:30:22] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000120 bytes
+[2025-07-29 20:33:24] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000106 bytes
+[2025-07-29 20:36:28] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000145 bytes
+[2025-07-29 20:39:32] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000312 bytes
+[2025-07-29 20:42:36] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000064 bytes
+[2025-07-29 20:45:41] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000416 bytes
+[2025-07-29 20:48:45] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000093 bytes
+[2025-07-29 20:51:49] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000034 bytes
+[2025-07-29 20:54:53] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000208 bytes
+[2025-07-29 20:57:57] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000074 bytes
+[2025-07-29 21:01:02] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000106 bytes
+[2025-07-29 21:04:06] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000387 bytes
+[2025-07-29 21:07:10] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000109 bytes
+[2025-07-29 21:10:15] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000491 bytes
+[2025-07-29 21:13:19] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000024 bytes
+[2025-07-29 21:16:23] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000336 bytes
+[2025-07-29 21:19:28] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000030 bytes
+[2025-07-29 21:22:32] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000370 bytes
+[2025-07-29 21:25:36] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000184 bytes
+[2025-07-29 21:28:40] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000063 bytes
+[2025-07-29 21:31:45] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000160 bytes
+[2025-07-29 21:34:49] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000081 bytes
+[2025-07-29 21:37:53] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000005 bytes
+[2025-07-29 21:40:57] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000151 bytes
+[2025-07-29 21:44:01] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000085 bytes
+[2025-07-29 21:47:06] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000165 bytes
+[2025-07-29 21:50:10] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000154 bytes
+[2025-07-29 21:53:14] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000192 bytes
+[2025-07-29 21:56:18] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000065 bytes
+[2025-07-29 21:59:22] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000005 bytes
+[2025-07-29 22:02:26] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000033 bytes
+[2025-07-29 22:05:30] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000320 bytes
+[2025-07-29 22:08:34] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000140 bytes
+[2025-07-29 22:11:39] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000133 bytes
+[2025-07-29 22:14:43] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000032 bytes
+[2025-07-29 22:17:47] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000149 bytes
+[2025-07-29 22:20:52] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000128 bytes
+[2025-07-29 22:23:56] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000035 bytes
+[2025-07-29 22:27:01] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000471 bytes
+[2025-07-29 22:30:05] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000036 bytes
+[2025-07-29 22:33:10] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000133 bytes
+[2025-07-29 22:36:14] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000092 bytes
+[2025-07-29 22:39:19] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000079 bytes
+[2025-07-29 22:42:23] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000019 bytes
+[2025-07-29 22:45:28] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000197 bytes
+[2025-07-29 22:48:32] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000001 bytes
+[2025-07-29 22:51:37] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000135 bytes
+[2025-07-29 22:54:41] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000150 bytes
+[2025-07-29 22:57:45] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000160 bytes
+[2025-07-29 23:00:50] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000146 bytes
+[2025-07-29 23:03:54] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000058 bytes
+[2025-07-29 23:06:58] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000103 bytes
+[2025-07-29 23:10:03] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000228 bytes
+[2025-07-29 23:13:07] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000666 bytes
+[2025-07-29 23:16:11] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000193 bytes
+[2025-07-29 23:19:15] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000008 bytes
+[2025-07-29 23:22:20] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000379 bytes
+[2025-07-29 23:25:24] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000272 bytes
+[2025-07-29 23:28:28] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000064 bytes
+[2025-07-29 23:31:32] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000067 bytes
+[2025-07-29 23:34:34] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000077 bytes
+[2025-07-29 23:37:37] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000362 bytes
+[2025-07-29 23:40:39] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000136 bytes
+[2025-07-29 23:43:42] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000023 bytes
+[2025-07-29 23:46:46] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000052 bytes
+[2025-07-29 23:49:50] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000162 bytes
+[2025-07-29 23:52:54] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000109 bytes
+[2025-07-29 23:55:58] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000098 bytes
+[2025-07-29 23:59:02] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000146 bytes
+[2025-07-30 00:02:06] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000088 bytes
+[2025-07-30 00:05:10] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000400 bytes
+[2025-07-30 00:08:14] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000187 bytes
+[2025-07-30 00:11:18] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000024 bytes
+[2025-07-30 00:14:20] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000047 bytes
+[2025-07-30 00:17:23] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000069 bytes
+[2025-07-30 00:20:26] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000085 bytes
+[2025-07-30 00:23:28] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000077 bytes
+[2025-07-30 00:26:31] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000224 bytes
+[2025-07-30 00:29:34] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000115 bytes
+[2025-07-30 00:32:37] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000146 bytes
+[2025-07-30 00:35:40] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000222 bytes
+[2025-07-30 00:38:42] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000100 bytes
+[2025-07-30 00:41:45] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000208 bytes
+[2025-07-30 00:44:47] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000106 bytes
+[2025-07-30 00:47:50] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000201 bytes
+[2025-07-30 00:50:52] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000598 bytes
+[2025-07-30 00:53:55] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000095 bytes
+[2025-07-30 00:56:57] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000050 bytes
+[2025-07-30 01:00:01] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000119 bytes
+[2025-07-30 01:03:05] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000140 bytes
+[2025-07-30 01:06:09] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000169 bytes
+[2025-07-30 01:09:13] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000229 bytes
+[2025-07-30 01:12:17] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000416 bytes
+[2025-07-30 01:15:22] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000114 bytes
+[2025-07-30 01:18:26] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000063 bytes
+[2025-07-30 01:21:30] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000090 bytes
+[2025-07-30 01:24:35] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000426 bytes
+[2025-07-30 01:27:39] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000163 bytes
+[2025-07-30 01:30:43] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000214 bytes
+[2025-07-30 01:33:47] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000428 bytes
+[2025-07-30 01:36:49] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000072 bytes
+[2025-07-30 01:39:52] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000230 bytes
+[2025-07-30 01:42:55] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000187 bytes
+[2025-07-30 01:45:57] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000143 bytes
+[2025-07-30 01:49:00] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000114 bytes
+[2025-07-30 01:52:02] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000038 bytes
+[2025-07-30 01:55:04] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000135 bytes
+[2025-07-30 01:58:07] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000204 bytes
+[2025-07-30 02:01:09] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000077 bytes
+[2025-07-30 02:04:12] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000092 bytes
+[2025-07-30 02:07:14] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000075 bytes
+[2025-07-30 02:10:17] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000126 bytes
+[2025-07-30 02:13:20] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000189 bytes
+[2025-07-30 02:16:23] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000305 bytes
+[2025-07-30 02:19:25] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000168 bytes
+[2025-07-30 02:22:28] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000327 bytes
+[2025-07-30 02:25:31] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000041 bytes
+[2025-07-30 02:28:33] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000064 bytes
+[2025-07-30 02:31:36] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000012 bytes
+[2025-07-30 02:34:39] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000494 bytes
+[2025-07-30 02:37:41] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000164 bytes
+[2025-07-30 02:40:44] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000043 bytes
+[2025-07-30 02:43:46] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000003 bytes
+[2025-07-30 02:46:49] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000028 bytes
+[2025-07-30 02:49:51] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000030 bytes
+[2025-07-30 02:52:53] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000038 bytes
+[2025-07-30 02:55:55] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000160 bytes
+[2025-07-30 02:58:57] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000142 bytes
+[2025-07-30 03:01:59] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000066 bytes
+[2025-07-30 03:05:02] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000132 bytes
+[2025-07-30 03:08:04] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000077 bytes
+[2025-07-30 03:11:07] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000019 bytes
+[2025-07-30 03:14:10] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000048 bytes
+[2025-07-30 03:17:12] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000021 bytes
+[2025-07-30 03:20:15] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000381 bytes
+[2025-07-30 03:23:17] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000047 bytes
+[2025-07-30 03:26:20] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000112 bytes
+[2025-07-30 03:29:22] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000008 bytes
+[2025-07-30 03:32:25] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000464 bytes
+[2025-07-30 03:35:27] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000038 bytes
+[2025-07-30 03:38:29] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000283 bytes
+[2025-07-30 03:41:32] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000011 bytes
+[2025-07-30 03:44:34] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000272 bytes
+[2025-07-30 03:47:36] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000004 bytes
+[2025-07-30 03:50:39] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000414 bytes
+[2025-07-30 03:53:41] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000058 bytes
+[2025-07-30 03:56:43] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000029 bytes
+[2025-07-30 03:59:45] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000071 bytes
+[2025-07-30 04:02:47] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000194 bytes
+[2025-07-30 04:05:49] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000016 bytes
+[2025-07-30 04:08:52] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000121 bytes
+[2025-07-30 04:11:54] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000029 bytes
+[2025-07-30 04:14:57] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000161 bytes
+[2025-07-30 04:18:00] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000338 bytes
+[2025-07-30 04:21:02] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000094 bytes
+[2025-07-30 04:24:05] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000120 bytes
+[2025-07-30 04:27:08] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000213 bytes
+[2025-07-30 04:30:11] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000028 bytes
+[2025-07-30 04:33:14] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000495 bytes
+[2025-07-30 04:36:17] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000116 bytes
+[2025-07-30 04:39:19] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000302 bytes
+[2025-07-30 04:42:22] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000036 bytes
+[2025-07-30 04:45:24] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000042 bytes
+[2025-07-30 04:48:27] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000184 bytes
+[2025-07-30 04:51:30] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000190 bytes
+[2025-07-30 04:54:32] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000142 bytes
+[2025-07-30 04:57:35] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000047 bytes
+[2025-07-30 05:00:38] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000014 bytes
+[2025-07-30 05:03:41] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000018 bytes
+[2025-07-30 05:06:44] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000056 bytes
+[2025-07-30 05:09:47] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000131 bytes
+[2025-07-30 05:12:51] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000023 bytes
+[2025-07-30 05:15:56] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000221 bytes
+[2025-07-30 05:19:00] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000061 bytes
+[2025-07-30 05:22:04] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000097 bytes
+[2025-07-30 05:25:09] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000196 bytes
+[2025-07-30 05:28:13] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000118 bytes
+[2025-07-30 05:31:18] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000051 bytes
+[2025-07-30 05:34:21] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000072 bytes
+[2025-07-30 05:37:24] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000089 bytes
+[2025-07-30 05:40:28] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000026 bytes
+[2025-07-30 05:43:30] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000117 bytes
+[2025-07-30 05:46:33] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000368 bytes
+[2025-07-30 05:49:36] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000360 bytes
+[2025-07-30 05:52:39] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000170 bytes
+[2025-07-30 05:55:42] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000107 bytes
+[2025-07-30 05:58:45] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000133 bytes
+[2025-07-30 06:01:48] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000003 bytes
+[2025-07-30 06:04:51] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000179 bytes
+[2025-07-30 06:07:54] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000086 bytes
+[2025-07-30 06:10:57] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000191 bytes
+[2025-07-30 06:13:59] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000066 bytes
+[2025-07-30 06:17:02] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000271 bytes
+[2025-07-30 06:20:05] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000087 bytes
+[2025-07-30 06:23:09] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000120 bytes
+[2025-07-30 06:26:13] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000080 bytes
+[2025-07-30 06:29:16] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000017 bytes
+[2025-07-30 06:32:19] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000222 bytes
+[2025-07-30 06:35:22] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000205 bytes
+[2025-07-30 06:38:25] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000021 bytes
+[2025-07-30 06:41:28] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000011 bytes
+[2025-07-30 06:44:31] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000021 bytes
+[2025-07-30 06:47:34] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000011 bytes
+[2025-07-30 06:50:39] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000043 bytes
+[2025-07-30 06:53:43] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000122 bytes
+[2025-07-30 06:56:47] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000298 bytes
+[2025-07-30 06:59:51] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000364 bytes
+[2025-07-30 07:02:55] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000016 bytes
+[2025-07-30 07:05:59] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000016 bytes
+[2025-07-30 07:09:03] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000255 bytes
+[2025-07-30 07:12:05] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000077 bytes
+[2025-07-30 07:15:08] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000206 bytes
+[2025-07-30 07:18:10] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000097 bytes
+[2025-07-30 07:21:13] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000157 bytes
+[2025-07-30 07:24:16] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000206 bytes
+[2025-07-30 07:27:18] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000008 bytes
+[2025-07-30 07:30:21] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000155 bytes
+[2025-07-30 07:33:24] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000108 bytes
+[2025-07-30 07:36:27] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000052 bytes
+[2025-07-30 07:39:30] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000079 bytes
+[2025-07-30 07:42:33] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000087 bytes
+[2025-07-30 07:45:36] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000149 bytes
+[2025-07-30 07:48:39] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000059 bytes
+[2025-07-30 07:51:42] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000051 bytes
+[2025-07-30 07:54:46] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000444 bytes
+[2025-07-30 07:57:49] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000190 bytes
+[2025-07-30 08:00:52] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000042 bytes
+[2025-07-30 08:03:56] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000119 bytes
+[2025-07-30 08:07:00] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000202 bytes
+[2025-07-30 08:10:04] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000175 bytes
+[2025-07-30 08:13:08] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000020 bytes
+[2025-07-30 08:16:13] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000350 bytes
+[2025-07-30 08:19:17] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000301 bytes
+[2025-07-30 08:22:21] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000102 bytes
+[2025-07-30 08:25:26] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000172 bytes
+[2025-07-30 08:28:30] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000051 bytes
+[2025-07-30 08:31:34] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000144 bytes
+[2025-07-30 08:34:39] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000082 bytes
+[2025-07-30 08:37:44] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000062 bytes
+[2025-07-30 08:40:49] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000172 bytes
+[2025-07-30 08:43:53] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000089 bytes
+[2025-07-30 08:46:58] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000185 bytes
+[2025-07-30 08:50:03] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000078 bytes
+[2025-07-30 08:53:08] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000004 bytes
+[2025-07-30 08:56:12] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000048 bytes
+[2025-07-30 08:59:17] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000297 bytes
+[2025-07-30 09:02:21] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000088 bytes
+[2025-07-30 09:05:26] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000187 bytes
+[2025-07-30 09:08:30] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000150 bytes
+[2025-07-30 09:11:34] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000152 bytes
+[2025-07-30 09:14:37] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000053 bytes
+[2025-07-30 09:17:40] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000136 bytes
+[2025-07-30 09:20:51] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000023 bytes
+[2025-07-30 09:24:16] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000246 bytes
+[2025-07-30 09:27:41] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000160 bytes
+[2025-07-30 09:31:06] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000022 bytes
+[2025-07-30 09:34:30] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000080 bytes
+[2025-07-30 09:37:55] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000104 bytes
+[2025-07-30 09:41:19] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000084 bytes
+[2025-07-30 09:44:43] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000122 bytes
+[2025-07-30 09:48:07] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000019 bytes
+[2025-07-30 09:51:30] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000255 bytes
+[2025-07-30 09:54:53] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000216 bytes
+[2025-07-30 09:56:07] [INFO] [Dummy-2] Stopping SerialRouter...
+[2025-07-30 09:56:07] [INFO] [Port141Owner] COM141->Incoming handler shutting down
+[2025-07-30 09:56:07] [INFO] [Port131Owner] COM131->Incoming handler shutting down
+[2025-07-30 09:56:07] [INFO] [IncomingPortOwner] COM224->131&141 handler shutting down
+[2025-07-30 09:56:07] [INFO] [Dummy-2] Releasing port ownership...
+[2025-07-30 09:56:08] [INFO] [Dummy-2] Port COM224 connection closed by IncomingPortOwner
+[2025-07-30 09:56:08] [INFO] [Dummy-2] Port COM224 released by IncomingPortOwner
+[2025-07-30 09:56:08] [INFO] [Dummy-2] Successfully released COM224 from IncomingPortOwner
+[2025-07-30 09:56:08] [INFO] [Dummy-2] Port COM131 connection closed by Port131Owner
+[2025-07-30 09:56:08] [INFO] [Dummy-2] Port COM131 released by Port131Owner
+[2025-07-30 09:56:08] [INFO] [Dummy-2] Successfully released COM131 from Port131Owner
+[2025-07-30 09:56:08] [INFO] [Dummy-2] Port COM141 connection closed by Port141Owner
+[2025-07-30 09:56:08] [INFO] [Dummy-2] Port COM141 released by Port141Owner
+[2025-07-30 09:56:08] [INFO] [Dummy-2] Successfully released COM141 from Port141Owner
+[2025-07-30 09:56:08] [INFO] [Dummy-2] SerialRouter stopped
+[2025-07-30 10:46:52] [INFO] [MainThread] PortManager initialized with advanced monitoring
+[2025-07-30 10:46:52] [INFO] [MainThread] SerialRouter initialized - Port: COM8, Baud: 115200/115200
+[2025-07-30 10:46:52] [INFO] [Dummy-1] Starting SerialRouter - COM8 <-> COM131 & COM141
+[2025-07-30 10:46:52] [INFO] [Dummy-1] Incoming baud: 115200, Outgoing baud: 115200
+[2025-07-30 10:46:52] [INFO] [Dummy-1] Acquiring port ownership for all routing threads...
+[2025-07-30 10:46:52] [INFO] [Dummy-1] Opening port COM8 for owner IncomingPortOwner
+[2025-07-30 10:46:52] [INFO] [Dummy-1] Port COM8 successfully acquired by IncomingPortOwner
+[2025-07-30 10:46:52] [INFO] [Dummy-1] Successfully acquired COM8 for IncomingPortOwner
+[2025-07-30 10:46:52] [INFO] [Dummy-1] Opening port COM131 for owner Port131Owner
+[2025-07-30 10:46:52] [INFO] [Dummy-1] Port COM131 successfully acquired by Port131Owner
+[2025-07-30 10:46:52] [INFO] [Dummy-1] Successfully acquired COM131 for Port131Owner
+[2025-07-30 10:46:52] [INFO] [Dummy-1] Opening port COM141 for owner Port141Owner
+[2025-07-30 10:46:52] [INFO] [Dummy-1] Port COM141 successfully acquired by Port141Owner
+[2025-07-30 10:46:52] [INFO] [Dummy-1] Successfully acquired COM141 for Port141Owner
+[2025-07-30 10:46:52] [INFO] [Dummy-1] All ports acquired, starting routing threads...
+[2025-07-30 10:46:52] [INFO] [IncomingPortOwner] Starting incoming port handler: COM8->131&141
+[2025-07-30 10:46:52] [INFO] [Port131Owner] Starting outgoing port handler: COM131->Incoming
+[2025-07-30 10:46:52] [INFO] [Port141Owner] Starting outgoing port handler: COM141->Incoming
+[2025-07-30 10:46:52] [INFO] [Dummy-1] Started 3 routing threads with centralized port management
+[2025-07-30 10:46:52] [INFO] [Watchdog] Watchdog monitor started
+[2025-07-30 10:46:52] [INFO] [Dummy-1] SerialRouter started successfully
+[2025-07-30 10:47:05] [INFO] [Dummy-2] Stopping SerialRouter...
+[2025-07-30 10:47:05] [INFO] [Port141Owner] COM141->Incoming handler shutting down
+[2025-07-30 10:47:05] [INFO] [IncomingPortOwner] COM8->131&141 handler shutting down
+[2025-07-30 10:47:05] [INFO] [Port131Owner] COM131->Incoming handler shutting down
+[2025-07-30 10:47:07] [INFO] [Dummy-2] Releasing port ownership...
+[2025-07-30 10:47:08] [INFO] [Dummy-2] Port COM8 connection closed by IncomingPortOwner
+[2025-07-30 10:47:08] [INFO] [Dummy-2] Port COM8 released by IncomingPortOwner
+[2025-07-30 10:47:08] [INFO] [Dummy-2] Successfully released COM8 from IncomingPortOwner
+[2025-07-30 10:47:08] [INFO] [Dummy-2] Port COM131 connection closed by Port131Owner
+[2025-07-30 10:47:08] [INFO] [Dummy-2] Port COM131 released by Port131Owner
+[2025-07-30 10:47:08] [INFO] [Dummy-2] Successfully released COM131 from Port131Owner
+[2025-07-30 10:47:08] [INFO] [Dummy-2] Port COM141 connection closed by Port141Owner
+[2025-07-30 10:47:08] [INFO] [Dummy-2] Port COM141 released by Port141Owner
+[2025-07-30 10:47:08] [INFO] [Dummy-2] Successfully released COM141 from Port141Owner
+[2025-07-30 10:47:08] [INFO] [Dummy-2] SerialRouter stopped
+[2025-07-30 10:47:39] [INFO] [MainThread] PortManager initialized with advanced monitoring
+[2025-07-30 10:47:39] [INFO] [MainThread] SerialRouter initialized - Port: COM8, Baud: 115200/115200
+[2025-07-30 10:47:39] [INFO] [Dummy-3] Starting SerialRouter - COM8 <-> COM131 & COM141
+[2025-07-30 10:47:39] [INFO] [Dummy-3] Incoming baud: 115200, Outgoing baud: 115200
+[2025-07-30 10:47:39] [INFO] [Dummy-3] Acquiring port ownership for all routing threads...
+[2025-07-30 10:47:39] [INFO] [Dummy-3] Opening port COM8 for owner IncomingPortOwner
+[2025-07-30 10:47:39] [INFO] [Dummy-3] Port COM8 successfully acquired by IncomingPortOwner
+[2025-07-30 10:47:39] [INFO] [Dummy-3] Successfully acquired COM8 for IncomingPortOwner
+[2025-07-30 10:47:39] [INFO] [Dummy-3] Opening port COM131 for owner Port131Owner
+[2025-07-30 10:47:39] [INFO] [Dummy-3] Port COM131 successfully acquired by Port131Owner
+[2025-07-30 10:47:39] [INFO] [Dummy-3] Successfully acquired COM131 for Port131Owner
+[2025-07-30 10:47:39] [INFO] [Dummy-3] Opening port COM141 for owner Port141Owner
+[2025-07-30 10:47:39] [INFO] [Dummy-3] Port COM141 successfully acquired by Port141Owner
+[2025-07-30 10:47:39] [INFO] [Dummy-3] Successfully acquired COM141 for Port141Owner
+[2025-07-30 10:47:39] [INFO] [Dummy-3] All ports acquired, starting routing threads...
+[2025-07-30 10:47:39] [INFO] [IncomingPortOwner] Starting incoming port handler: COM8->131&141
+[2025-07-30 10:47:39] [INFO] [Port131Owner] Starting outgoing port handler: COM131->Incoming
+[2025-07-30 10:47:39] [INFO] [Port141Owner] Starting outgoing port handler: COM141->Incoming
+[2025-07-30 10:47:39] [INFO] [Dummy-3] Started 3 routing threads with centralized port management
+[2025-07-30 10:47:39] [INFO] [Watchdog] Watchdog monitor started
+[2025-07-30 10:47:39] [INFO] [Dummy-3] SerialRouter started successfully
+[2025-07-30 10:47:41] [INFO] [Dummy-4] Stopping SerialRouter...
+[2025-07-30 10:47:41] [INFO] [IncomingPortOwner] COM8->131&141 handler shutting down
+[2025-07-30 10:47:41] [INFO] [Port141Owner] COM141->Incoming handler shutting down
+[2025-07-30 10:47:41] [INFO] [Port131Owner] COM131->Incoming handler shutting down
+[2025-07-30 10:47:43] [INFO] [Dummy-4] Releasing port ownership...
+[2025-07-30 10:47:43] [INFO] [Dummy-4] Port COM8 connection closed by IncomingPortOwner
+[2025-07-30 10:47:43] [INFO] [Dummy-4] Port COM8 released by IncomingPortOwner
+[2025-07-30 10:47:43] [INFO] [Dummy-4] Successfully released COM8 from IncomingPortOwner
+[2025-07-30 10:47:43] [INFO] [Dummy-4] Port COM131 connection closed by Port131Owner
+[2025-07-30 10:47:43] [INFO] [Dummy-4] Port COM131 released by Port131Owner
+[2025-07-30 10:47:43] [INFO] [Dummy-4] Successfully released COM131 from Port131Owner
+[2025-07-30 10:47:43] [INFO] [Dummy-4] Port COM141 connection closed by Port141Owner
+[2025-07-30 10:47:43] [INFO] [Dummy-4] Port COM141 released by Port141Owner
+[2025-07-30 10:47:43] [INFO] [Dummy-4] Successfully released COM141 from Port141Owner
+[2025-07-30 10:47:43] [INFO] [Dummy-4] SerialRouter stopped
+[2025-07-30 11:22:57] [INFO] [MainThread] PortManager initialized with advanced monitoring
+[2025-07-30 11:22:57] [INFO] [MainThread] SerialRouter initialized - Port: COM8, Baud: 115200/115200
+[2025-07-30 11:22:57] [INFO] [Dummy-1] Starting SerialRouter - COM8 <-> COM131 & COM141
+[2025-07-30 11:22:57] [INFO] [Dummy-1] Incoming baud: 115200, Outgoing baud: 115200
+[2025-07-30 11:22:57] [INFO] [Dummy-1] Acquiring port ownership for all routing threads...
+[2025-07-30 11:22:57] [INFO] [Dummy-1] Opening port COM8 for owner IncomingPortOwner
+[2025-07-30 11:22:57] [INFO] [Dummy-1] Port COM8 successfully acquired by IncomingPortOwner
+[2025-07-30 11:22:57] [INFO] [Dummy-1] Successfully acquired COM8 for IncomingPortOwner
+[2025-07-30 11:22:57] [INFO] [Dummy-1] Opening port COM131 for owner Port131Owner
+[2025-07-30 11:22:57] [INFO] [Dummy-1] Port COM131 successfully acquired by Port131Owner
+[2025-07-30 11:22:57] [INFO] [Dummy-1] Successfully acquired COM131 for Port131Owner
+[2025-07-30 11:22:57] [INFO] [Dummy-1] Opening port COM141 for owner Port141Owner
+[2025-07-30 11:22:57] [INFO] [Dummy-1] Port COM141 successfully acquired by Port141Owner
+[2025-07-30 11:22:57] [INFO] [Dummy-1] Successfully acquired COM141 for Port141Owner
+[2025-07-30 11:22:57] [INFO] [Dummy-1] All ports acquired, starting routing threads...
+[2025-07-30 11:22:57] [INFO] [IncomingPortOwner] Starting incoming port handler: COM8->131&141
+[2025-07-30 11:22:57] [INFO] [Port131Owner] Starting outgoing port handler: COM131->Incoming
+[2025-07-30 11:22:57] [INFO] [Port141Owner] Starting outgoing port handler: COM141->Incoming
+[2025-07-30 11:22:57] [INFO] [Dummy-1] Started 3 routing threads with centralized port management
+[2025-07-30 11:22:57] [INFO] [Watchdog] Watchdog monitor started
+[2025-07-30 11:22:57] [INFO] [Dummy-1] SerialRouter started successfully
+[2025-07-30 11:22:59] [INFO] [Dummy-2] Stopping SerialRouter...
+[2025-07-30 11:22:59] [INFO] [Port131Owner] COM131->Incoming handler shutting down
+[2025-07-30 11:22:59] [INFO] [Port141Owner] COM141->Incoming handler shutting down
+[2025-07-30 11:22:59] [INFO] [IncomingPortOwner] COM8->131&141 handler shutting down
+[2025-07-30 11:23:01] [INFO] [Dummy-2] Releasing port ownership...
+[2025-07-30 11:23:01] [INFO] [Dummy-2] Port COM8 connection closed by IncomingPortOwner
+[2025-07-30 11:23:01] [INFO] [Dummy-2] Port COM8 released by IncomingPortOwner
+[2025-07-30 11:23:01] [INFO] [Dummy-2] Successfully released COM8 from IncomingPortOwner
+[2025-07-30 11:23:01] [INFO] [Dummy-2] Port COM131 connection closed by Port131Owner
+[2025-07-30 11:23:01] [INFO] [Dummy-2] Port COM131 released by Port131Owner
+[2025-07-30 11:23:01] [INFO] [Dummy-2] Successfully released COM131 from Port131Owner
+[2025-07-30 11:23:01] [INFO] [Dummy-2] Port COM141 connection closed by Port141Owner
+[2025-07-30 11:23:01] [INFO] [Dummy-2] Port COM141 released by Port141Owner
+[2025-07-30 11:23:01] [INFO] [Dummy-2] Successfully released COM141 from Port141Owner
+[2025-07-30 11:23:01] [INFO] [Dummy-2] SerialRouter stopped
+[2025-07-30 11:23:17] [INFO] [MainThread] PortManager initialized with advanced monitoring
+[2025-07-30 11:23:17] [INFO] [MainThread] SerialRouter initialized - Port: COM224, Baud: 115200/115200
+[2025-07-30 11:23:17] [INFO] [Dummy-3] Starting SerialRouter - COM224 <-> COM131 & COM141
+[2025-07-30 11:23:17] [INFO] [Dummy-3] Incoming baud: 115200, Outgoing baud: 115200
+[2025-07-30 11:23:17] [INFO] [Dummy-3] Acquiring port ownership for all routing threads...
+[2025-07-30 11:23:17] [INFO] [Dummy-3] Opening port COM224 for owner IncomingPortOwner
+[2025-07-30 11:23:17] [INFO] [Dummy-3] Port COM224 successfully acquired by IncomingPortOwner
+[2025-07-30 11:23:17] [INFO] [Dummy-3] Successfully acquired COM224 for IncomingPortOwner
+[2025-07-30 11:23:17] [INFO] [Dummy-3] Opening port COM131 for owner Port131Owner
+[2025-07-30 11:23:17] [INFO] [Dummy-3] Port COM131 successfully acquired by Port131Owner
+[2025-07-30 11:23:17] [INFO] [Dummy-3] Successfully acquired COM131 for Port131Owner
+[2025-07-30 11:23:17] [INFO] [Dummy-3] Opening port COM141 for owner Port141Owner
+[2025-07-30 11:23:17] [INFO] [Dummy-3] Port COM141 successfully acquired by Port141Owner
+[2025-07-30 11:23:17] [INFO] [Dummy-3] Successfully acquired COM141 for Port141Owner
+[2025-07-30 11:23:17] [INFO] [Dummy-3] All ports acquired, starting routing threads...
+[2025-07-30 11:23:17] [INFO] [IncomingPortOwner] Starting incoming port handler: COM224->131&141
+[2025-07-30 11:23:17] [INFO] [Port131Owner] Starting outgoing port handler: COM131->Incoming
+[2025-07-30 11:23:17] [INFO] [Port141Owner] Starting outgoing port handler: COM141->Incoming
+[2025-07-30 11:23:17] [INFO] [Dummy-3] Started 3 routing threads with centralized port management
+[2025-07-30 11:23:17] [INFO] [Watchdog] Watchdog monitor started
+[2025-07-30 11:23:17] [INFO] [Dummy-3] SerialRouter started successfully
+[2025-07-30 11:23:18] [INFO] [Dummy-4] Stopping SerialRouter...
+[2025-07-30 11:23:18] [INFO] [IncomingPortOwner] COM224->131&141 handler shutting down
+[2025-07-30 11:23:18] [INFO] [Port131Owner] COM131->Incoming handler shutting down
+[2025-07-30 11:23:18] [INFO] [Port141Owner] COM141->Incoming handler shutting down
+[2025-07-30 11:23:20] [INFO] [Dummy-4] Releasing port ownership...
+[2025-07-30 11:23:21] [INFO] [Dummy-4] Port COM224 connection closed by IncomingPortOwner
+[2025-07-30 11:23:21] [INFO] [Dummy-4] Port COM224 released by IncomingPortOwner
+[2025-07-30 11:23:21] [INFO] [Dummy-4] Successfully released COM224 from IncomingPortOwner
+[2025-07-30 11:23:21] [INFO] [Dummy-4] Port COM131 connection closed by Port131Owner
+[2025-07-30 11:23:21] [INFO] [Dummy-4] Port COM131 released by Port131Owner
+[2025-07-30 11:23:21] [INFO] [Dummy-4] Successfully released COM131 from Port131Owner
+[2025-07-30 11:23:21] [INFO] [Dummy-4] Port COM141 connection closed by Port141Owner
+[2025-07-30 11:23:21] [INFO] [Dummy-4] Port COM141 released by Port141Owner
+[2025-07-30 11:23:21] [INFO] [Dummy-4] Successfully released COM141 from Port141Owner
+[2025-07-30 11:23:21] [INFO] [Dummy-4] SerialRouter stopped
+[2025-07-30 13:02:57] [INFO] [MainThread] PortManager initialized with advanced monitoring
+[2025-07-30 13:02:57] [INFO] [MainThread] SerialRouter initialized - Port: COM8, Baud: 115200/115200
+[2025-07-30 13:02:57] [INFO] [Dummy-1] Starting SerialRouter - COM8 <-> COM131 & COM141
+[2025-07-30 13:02:57] [INFO] [Dummy-1] Incoming baud: 115200, Outgoing baud: 115200
+[2025-07-30 13:02:57] [INFO] [Dummy-1] Acquiring port ownership for all routing threads...
+[2025-07-30 13:02:57] [INFO] [Dummy-1] Opening port COM8 for owner IncomingPortOwner
+[2025-07-30 13:02:58] [INFO] [Dummy-1] Port COM8 successfully acquired by IncomingPortOwner
+[2025-07-30 13:02:58] [INFO] [Dummy-1] Successfully acquired COM8 for IncomingPortOwner
+[2025-07-30 13:02:58] [INFO] [Dummy-1] Opening port COM131 for owner Port131Owner
+[2025-07-30 13:02:58] [INFO] [Dummy-1] Port COM131 successfully acquired by Port131Owner
+[2025-07-30 13:02:58] [INFO] [Dummy-1] Successfully acquired COM131 for Port131Owner
+[2025-07-30 13:02:58] [INFO] [Dummy-1] Opening port COM141 for owner Port141Owner
+[2025-07-30 13:02:58] [INFO] [Dummy-1] Port COM141 successfully acquired by Port141Owner
+[2025-07-30 13:02:58] [INFO] [Dummy-1] Successfully acquired COM141 for Port141Owner
+[2025-07-30 13:02:58] [INFO] [Dummy-1] All ports acquired, starting routing threads...
+[2025-07-30 13:02:58] [INFO] [IncomingPortOwner] Starting incoming port handler: COM8->131&141
+[2025-07-30 13:02:58] [INFO] [Port131Owner] Starting outgoing port handler: COM131->Incoming
+[2025-07-30 13:02:58] [INFO] [Port141Owner] Starting outgoing port handler: COM141->Incoming
+[2025-07-30 13:02:58] [INFO] [Dummy-1] Started 3 routing threads with centralized port management
+[2025-07-30 13:02:58] [INFO] [Watchdog] Watchdog monitor started
+[2025-07-30 13:02:58] [INFO] [Dummy-1] SerialRouter started successfully
+[2025-07-30 13:03:04] [INFO] [Dummy-2] Stopping SerialRouter...
+[2025-07-30 13:03:04] [INFO] [Port131Owner] COM131->Incoming handler shutting down
+[2025-07-30 13:03:04] [INFO] [IncomingPortOwner] COM8->131&141 handler shutting down
+[2025-07-30 13:03:04] [INFO] [Port141Owner] COM141->Incoming handler shutting down
+[2025-07-30 13:03:06] [INFO] [Dummy-2] Releasing port ownership...
+[2025-07-30 13:03:06] [INFO] [Dummy-2] Port COM8 connection closed by IncomingPortOwner
+[2025-07-30 13:03:06] [INFO] [Dummy-2] Port COM8 released by IncomingPortOwner
+[2025-07-30 13:03:06] [INFO] [Dummy-2] Successfully released COM8 from IncomingPortOwner
+[2025-07-30 13:03:06] [INFO] [Dummy-2] Port COM131 connection closed by Port131Owner
+[2025-07-30 13:03:06] [INFO] [Dummy-2] Port COM131 released by Port131Owner
+[2025-07-30 13:03:06] [INFO] [Dummy-2] Successfully released COM131 from Port131Owner
+[2025-07-30 13:03:06] [INFO] [Dummy-2] Port COM141 connection closed by Port141Owner
+[2025-07-30 13:03:06] [INFO] [Dummy-2] Port COM141 released by Port141Owner
+[2025-07-30 13:03:06] [INFO] [Dummy-2] Successfully released COM141 from Port141Owner
+[2025-07-30 13:03:06] [INFO] [Dummy-2] SerialRouter stopped
+[2025-07-30 13:03:08] [INFO] [MainThread] PortManager initialized with advanced monitoring
+[2025-07-30 13:03:08] [INFO] [MainThread] SerialRouter initialized - Port: COM11, Baud: 115200/115200
+[2025-07-30 13:03:08] [INFO] [Dummy-3] Starting SerialRouter - COM11 <-> COM131 & COM141
+[2025-07-30 13:03:08] [INFO] [Dummy-3] Incoming baud: 115200, Outgoing baud: 115200
+[2025-07-30 13:03:08] [INFO] [Dummy-3] Acquiring port ownership for all routing threads...
+[2025-07-30 13:03:08] [INFO] [Dummy-3] Opening port COM11 for owner IncomingPortOwner
+[2025-07-30 13:03:08] [ERROR] [Dummy-3] Failed to open port COM11 for IncomingPortOwner: Cannot configure port, something went wrong. Original message: PermissionError(13, 'A device attached to the system is not functioning.', None, 31)
+[2025-07-30 13:03:08] [ERROR] [Dummy-3] Failed to acquire COM11 for IncomingPortOwner
+[2025-07-30 13:03:08] [ERROR] [Dummy-3] SerialRouter failed to start - critical ports unavailable
+[2025-07-30 13:04:11] [INFO] [MainThread] PortManager initialized with advanced monitoring
+[2025-07-30 13:04:11] [INFO] [MainThread] SerialRouter initialized - Port: COM8, Baud: 115200/115200
+[2025-07-30 13:04:11] [INFO] [Dummy-1] Starting SerialRouter - COM8 <-> COM131 & COM141
+[2025-07-30 13:04:11] [INFO] [Dummy-1] Incoming baud: 115200, Outgoing baud: 115200
+[2025-07-30 13:04:11] [INFO] [Dummy-1] Acquiring port ownership for all routing threads...
+[2025-07-30 13:04:11] [INFO] [Dummy-1] Opening port COM8 for owner IncomingPortOwner
+[2025-07-30 13:04:11] [INFO] [Dummy-1] Port COM8 successfully acquired by IncomingPortOwner
+[2025-07-30 13:04:11] [INFO] [Dummy-1] Successfully acquired COM8 for IncomingPortOwner
+[2025-07-30 13:04:11] [INFO] [Dummy-1] Opening port COM131 for owner Port131Owner
+[2025-07-30 13:04:11] [INFO] [Dummy-1] Port COM131 successfully acquired by Port131Owner
+[2025-07-30 13:04:11] [INFO] [Dummy-1] Successfully acquired COM131 for Port131Owner
+[2025-07-30 13:04:11] [INFO] [Dummy-1] Opening port COM141 for owner Port141Owner
+[2025-07-30 13:04:11] [INFO] [Dummy-1] Port COM141 successfully acquired by Port141Owner
+[2025-07-30 13:04:11] [INFO] [Dummy-1] Successfully acquired COM141 for Port141Owner
+[2025-07-30 13:04:11] [INFO] [Dummy-1] All ports acquired, starting routing threads...
+[2025-07-30 13:04:11] [INFO] [IncomingPortOwner] Starting incoming port handler: COM8->131&141
+[2025-07-30 13:04:11] [INFO] [Port131Owner] Starting outgoing port handler: COM131->Incoming
+[2025-07-30 13:04:11] [INFO] [Port141Owner] Starting outgoing port handler: COM141->Incoming
+[2025-07-30 13:04:11] [INFO] [Dummy-1] Started 3 routing threads with centralized port management
+[2025-07-30 13:04:11] [INFO] [Watchdog] Watchdog monitor started
+[2025-07-30 13:04:11] [INFO] [Dummy-1] SerialRouter started successfully
+[2025-07-30 13:04:13] [INFO] [Dummy-2] Stopping SerialRouter...
+[2025-07-30 13:04:13] [INFO] [IncomingPortOwner] COM8->131&141 handler shutting down
+[2025-07-30 13:04:13] [INFO] [Port141Owner] COM141->Incoming handler shutting down
+[2025-07-30 13:04:13] [INFO] [Port131Owner] COM131->Incoming handler shutting down
+[2025-07-30 13:04:15] [INFO] [Dummy-2] Releasing port ownership...
+[2025-07-30 13:04:15] [INFO] [Dummy-2] Port COM8 connection closed by IncomingPortOwner
+[2025-07-30 13:04:15] [INFO] [Dummy-2] Port COM8 released by IncomingPortOwner
+[2025-07-30 13:04:15] [INFO] [Dummy-2] Successfully released COM8 from IncomingPortOwner
+[2025-07-30 13:04:15] [INFO] [Dummy-2] Port COM131 connection closed by Port131Owner
+[2025-07-30 13:04:15] [INFO] [Dummy-2] Port COM131 released by Port131Owner
+[2025-07-30 13:04:15] [INFO] [Dummy-2] Successfully released COM131 from Port131Owner
+[2025-07-30 13:04:15] [INFO] [Dummy-2] Port COM141 connection closed by Port141Owner
+[2025-07-30 13:04:15] [INFO] [Dummy-2] Port COM141 released by Port141Owner
+[2025-07-30 13:04:15] [INFO] [Dummy-2] Successfully released COM141 from Port141Owner
+[2025-07-30 13:04:15] [INFO] [Dummy-2] SerialRouter stopped
+[2025-07-30 13:04:15] [INFO] [MainThread] PortManager initialized with advanced monitoring
+[2025-07-30 13:04:15] [INFO] [MainThread] SerialRouter initialized - Port: COM8, Baud: 115200/115200
+[2025-07-30 13:04:15] [INFO] [Dummy-3] Starting SerialRouter - COM8 <-> COM131 & COM141
+[2025-07-30 13:04:15] [INFO] [Dummy-3] Incoming baud: 115200, Outgoing baud: 115200
+[2025-07-30 13:04:15] [INFO] [Dummy-3] Acquiring port ownership for all routing threads...
+[2025-07-30 13:04:15] [INFO] [Dummy-3] Opening port COM8 for owner IncomingPortOwner
+[2025-07-30 13:04:15] [INFO] [Dummy-3] Port COM8 successfully acquired by IncomingPortOwner
+[2025-07-30 13:04:15] [INFO] [Dummy-3] Successfully acquired COM8 for IncomingPortOwner
+[2025-07-30 13:04:15] [INFO] [Dummy-3] Opening port COM131 for owner Port131Owner
+[2025-07-30 13:04:15] [INFO] [Dummy-3] Port COM131 successfully acquired by Port131Owner
+[2025-07-30 13:04:15] [INFO] [Dummy-3] Successfully acquired COM131 for Port131Owner
+[2025-07-30 13:04:15] [INFO] [Dummy-3] Opening port COM141 for owner Port141Owner
+[2025-07-30 13:04:15] [INFO] [Dummy-3] Port COM141 successfully acquired by Port141Owner
+[2025-07-30 13:04:15] [INFO] [Dummy-3] Successfully acquired COM141 for Port141Owner
+[2025-07-30 13:04:15] [INFO] [Dummy-3] All ports acquired, starting routing threads...
+[2025-07-30 13:04:15] [INFO] [IncomingPortOwner] Starting incoming port handler: COM8->131&141
+[2025-07-30 13:04:15] [INFO] [Port131Owner] Starting outgoing port handler: COM131->Incoming
+[2025-07-30 13:04:15] [INFO] [Port141Owner] Starting outgoing port handler: COM141->Incoming
+[2025-07-30 13:04:15] [INFO] [Dummy-3] Started 3 routing threads with centralized port management
+[2025-07-30 13:04:15] [INFO] [Watchdog] Watchdog monitor started
+[2025-07-30 13:04:15] [INFO] [Dummy-3] SerialRouter started successfully
+[2025-07-30 13:06:07] [INFO] [MainThread] PortManager initialized with advanced monitoring
+[2025-07-30 13:06:07] [INFO] [MainThread] SerialRouter initialized - Port: COM8, Baud: 115200/115200
+[2025-07-30 13:06:07] [INFO] [Dummy-1] Starting SerialRouter - COM8 <-> COM131 & COM141
+[2025-07-30 13:06:07] [INFO] [Dummy-1] Incoming baud: 115200, Outgoing baud: 115200
+[2025-07-30 13:06:07] [INFO] [Dummy-1] Acquiring port ownership for all routing threads...
+[2025-07-30 13:06:07] [INFO] [Dummy-1] Opening port COM8 for owner IncomingPortOwner
+[2025-07-30 13:06:07] [INFO] [Dummy-1] Port COM8 successfully acquired by IncomingPortOwner
+[2025-07-30 13:06:07] [INFO] [Dummy-1] Successfully acquired COM8 for IncomingPortOwner
+[2025-07-30 13:06:07] [INFO] [Dummy-1] Opening port COM131 for owner Port131Owner
+[2025-07-30 13:06:07] [INFO] [Dummy-1] Port COM131 successfully acquired by Port131Owner
+[2025-07-30 13:06:07] [INFO] [Dummy-1] Successfully acquired COM131 for Port131Owner
+[2025-07-30 13:06:07] [INFO] [Dummy-1] Opening port COM141 for owner Port141Owner
+[2025-07-30 13:06:07] [INFO] [Dummy-1] Port COM141 successfully acquired by Port141Owner
+[2025-07-30 13:06:07] [INFO] [Dummy-1] Successfully acquired COM141 for Port141Owner
+[2025-07-30 13:06:07] [INFO] [Dummy-1] All ports acquired, starting routing threads...
+[2025-07-30 13:06:07] [INFO] [IncomingPortOwner] Starting incoming port handler: COM8->131&141
+[2025-07-30 13:06:07] [INFO] [Port131Owner] Starting outgoing port handler: COM131->Incoming
+[2025-07-30 13:06:07] [INFO] [Port141Owner] Starting outgoing port handler: COM141->Incoming
+[2025-07-30 13:06:07] [INFO] [Dummy-1] Started 3 routing threads with centralized port management
+[2025-07-30 13:06:07] [INFO] [Watchdog] Watchdog monitor started
+[2025-07-30 13:06:07] [INFO] [Dummy-1] SerialRouter started successfully
+[2025-07-30 13:06:12] [INFO] [Dummy-2] Stopping SerialRouter...
+[2025-07-30 13:06:12] [INFO] [Port131Owner] COM131->Incoming handler shutting down
+[2025-07-30 13:06:12] [INFO] [IncomingPortOwner] COM8->131&141 handler shutting down
+[2025-07-30 13:06:12] [INFO] [Port141Owner] COM141->Incoming handler shutting down
+[2025-07-30 13:06:14] [INFO] [Dummy-2] Releasing port ownership...
+[2025-07-30 13:06:14] [INFO] [Dummy-2] Port COM8 connection closed by IncomingPortOwner
+[2025-07-30 13:06:14] [INFO] [Dummy-2] Port COM8 released by IncomingPortOwner
+[2025-07-30 13:06:14] [INFO] [Dummy-2] Successfully released COM8 from IncomingPortOwner
+[2025-07-30 13:06:14] [INFO] [Dummy-2] Port COM131 connection closed by Port131Owner
+[2025-07-30 13:06:14] [INFO] [Dummy-2] Port COM131 released by Port131Owner
+[2025-07-30 13:06:14] [INFO] [Dummy-2] Successfully released COM131 from Port131Owner
+[2025-07-30 13:06:14] [INFO] [Dummy-2] Port COM141 connection closed by Port141Owner
+[2025-07-30 13:06:14] [INFO] [Dummy-2] Port COM141 released by Port141Owner
+[2025-07-30 13:06:14] [INFO] [Dummy-2] Successfully released COM141 from Port141Owner
+[2025-07-30 13:06:14] [INFO] [Dummy-2] SerialRouter stopped
+[2025-07-30 13:06:16] [INFO] [MainThread] PortManager initialized with advanced monitoring
+[2025-07-30 13:06:16] [INFO] [MainThread] SerialRouter initialized - Port: COM11, Baud: 115200/115200
+[2025-07-30 13:06:16] [INFO] [Dummy-3] Starting SerialRouter - COM11 <-> COM131 & COM141
+[2025-07-30 13:06:16] [INFO] [Dummy-3] Incoming baud: 115200, Outgoing baud: 115200
+[2025-07-30 13:06:16] [INFO] [Dummy-3] Acquiring port ownership for all routing threads...
+[2025-07-30 13:06:16] [INFO] [Dummy-3] Opening port COM11 for owner IncomingPortOwner
+[2025-07-30 13:06:16] [ERROR] [Dummy-3] Failed to open port COM11 for IncomingPortOwner: Cannot configure port, something went wrong. Original message: PermissionError(13, 'A device attached to the system is not functioning.', None, 31)
+[2025-07-30 13:06:16] [ERROR] [Dummy-3] Failed to acquire COM11 for IncomingPortOwner
+[2025-07-30 13:06:16] [ERROR] [Dummy-3] SerialRouter failed to start - critical ports unavailable
+[2025-07-30 13:06:26] [INFO] [MainThread] PortManager initialized with advanced monitoring
+[2025-07-30 13:06:26] [INFO] [MainThread] SerialRouter initialized - Port: COM8, Baud: 115200/115200
+[2025-07-30 13:06:26] [INFO] [Dummy-4] Starting SerialRouter - COM8 <-> COM131 & COM141
+[2025-07-30 13:06:26] [INFO] [Dummy-4] Incoming baud: 115200, Outgoing baud: 115200
+[2025-07-30 13:06:26] [INFO] [Dummy-4] Acquiring port ownership for all routing threads...
+[2025-07-30 13:06:26] [INFO] [Dummy-4] Opening port COM8 for owner IncomingPortOwner
+[2025-07-30 13:06:26] [INFO] [Dummy-4] Port COM8 successfully acquired by IncomingPortOwner
+[2025-07-30 13:06:26] [INFO] [Dummy-4] Successfully acquired COM8 for IncomingPortOwner
+[2025-07-30 13:06:26] [INFO] [Dummy-4] Opening port COM131 for owner Port131Owner
+[2025-07-30 13:06:26] [INFO] [Dummy-4] Port COM131 successfully acquired by Port131Owner
+[2025-07-30 13:06:26] [INFO] [Dummy-4] Successfully acquired COM131 for Port131Owner
+[2025-07-30 13:06:26] [INFO] [Dummy-4] Opening port COM141 for owner Port141Owner
+[2025-07-30 13:06:26] [INFO] [Dummy-4] Port COM141 successfully acquired by Port141Owner
+[2025-07-30 13:06:26] [INFO] [Dummy-4] Successfully acquired COM141 for Port141Owner
+[2025-07-30 13:06:26] [INFO] [Dummy-4] All ports acquired, starting routing threads...
+[2025-07-30 13:06:26] [INFO] [IncomingPortOwner] Starting incoming port handler: COM8->131&141
+[2025-07-30 13:06:26] [INFO] [Port131Owner] Starting outgoing port handler: COM131->Incoming
+[2025-07-30 13:06:26] [INFO] [Port141Owner] Starting outgoing port handler: COM141->Incoming
+[2025-07-30 13:06:26] [INFO] [Dummy-4] Started 3 routing threads with centralized port management
+[2025-07-30 13:06:26] [INFO] [Watchdog] Watchdog monitor started
+[2025-07-30 13:06:26] [INFO] [Dummy-4] SerialRouter started successfully
+[2025-07-30 13:07:33] [INFO] [MainThread] PortManager initialized with advanced monitoring
+[2025-07-30 13:07:33] [INFO] [MainThread] SerialRouter initialized - Port: COM224, Baud: 115200/115200
+[2025-07-30 13:07:33] [INFO] [Dummy-1] Starting SerialRouter - COM224 <-> COM131 & COM141
+[2025-07-30 13:07:33] [INFO] [Dummy-1] Incoming baud: 115200, Outgoing baud: 115200
+[2025-07-30 13:07:33] [INFO] [Dummy-1] Acquiring port ownership for all routing threads...
+[2025-07-30 13:07:33] [INFO] [Dummy-1] Opening port COM224 for owner IncomingPortOwner
+[2025-07-30 13:07:33] [INFO] [Dummy-1] Port COM224 successfully acquired by IncomingPortOwner
+[2025-07-30 13:07:33] [INFO] [Dummy-1] Successfully acquired COM224 for IncomingPortOwner
+[2025-07-30 13:07:33] [INFO] [Dummy-1] Opening port COM131 for owner Port131Owner
+[2025-07-30 13:07:33] [INFO] [Dummy-1] Port COM131 successfully acquired by Port131Owner
+[2025-07-30 13:07:33] [INFO] [Dummy-1] Successfully acquired COM131 for Port131Owner
+[2025-07-30 13:07:33] [INFO] [Dummy-1] Opening port COM141 for owner Port141Owner
+[2025-07-30 13:07:33] [INFO] [Dummy-1] Port COM141 successfully acquired by Port141Owner
+[2025-07-30 13:07:33] [INFO] [Dummy-1] Successfully acquired COM141 for Port141Owner
+[2025-07-30 13:07:33] [INFO] [Dummy-1] All ports acquired, starting routing threads...
+[2025-07-30 13:07:33] [INFO] [IncomingPortOwner] Starting incoming port handler: COM224->131&141
+[2025-07-30 13:07:33] [INFO] [Port131Owner] Starting outgoing port handler: COM131->Incoming
+[2025-07-30 13:07:33] [INFO] [Port141Owner] Starting outgoing port handler: COM141->Incoming
+[2025-07-30 13:07:33] [INFO] [Dummy-1] Started 3 routing threads with centralized port management
+[2025-07-30 13:07:33] [INFO] [Watchdog] Watchdog monitor started
+[2025-07-30 13:07:33] [INFO] [Dummy-1] SerialRouter started successfully
+[2025-07-30 13:11:03] [INFO] [IncomingPortOwner] COM224->131&141: Resetting byte counter at 1000040 bytes
+[2025-07-30 13:11:18] [INFO] [Dummy-2] Stopping SerialRouter...
+[2025-07-30 13:11:18] [INFO] [Port131Owner] COM131->Incoming handler shutting down
+[2025-07-30 13:11:18] [INFO] [IncomingPortOwner] COM224->131&141 handler shutting down
+[2025-07-30 13:11:18] [INFO] [Port141Owner] COM141->Incoming handler shutting down
+[2025-07-30 13:11:20] [INFO] [Dummy-2] Releasing port ownership...
+[2025-07-30 13:11:20] [INFO] [Dummy-2] Port COM224 connection closed by IncomingPortOwner
+[2025-07-30 13:11:20] [INFO] [Dummy-2] Port COM224 released by IncomingPortOwner
+[2025-07-30 13:11:20] [INFO] [Dummy-2] Successfully released COM224 from IncomingPortOwner
+[2025-07-30 13:11:20] [INFO] [Dummy-2] Port COM131 connection closed by Port131Owner
+[2025-07-30 13:11:20] [INFO] [Dummy-2] Port COM131 released by Port131Owner
+[2025-07-30 13:11:20] [INFO] [Dummy-2] Successfully released COM131 from Port131Owner
+[2025-07-30 13:11:20] [INFO] [Dummy-2] Port COM141 connection closed by Port141Owner
+[2025-07-30 13:11:20] [INFO] [Dummy-2] Port COM141 released by Port141Owner
+[2025-07-30 13:11:20] [INFO] [Dummy-2] Successfully released COM141 from Port141Owner
+[2025-07-30 13:11:20] [INFO] [Dummy-2] SerialRouter stopped
+[2025-07-30 13:37:11] [INFO] [MainThread] PortManager initialized with advanced monitoring
+[2025-07-30 13:37:11] [INFO] [MainThread] SerialRouter initialized - Port: COM8, Baud: 115200/115200
+[2025-07-30 13:37:11] [INFO] [Dummy-1] Starting SerialRouter - COM8 <-> COM131 & COM141
+[2025-07-30 13:37:11] [INFO] [Dummy-1] Incoming baud: 115200, Outgoing baud: 115200
+[2025-07-30 13:37:11] [INFO] [Dummy-1] Acquiring port ownership for all routing threads...
+[2025-07-30 13:37:11] [INFO] [Dummy-1] Opening port COM8 for owner IncomingPortOwner
+[2025-07-30 13:37:11] [INFO] [Dummy-1] Port COM8 successfully acquired by IncomingPortOwner
+[2025-07-30 13:37:11] [INFO] [Dummy-1] Successfully acquired COM8 for IncomingPortOwner
+[2025-07-30 13:37:11] [INFO] [Dummy-1] Opening port COM131 for owner Port131Owner
+[2025-07-30 13:37:11] [INFO] [Dummy-1] Port COM131 successfully acquired by Port131Owner
+[2025-07-30 13:37:11] [INFO] [Dummy-1] Successfully acquired COM131 for Port131Owner
+[2025-07-30 13:37:11] [INFO] [Dummy-1] Opening port COM141 for owner Port141Owner
+[2025-07-30 13:37:11] [INFO] [Dummy-1] Port COM141 successfully acquired by Port141Owner
+[2025-07-30 13:37:11] [INFO] [Dummy-1] Successfully acquired COM141 for Port141Owner
+[2025-07-30 13:37:11] [INFO] [Dummy-1] All ports acquired, starting routing threads...
+[2025-07-30 13:37:11] [INFO] [IncomingPortOwner] Starting incoming port handler: COM8->131&141
+[2025-07-30 13:37:11] [INFO] [Port131Owner] Starting outgoing port handler: COM131->Incoming
+[2025-07-30 13:37:11] [INFO] [Port141Owner] Starting outgoing port handler: COM141->Incoming
+[2025-07-30 13:37:11] [INFO] [Dummy-1] Started 3 routing threads with centralized port management
+[2025-07-30 13:37:11] [INFO] [Watchdog] Watchdog monitor started
+[2025-07-30 13:37:11] [INFO] [Dummy-1] SerialRouter started successfully
+[2025-07-30 13:57:54] [INFO] [MainThread] PortManager initialized with advanced monitoring
+[2025-07-30 13:57:54] [INFO] [MainThread] SerialRouter initialized - Port: COM8, Baud: 115200/115200
+[2025-07-30 13:57:54] [INFO] [Dummy-1] Starting SerialRouter - COM8 <-> COM131 & COM141
+[2025-07-30 13:57:54] [INFO] [Dummy-1] Incoming baud: 115200, Outgoing baud: 115200
+[2025-07-30 13:57:54] [INFO] [Dummy-1] Acquiring port ownership for all routing threads...
+[2025-07-30 13:57:54] [INFO] [Dummy-1] Opening port COM8 for owner IncomingPortOwner
+[2025-07-30 13:57:54] [INFO] [Dummy-1] Port COM8 successfully acquired by IncomingPortOwner
+[2025-07-30 13:57:54] [INFO] [Dummy-1] Successfully acquired COM8 for IncomingPortOwner
+[2025-07-30 13:57:54] [INFO] [Dummy-1] Opening port COM131 for owner Port131Owner
+[2025-07-30 13:57:54] [INFO] [Dummy-1] Port COM131 successfully acquired by Port131Owner
+[2025-07-30 13:57:54] [INFO] [Dummy-1] Successfully acquired COM131 for Port131Owner
+[2025-07-30 13:57:54] [INFO] [Dummy-1] Opening port COM141 for owner Port141Owner
+[2025-07-30 13:57:54] [INFO] [Dummy-1] Port COM141 successfully acquired by Port141Owner
+[2025-07-30 13:57:54] [INFO] [Dummy-1] Successfully acquired COM141 for Port141Owner
+[2025-07-30 13:57:54] [INFO] [Dummy-1] All ports acquired, starting routing threads...
+[2025-07-30 13:57:54] [INFO] [IncomingPortOwner] Starting incoming port handler: COM8->131&141
+[2025-07-30 13:57:54] [INFO] [Port131Owner] Starting outgoing port handler: COM131->Incoming
+[2025-07-30 13:57:54] [INFO] [Port141Owner] Starting outgoing port handler: COM141->Incoming
+[2025-07-30 13:57:54] [INFO] [Dummy-1] Started 3 routing threads with centralized port management
+[2025-07-30 13:57:54] [INFO] [Watchdog] Watchdog monitor started
+[2025-07-30 13:57:54] [INFO] [Dummy-1] SerialRouter started successfully
+[2025-07-30 13:58:18] [INFO] [MainThread] Stopping SerialRouter...
+[2025-07-30 13:58:18] [INFO] [Port131Owner] COM131->Incoming handler shutting down
+[2025-07-30 13:58:18] [INFO] [Port141Owner] COM141->Incoming handler shutting down
+[2025-07-30 13:58:18] [INFO] [IncomingPortOwner] COM8->131&141 handler shutting down
+[2025-07-30 13:58:20] [INFO] [MainThread] Releasing port ownership...
+[2025-07-30 13:58:20] [INFO] [MainThread] Port COM8 connection closed by IncomingPortOwner
+[2025-07-30 13:58:20] [INFO] [MainThread] Port COM8 released by IncomingPortOwner
+[2025-07-30 13:58:20] [INFO] [MainThread] Successfully released COM8 from IncomingPortOwner
+[2025-07-30 13:58:20] [INFO] [MainThread] Port COM131 connection closed by Port131Owner
+[2025-07-30 13:58:20] [INFO] [MainThread] Port COM131 released by Port131Owner
+[2025-07-30 13:58:20] [INFO] [MainThread] Successfully released COM131 from Port131Owner
+[2025-07-30 13:58:20] [INFO] [MainThread] Port COM141 connection closed by Port141Owner
+[2025-07-30 13:58:20] [INFO] [MainThread] Port COM141 released by Port141Owner
+[2025-07-30 13:58:20] [INFO] [MainThread] Successfully released COM141 from Port141Owner
+[2025-07-30 13:58:20] [INFO] [MainThread] SerialRouter stopped
+[2025-07-30 13:59:23] [INFO] [MainThread] PortManager initialized with advanced monitoring
+[2025-07-30 13:59:23] [INFO] [MainThread] SerialRouter initialized - Port: COM8, Baud: 115200/115200
+[2025-07-30 13:59:23] [INFO] [Dummy-1] Starting SerialRouter - COM8 <-> COM131 & COM141
+[2025-07-30 13:59:23] [INFO] [Dummy-1] Incoming baud: 115200, Outgoing baud: 115200
+[2025-07-30 13:59:23] [INFO] [Dummy-1] Acquiring port ownership for all routing threads...
+[2025-07-30 13:59:23] [INFO] [Dummy-1] Opening port COM8 for owner IncomingPortOwner
+[2025-07-30 13:59:23] [INFO] [Dummy-1] Port COM8 successfully acquired by IncomingPortOwner
+[2025-07-30 13:59:23] [INFO] [Dummy-1] Successfully acquired COM8 for IncomingPortOwner
+[2025-07-30 13:59:23] [INFO] [Dummy-1] Opening port COM131 for owner Port131Owner
+[2025-07-30 13:59:23] [INFO] [Dummy-1] Port COM131 successfully acquired by Port131Owner
+[2025-07-30 13:59:23] [INFO] [Dummy-1] Successfully acquired COM131 for Port131Owner
+[2025-07-30 13:59:23] [INFO] [Dummy-1] Opening port COM141 for owner Port141Owner
+[2025-07-30 13:59:23] [INFO] [Dummy-1] Port COM141 successfully acquired by Port141Owner
+[2025-07-30 13:59:23] [INFO] [Dummy-1] Successfully acquired COM141 for Port141Owner
+[2025-07-30 13:59:23] [INFO] [Dummy-1] All ports acquired, starting routing threads...
+[2025-07-30 13:59:23] [INFO] [IncomingPortOwner] Starting incoming port handler: COM8->131&141
+[2025-07-30 13:59:23] [INFO] [Port131Owner] Starting outgoing port handler: COM131->Incoming
+[2025-07-30 13:59:23] [INFO] [Port141Owner] Starting outgoing port handler: COM141->Incoming
+[2025-07-30 13:59:23] [INFO] [Dummy-1] Started 3 routing threads with centralized port management
+[2025-07-30 13:59:23] [INFO] [Watchdog] Watchdog monitor started
+[2025-07-30 13:59:23] [INFO] [Dummy-1] SerialRouter started successfully
+[2025-07-30 13:59:26] [INFO] [Dummy-2] Stopping SerialRouter...
+[2025-07-30 13:59:26] [INFO] [Port131Owner] COM131->Incoming handler shutting down
+[2025-07-30 13:59:26] [INFO] [IncomingPortOwner] COM8->131&141 handler shutting down
+[2025-07-30 13:59:26] [INFO] [Port141Owner] COM141->Incoming handler shutting down
+[2025-07-30 13:59:28] [INFO] [Dummy-2] Releasing port ownership...
+[2025-07-30 13:59:28] [INFO] [Dummy-2] Port COM8 connection closed by IncomingPortOwner
+[2025-07-30 13:59:28] [INFO] [Dummy-2] Port COM8 released by IncomingPortOwner
+[2025-07-30 13:59:28] [INFO] [Dummy-2] Successfully released COM8 from IncomingPortOwner
+[2025-07-30 13:59:28] [INFO] [Dummy-2] Port COM131 connection closed by Port131Owner
+[2025-07-30 13:59:28] [INFO] [Dummy-2] Port COM131 released by Port131Owner
+[2025-07-30 13:59:28] [INFO] [Dummy-2] Successfully released COM131 from Port131Owner
+[2025-07-30 13:59:28] [INFO] [Dummy-2] Port COM141 connection closed by Port141Owner
+[2025-07-30 13:59:28] [INFO] [Dummy-2] Port COM141 released by Port141Owner
+[2025-07-30 13:59:28] [INFO] [Dummy-2] Successfully released COM141 from Port141Owner
+[2025-07-30 13:59:28] [INFO] [Dummy-2] SerialRouter stopped
+[2025-07-30 13:59:45] [INFO] [MainThread] PortManager initialized with advanced monitoring
+[2025-07-30 13:59:45] [INFO] [MainThread] SerialRouter initialized - Port: COM8, Baud: 115200/115200
+[2025-07-30 13:59:45] [INFO] [Dummy-1] Starting SerialRouter - COM8 <-> COM131 & COM141
+[2025-07-30 13:59:45] [INFO] [Dummy-1] Incoming baud: 115200, Outgoing baud: 115200
+[2025-07-30 13:59:45] [INFO] [Dummy-1] Acquiring port ownership for all routing threads...
+[2025-07-30 13:59:45] [INFO] [Dummy-1] Opening port COM8 for owner IncomingPortOwner
+[2025-07-30 13:59:45] [INFO] [Dummy-1] Port COM8 successfully acquired by IncomingPortOwner
+[2025-07-30 13:59:45] [INFO] [Dummy-1] Successfully acquired COM8 for IncomingPortOwner
+[2025-07-30 13:59:45] [INFO] [Dummy-1] Opening port COM131 for owner Port131Owner
+[2025-07-30 13:59:45] [INFO] [Dummy-1] Port COM131 successfully acquired by Port131Owner
+[2025-07-30 13:59:45] [INFO] [Dummy-1] Successfully acquired COM131 for Port131Owner
+[2025-07-30 13:59:45] [INFO] [Dummy-1] Opening port COM141 for owner Port141Owner
+[2025-07-30 13:59:45] [INFO] [Dummy-1] Port COM141 successfully acquired by Port141Owner
+[2025-07-30 13:59:45] [INFO] [Dummy-1] Successfully acquired COM141 for Port141Owner
+[2025-07-30 13:59:45] [INFO] [Dummy-1] All ports acquired, starting routing threads...
+[2025-07-30 13:59:45] [INFO] [IncomingPortOwner] Starting incoming port handler: COM8->131&141
+[2025-07-30 13:59:45] [INFO] [Port131Owner] Starting outgoing port handler: COM131->Incoming
+[2025-07-30 13:59:45] [INFO] [Port141Owner] Starting outgoing port handler: COM141->Incoming
+[2025-07-30 13:59:45] [INFO] [Dummy-1] Started 3 routing threads with centralized port management
+[2025-07-30 13:59:45] [INFO] [Watchdog] Watchdog monitor started
+[2025-07-30 13:59:45] [INFO] [Dummy-1] SerialRouter started successfully
+[2025-07-30 14:04:42] [INFO] [Dummy-2] Stopping SerialRouter...
+[2025-07-30 14:04:42] [INFO] [Port131Owner] COM131->Incoming handler shutting down
+[2025-07-30 14:04:42] [INFO] [Port141Owner] COM141->Incoming handler shutting down
+[2025-07-30 14:04:42] [INFO] [IncomingPortOwner] COM8->131&141 handler shutting down
+[2025-07-30 14:04:44] [INFO] [Dummy-2] Releasing port ownership...
+[2025-07-30 14:04:44] [INFO] [Dummy-2] Port COM8 connection closed by IncomingPortOwner
+[2025-07-30 14:04:44] [INFO] [Dummy-2] Port COM8 released by IncomingPortOwner
+[2025-07-30 14:04:44] [INFO] [Dummy-2] Successfully released COM8 from IncomingPortOwner
+[2025-07-30 14:04:44] [INFO] [Dummy-2] Port COM131 connection closed by Port131Owner
+[2025-07-30 14:04:44] [INFO] [Dummy-2] Port COM131 released by Port131Owner
+[2025-07-30 14:04:44] [INFO] [Dummy-2] Successfully released COM131 from Port131Owner
+[2025-07-30 14:04:44] [INFO] [Dummy-2] Port COM141 connection closed by Port141Owner
+[2025-07-30 14:04:44] [INFO] [Dummy-2] Port COM141 released by Port141Owner
+[2025-07-30 14:04:44] [INFO] [Dummy-2] Successfully released COM141 from Port141Owner
+[2025-07-30 14:04:44] [INFO] [Dummy-2] SerialRouter stopped
+[2025-07-30 14:06:05] [INFO] [MainThread] PortManager initialized with advanced monitoring
+[2025-07-30 14:06:05] [INFO] [MainThread] SerialRouter initialized - Port: COM8, Baud: 115200/115200
+[2025-07-30 14:06:05] [INFO] [Dummy-1] Starting SerialRouter - COM8 <-> COM131 & COM141
+[2025-07-30 14:06:05] [INFO] [Dummy-1] Incoming baud: 115200, Outgoing baud: 115200
+[2025-07-30 14:06:05] [INFO] [Dummy-1] Acquiring port ownership for all routing threads...
+[2025-07-30 14:06:05] [INFO] [Dummy-1] Opening port COM8 for owner IncomingPortOwner
+[2025-07-30 14:06:05] [INFO] [Dummy-1] Port COM8 successfully acquired by IncomingPortOwner
+[2025-07-30 14:06:05] [INFO] [Dummy-1] Successfully acquired COM8 for IncomingPortOwner
+[2025-07-30 14:06:05] [INFO] [Dummy-1] Opening port COM131 for owner Port131Owner
+[2025-07-30 14:06:05] [INFO] [Dummy-1] Port COM131 successfully acquired by Port131Owner
+[2025-07-30 14:06:05] [INFO] [Dummy-1] Successfully acquired COM131 for Port131Owner
+[2025-07-30 14:06:05] [INFO] [Dummy-1] Opening port COM141 for owner Port141Owner
+[2025-07-30 14:06:05] [INFO] [Dummy-1] Port COM141 successfully acquired by Port141Owner
+[2025-07-30 14:06:05] [INFO] [Dummy-1] Successfully acquired COM141 for Port141Owner
+[2025-07-30 14:06:05] [INFO] [Dummy-1] All ports acquired, starting routing threads...
+[2025-07-30 14:06:05] [INFO] [IncomingPortOwner] Starting incoming port handler: COM8->131&141
+[2025-07-30 14:06:05] [INFO] [Port131Owner] Starting outgoing port handler: COM131->Incoming
+[2025-07-30 14:06:05] [INFO] [Port141Owner] Starting outgoing port handler: COM141->Incoming
+[2025-07-30 14:06:05] [INFO] [Dummy-1] Started 3 routing threads with centralized port management
+[2025-07-30 14:06:05] [INFO] [Watchdog] Watchdog monitor started
+[2025-07-30 14:06:05] [INFO] [Dummy-1] SerialRouter started successfully
+[2025-07-30 14:06:16] [INFO] [Dummy-2] Stopping SerialRouter...
+[2025-07-30 14:06:16] [INFO] [Port141Owner] COM141->Incoming handler shutting down
+[2025-07-30 14:06:16] [INFO] [IncomingPortOwner] COM8->131&141 handler shutting down
+[2025-07-30 14:06:16] [INFO] [Port131Owner] COM131->Incoming handler shutting down
+[2025-07-30 14:06:18] [INFO] [Dummy-2] Releasing port ownership...
+[2025-07-30 14:06:18] [INFO] [Dummy-2] Port COM8 connection closed by IncomingPortOwner
+[2025-07-30 14:06:18] [INFO] [Dummy-2] Port COM8 released by IncomingPortOwner
+[2025-07-30 14:06:18] [INFO] [Dummy-2] Successfully released COM8 from IncomingPortOwner
+[2025-07-30 14:06:18] [INFO] [Dummy-2] Port COM131 connection closed by Port131Owner
+[2025-07-30 14:06:18] [INFO] [Dummy-2] Port COM131 released by Port131Owner
+[2025-07-30 14:06:18] [INFO] [Dummy-2] Successfully released COM131 from Port131Owner
+[2025-07-30 14:06:18] [INFO] [Dummy-2] Port COM141 connection closed by Port141Owner
+[2025-07-30 14:06:18] [INFO] [Dummy-2] Port COM141 released by Port141Owner
+[2025-07-30 14:06:18] [INFO] [Dummy-2] Successfully released COM141 from Port141Owner
+[2025-07-30 14:06:18] [INFO] [Dummy-2] SerialRouter stopped
+[2025-07-30 14:34:09] [INFO] [MainThread] PortManager initialized with advanced monitoring
+[2025-07-30 14:34:09] [INFO] [MainThread] SerialRouter initialized - Port: COM226, Baud: 115200/115200
+[2025-07-30 14:34:09] [INFO] [Dummy-1] Starting SerialRouter - COM226 <-> COM131 & COM141
+[2025-07-30 14:34:09] [INFO] [Dummy-1] Incoming baud: 115200, Outgoing baud: 115200
+[2025-07-30 14:34:09] [INFO] [Dummy-1] Acquiring port ownership for all routing threads...
+[2025-07-30 14:34:09] [INFO] [Dummy-1] Opening port COM226 for owner IncomingPortOwner
+[2025-07-30 14:34:14] [ERROR] [Dummy-1] Failed to open port COM226 for IncomingPortOwner: could not open port 'COM226': OSError(22, 'Insufficient system resources exist to complete the requested service.', None, 1450)
+[2025-07-30 14:34:14] [ERROR] [Dummy-1] Failed to acquire COM226 for IncomingPortOwner
+[2025-07-30 14:34:14] [ERROR] [Dummy-1] SerialRouter failed to start - critical ports unavailable

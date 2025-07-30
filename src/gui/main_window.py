@@ -22,13 +22,14 @@ from typing import Dict, Any, Optional
 from PyQt6.QtWidgets import (
     QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, 
     QLabel, QComboBox, QPushButton, QTextEdit, QFrame, QGroupBox, 
-    QGridLayout, QSpinBox, QProgressBar, QSplitter
+    QGridLayout, QSpinBox, QProgressBar, QSplitter, QSystemTrayIcon, QMenu
 )
 from PyQt6.QtCore import QThread, pyqtSignal, QTimer, Qt
-from PyQt6.QtGui import QFont, QPalette, QIcon
+from PyQt6.QtGui import QFont, QPalette, QIcon, QAction
 
 import serial.tools.list_ports
 from src.core.router_engine import SerialRouterCore
+from src.core.port_enumerator import PortEnumerator, PortType
 from src.gui.resources import resource_manager
 from src.gui.components import RibbonToolbar, ConnectionDiagramWidget, EnhancedStatusWidget
 from src.gui.components.dialogs.about_dialog import AboutDialog
@@ -108,6 +109,13 @@ class SerialRouterMainWindow(QMainWindow):
         self.last_bytes_transferred = {}
         self.last_update_time = datetime.now()
         
+        # Initialize port enumerator for robust port detection
+        self.port_enumerator = PortEnumerator()
+        
+        # System tray setup
+        self.tray_icon = None
+        self.setup_system_tray()
+        
         # Initialize UI
         self.init_ui()
         self.setup_logging()
@@ -119,6 +127,58 @@ class SerialRouterMainWindow(QMainWindow):
         
         # Start status monitoring
         self.status_timer.start(1000)  # 1 second updates
+        
+    def setup_system_tray(self):
+        """Setup system tray icon and menu."""
+        if not QSystemTrayIcon.isSystemTrayAvailable():
+            return
+            
+        # Create tray icon using app icon
+        app_icon = resource_manager.get_app_icon()
+        if app_icon.isNull():
+            return
+            
+        self.tray_icon = QSystemTrayIcon(app_icon, self)
+        
+        # Create context menu
+        tray_menu = QMenu()
+        
+        restore_action = QAction("Restore", self)
+        restore_action.triggered.connect(self.show_normal)
+        tray_menu.addAction(restore_action)
+        
+        tray_menu.addSeparator()
+        
+        quit_action = QAction("Quit", self)
+        quit_action.triggered.connect(self.perform_shutdown)
+        tray_menu.addAction(quit_action)
+        
+        self.tray_icon.setContextMenu(tray_menu)
+        self.tray_icon.activated.connect(self.tray_icon_activated)
+        
+        # Set tooltip
+        self.tray_icon.setToolTip("SerialRouter v2.0")
+        
+        # Show tray icon
+        self.tray_icon.show()
+        
+    def tray_icon_activated(self, reason):
+        """Handle tray icon activation."""
+        if reason == QSystemTrayIcon.ActivationReason.DoubleClick:
+            self.show_normal()
+            
+    def show_normal(self):
+        """Restore window from tray."""
+        self.setWindowState(self.windowState() & ~Qt.WindowState.WindowMinimized)
+        self.show()
+        self.raise_()
+        self.activateWindow()
+        
+    def quit_application(self):
+        """Quit the application completely."""
+        if self.tray_icon:
+            self.tray_icon.hide()
+        QApplication.quit()
         
     def init_ui(self):
         """Initialize the user interface."""
@@ -235,7 +295,15 @@ class SerialRouterMainWindow(QMainWindow):
             # Create a simple placeholder label instead
             placeholder = QLabel("Connection Diagram (Error Loading)")
             placeholder.setMinimumHeight(200)
-            placeholder.setStyleSheet("background-color: #f0f0f0; border: 1px solid #ccc; text-align: center;")
+            # Use Qt palette colors for theme compatibility
+            palette = placeholder.palette()
+            bg_color = palette.color(palette.ColorRole.AlternateBase)
+            border_color = palette.color(palette.ColorRole.Mid)
+            placeholder.setStyleSheet(f"""
+                background-color: {bg_color.name()};
+                border: 1px solid {border_color.name()};
+                text-align: center;
+            """)
             diagram_layout.addWidget(placeholder)
             self.connection_diagram = None
         
@@ -297,13 +365,78 @@ class SerialRouterMainWindow(QMainWindow):
         self.ribbon.show_help.connect(self.show_help_information)
     
     def show_port_configuration(self):
-        """Launch com0com setup utility."""
+        """Show detailed port information and launch com0com setup utility."""
+        # Show detailed port analysis first
+        self.show_detailed_port_analysis()
+        
+        # Then launch setup utility
         try:
-            subprocess.Popen([r"C:\Program Files (x86)\com0com\setupg.exe"], 
+            subprocess.Popen([r"C:\Program Files (x86)\com0com\VirtualPortManager.exe"], 
                             creationflags=subprocess.DETACHED_PROCESS)
             self.add_log_message("Launched com0com setup utility")
         except Exception as e:
             self.add_log_message(f"Could not launch setup utility: {str(e)}")
+    
+    def show_detailed_port_analysis(self):
+        """Show detailed analysis of available ports."""
+        try:
+            self.add_log_message("=== Detailed Port Analysis ===")
+            
+            all_ports = self.port_enumerator.enumerate_ports()
+            if not all_ports:
+                self.add_log_message("No serial ports detected on this system")
+                return
+            
+            # Reserved ports for outgoing routing
+            excluded_ports = {"COM131", "COM132", "COM141", "COM142"}
+            
+            # Group ports by type for better presentation
+            port_groups = {
+                PortType.PHYSICAL: [],
+                PortType.MOXA_VIRTUAL: [],
+                PortType.OTHER_VIRTUAL: []
+            }
+            
+            for port in all_ports:
+                port_groups[port.port_type].append(port)
+            
+            # Show physical ports
+            if port_groups[PortType.PHYSICAL]:
+                self.add_log_message("Physical Ports")
+                for port in port_groups[PortType.PHYSICAL]:
+                    if port.port_name in excluded_ports:
+                        self.add_log_message(f"  - {port.port_name} - [RESERVED - Outgoing Only]")
+                    else:
+                        self.add_log_message(f"  - {port.port_name}")
+            
+            # Show Moxa ports (critical for offshore operations)
+            if port_groups[PortType.MOXA_VIRTUAL]:
+                self.add_log_message("Moxa Virtual Ports (Network Serial):")
+                for port in port_groups[PortType.MOXA_VIRTUAL]:
+                    if port.port_name in excluded_ports:
+                        self.add_log_message(f"  - {port.port_name} - [RESERVED - Outgoing Only]")
+                    else:
+                        self.add_log_message(f"  - {port.port_name}")
+            
+            # Show other virtual ports
+            if port_groups[PortType.OTHER_VIRTUAL]:
+                self.add_log_message("Other Virtual Ports:")
+                for port in port_groups[PortType.OTHER_VIRTUAL]:
+                    if port.port_name in excluded_ports:
+                        self.add_log_message(f"  - {port.port_name}")
+                    else:
+                        self.add_log_message(f"  - {port.port_name}")
+            
+            # Validate current router configuration
+            current_incoming = self.incoming_port_combo.currentText()
+            if current_incoming:
+                validation = self.port_enumerator.validate_router_ports(current_incoming, ["COM131", "COM141"])
+                self.add_log_message("Current Router Configuration:")
+                for port_name, is_available in validation.items():
+                    status = "[OK]" if is_available else "[MISSING]"
+                    self.add_log_message(f"  {status} {port_name}")        
+        except Exception as e:
+            self.add_log_message(f"Port analysis error: {str(e)}")
     
     def show_routing_stats(self):
         """Show historical performance and reliability statistics."""
@@ -507,35 +640,151 @@ class SerialRouterMainWindow(QMainWindow):
         scrollbar.setValue(scrollbar.maximum())
         
     def refresh_available_ports(self):
-        """Refresh the list of available COM ports."""
+        """Refresh the list of available COM ports using enhanced port enumerator."""
         current_port = self.incoming_port_combo.currentText()
         self.incoming_port_combo.clear()
         
         try:
-            ports = serial.tools.list_ports.comports()
-            port_names = [port.device for port in sorted(ports, key=lambda x: x.device)]
+            # Use our robust port enumerator
+            all_ports = self.port_enumerator.enumerate_ports()
             
-            # Always include COM54 as the hardcoded incoming port for testing
-            if "COM54" not in port_names:
-                port_names.insert(0, "COM54")
+            if not all_ports:
+                # Fallback to COM54 if no ports detected
+                self.incoming_port_combo.addItem("COM54")
+                self.add_log_message("No ports detected - using COM54 fallback")
+                return
             
-            if port_names:
-                self.incoming_port_combo.addItems(port_names)
-                # Always set COM54 as the default selection
-                self.incoming_port_combo.setCurrentText("COM54")
+            # Separate ports by type for better user experience
+            physical_ports = []
+            moxa_ports = []
+            other_virtual_ports = []
+            
+            for port in all_ports:
+                if port.port_type == PortType.PHYSICAL:
+                    physical_ports.append(port)
+                elif port.port_type == PortType.MOXA_VIRTUAL:
+                    moxa_ports.append(port)
+                else:
+                    other_virtual_ports.append(port)
+            
+            # Excluded ports - these are reserved for outgoing routing and com0com pairs
+            excluded_ports = {"COM131", "COM132", "COM141", "COM142"}
+            
+            # Add ports to dropdown in order of priority: Physical, Moxa, Others
+            port_items = []
+            port_details = []
+            excluded_count = 0
+            
+            # Add physical ports first (preferred for incoming)
+            for port in physical_ports:
+                if port.port_name not in excluded_ports:
+                    port_items.append(port.port_name)
+                    port_details.append(f"{port.port_name} (Physical)")
+                else:
+                    excluded_count += 1
+            
+            # Add Moxa ports next (but exclude reserved outgoing ports)
+            for port in moxa_ports:
+                if port.port_name not in excluded_ports:
+                    port_items.append(port.port_name)
+                    port_details.append(f"{port.port_name} (Moxa Virtual)")
+                else:
+                    excluded_count += 1
+            
+            # Add other virtual ports last (but exclude reserved outgoing ports)
+            for port in other_virtual_ports:
+                if port.port_name not in excluded_ports:
+                    port_items.append(port.port_name)
+                    port_details.append(f"{port.port_name} (Virtual)")
+                else:
+                    excluded_count += 1
+            
+            # Populate the dropdown
+            if port_items:
+                self.incoming_port_combo.addItems(port_items)
+                
+                # Smart default selection priority:
+                # 1. Previous selection if still available
+                # 2. COM54 if it's a Moxa port (current system default)
+                # 3. First physical port
+                # 4. First available port
+                if current_port and current_port in port_items:
+                    self.incoming_port_combo.setCurrentText(current_port)
+                elif "COM54" in port_items:
+                    self.incoming_port_combo.setCurrentText("COM54")
+                elif physical_ports:
+                    self.incoming_port_combo.setCurrentText(physical_ports[0].port_name)
+                else:
+                    self.incoming_port_combo.setCurrentIndex(0)
             else:
                 self.incoming_port_combo.addItem("COM54")
-                
-            self.add_log_message(f"Found {len(port_names)} COM ports: {', '.join(port_names) if port_names else 'None'} (COM54 hardcoded for testing)")
+            
+            # Report findings with port type details
+            total_ports = len(all_ports)
+            available_ports = len(port_items)
+            moxa_count = len(moxa_ports)
+            physical_count = len(physical_ports)
+            
+            self.add_log_message(f"Port scan: {total_ports} total, {available_ports} available for incoming ({physical_count} Physical, {moxa_count} Moxa Virtual)")
+            
+            # Show excluded ports information
+            if excluded_count > 0:
+                excluded_found = [port for port in excluded_ports if any(p.port_name == port for p in all_ports)]
+                if excluded_found:
+                    self.add_log_message(f"Excluded outgoing ports: {', '.join(excluded_found)} (reserved for COM131/141 routing)")
+            
+            # Show Moxa ports specifically (important for offshore operations)
+            if moxa_ports:
+                available_moxa = [p.port_name for p in moxa_ports if p.port_name not in excluded_ports]
+                if available_moxa:
+                    self.add_log_message(f"Available Moxa ports: {', '.join(available_moxa)}")
+                    
+                excluded_moxa = [p.port_name for p in moxa_ports if p.port_name in excluded_ports]
+                if excluded_moxa:
+                    self.add_log_message(f"Reserved Moxa ports: {', '.join(excluded_moxa)} (outgoing routing)")
             
         except Exception as e:
-            self.add_log_message(f"Error refreshing ports: {str(e)}")
+            self.add_log_message(f"Error scanning ports: {str(e)}")
+            # Safe fallback
             self.incoming_port_combo.addItem("COM54")
+            self.add_log_message("Using COM54 fallback due to scan error")
             
     def validate_selected_port(self) -> bool:
-        """Simple port validation - string check only to avoid port conflicts."""
+        """Enhanced port validation using port enumerator with exclusion checks."""
         port = self.incoming_port_combo.currentText()
-        return port and port not in ["No COM ports available", "Error reading ports"]
+        if not port or port in ["No COM ports available", "Error reading ports"]:
+            return False
+        
+        # Critical safety check: prevent using reserved outgoing ports as incoming
+        excluded_ports = {"COM131", "COM132", "COM141", "COM142"}
+        if port in excluded_ports:
+            self.add_log_message(f"ERROR: Cannot use {port} as incoming port - reserved for outgoing routing")
+            return False
+        
+        try:
+            # Validate that router ports exist using our enumerator
+            validation = self.port_enumerator.validate_router_ports(port, ["COM131", "COM141"])
+            
+            if not validation.get(port, False):
+                self.add_log_message(f"Warning: Selected port {port} not found during validation")
+                return False
+                
+            # Check that fixed outgoing ports are available
+            missing_ports = []
+            for outgoing_port in ["COM131", "COM141"]:
+                if not validation.get(outgoing_port, False):
+                    missing_ports.append(outgoing_port)
+            
+            if missing_ports:
+                self.add_log_message(f"Warning: Required outgoing ports not found: {', '.join(missing_ports)}")
+                # Still allow operation - ports might become available
+                
+            return True
+            
+        except Exception as e:
+            self.add_log_message(f"Port validation error: {str(e)}")
+            # Fallback to basic validation with exclusion check
+            return bool(port) and port not in excluded_ports
         
     def cleanup_router_core(self):
         """Simple cleanup helper for router core and logging handler."""
@@ -974,7 +1223,24 @@ class SerialRouterMainWindow(QMainWindow):
         self.add_log_message("Activity log cleared")
         
     def closeEvent(self, event):
-        """Handle application close event with robust shutdown."""
+        """Handle application close event - minimize to tray if available."""
+        if self.tray_icon and self.tray_icon.isVisible():
+            # Minimize to tray
+            self.hide()
+            self.tray_icon.showMessage(
+                "SerialRouter",
+                "Application minimized to tray",
+                QSystemTrayIcon.MessageIcon.Information,
+                2000
+            )
+            event.ignore()
+        else:
+            # No tray available, perform full shutdown
+            self.perform_shutdown()
+            event.accept()
+            
+    def perform_shutdown(self):
+        """Perform complete application shutdown."""
         self.add_log_message("Application shutdown initiated...")
         
         # Stop status timer first to prevent updates during shutdown
@@ -1003,8 +1269,9 @@ class SerialRouterMainWindow(QMainWindow):
                 
         # Final cleanup
         self.cleanup_router_core()
+        if self.tray_icon:
+            self.tray_icon.hide()
         self.add_log_message("Application shutdown complete")
-        event.accept()
     
     def apply_theme(self):
         """Apply the Windows theme to the application."""

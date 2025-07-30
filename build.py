@@ -48,7 +48,6 @@ def build(clean=False):
         # Include all necessary data files (Windows uses semicolon separator)
         "--add-data", r"src;src",
         "--add-data", r"assets;assets",
-        "--add-data", r"config;config",
         
         # Essential hidden imports for standard library modules
         "--hidden-import", "json",
