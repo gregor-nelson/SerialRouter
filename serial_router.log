@@ -6925,3 +6925,192 @@
 [2025-07-30 14:34:14] [ERROR] [Dummy-1] Failed to open port COM226 for IncomingPortOwner: could not open port 'COM226': OSError(22, 'Insufficient system resources exist to complete the requested service.', None, 1450)
 [2025-07-30 14:34:14] [ERROR] [Dummy-1] Failed to acquire COM226 for IncomingPortOwner
 [2025-07-30 14:34:14] [ERROR] [Dummy-1] SerialRouter failed to start - critical ports unavailable
+[2025-07-31 10:14:17] [INFO] [MainThread] PortManager initialized with advanced monitoring
+[2025-07-31 10:14:17] [INFO] [MainThread] SerialRouter initialized - Port: COM8, Baud: 115200/115200
+[2025-07-31 10:14:17] [INFO] [Dummy-1] Starting SerialRouter - COM8 <-> COM131 & COM141
+[2025-07-31 10:14:17] [INFO] [Dummy-1] Incoming baud: 115200, Outgoing baud: 115200
+[2025-07-31 10:14:17] [INFO] [Dummy-1] Acquiring port ownership for all routing threads...
+[2025-07-31 10:14:17] [INFO] [Dummy-1] Opening port COM8 for owner IncomingPortOwner
+[2025-07-31 10:14:17] [INFO] [Dummy-1] Port COM8 successfully acquired by IncomingPortOwner
+[2025-07-31 10:14:17] [INFO] [Dummy-1] Successfully acquired COM8 for IncomingPortOwner
+[2025-07-31 10:14:17] [INFO] [Dummy-1] Opening port COM131 for owner Port131Owner
+[2025-07-31 10:14:17] [INFO] [Dummy-1] Port COM131 successfully acquired by Port131Owner
+[2025-07-31 10:14:17] [INFO] [Dummy-1] Successfully acquired COM131 for Port131Owner
+[2025-07-31 10:14:17] [INFO] [Dummy-1] Opening port COM141 for owner Port141Owner
+[2025-07-31 10:14:17] [INFO] [Dummy-1] Port COM141 successfully acquired by Port141Owner
+[2025-07-31 10:14:17] [INFO] [Dummy-1] Successfully acquired COM141 for Port141Owner
+[2025-07-31 10:14:17] [INFO] [Dummy-1] All ports acquired, starting routing threads...
+[2025-07-31 10:14:17] [INFO] [IncomingPortOwner] Starting incoming port handler: COM8->131&141
+[2025-07-31 10:14:17] [INFO] [Port131Owner] Starting outgoing port handler: COM131->Incoming
+[2025-07-31 10:14:17] [INFO] [Port141Owner] Starting outgoing port handler: COM141->Incoming
+[2025-07-31 10:14:17] [INFO] [Dummy-1] Started 3 routing threads with centralized port management
+[2025-07-31 10:14:17] [INFO] [Watchdog] Watchdog monitor started
+[2025-07-31 10:14:17] [INFO] [Dummy-1] SerialRouter started successfully
+[2025-07-31 10:14:19] [INFO] [Dummy-2] Stopping SerialRouter...
+[2025-07-31 10:14:19] [INFO] [IncomingPortOwner] COM8->131&141 handler shutting down
+[2025-07-31 10:14:19] [INFO] [Port131Owner] COM131->Incoming handler shutting down
+[2025-07-31 10:14:19] [INFO] [Port141Owner] COM141->Incoming handler shutting down
+[2025-07-31 10:14:21] [INFO] [Dummy-2] Releasing port ownership...
+[2025-07-31 10:14:21] [INFO] [Dummy-2] Port COM8 connection closed by IncomingPortOwner
+[2025-07-31 10:14:21] [INFO] [Dummy-2] Port COM8 released by IncomingPortOwner
+[2025-07-31 10:14:21] [INFO] [Dummy-2] Successfully released COM8 from IncomingPortOwner
+[2025-07-31 10:14:21] [INFO] [Dummy-2] Port COM131 connection closed by Port131Owner
+[2025-07-31 10:14:21] [INFO] [Dummy-2] Port COM131 released by Port131Owner
+[2025-07-31 10:14:21] [INFO] [Dummy-2] Successfully released COM131 from Port131Owner
+[2025-07-31 10:14:21] [INFO] [Dummy-2] Port COM141 connection closed by Port141Owner
+[2025-07-31 10:14:21] [INFO] [Dummy-2] Port COM141 released by Port141Owner
+[2025-07-31 10:14:21] [INFO] [Dummy-2] Successfully released COM141 from Port141Owner
+[2025-07-31 10:14:21] [INFO] [Dummy-2] SerialRouter stopped
+[2025-07-31 10:14:35] [INFO] [MainThread] PortManager initialized with advanced monitoring
+[2025-07-31 10:14:35] [INFO] [MainThread] SerialRouter initialized - Port: COM8, Baud: 115200/115200
+[2025-07-31 10:14:35] [INFO] [Dummy-3] Starting SerialRouter - COM8 <-> COM131 & COM141
+[2025-07-31 10:14:35] [INFO] [Dummy-3] Incoming baud: 115200, Outgoing baud: 115200
+[2025-07-31 10:14:35] [INFO] [Dummy-3] Acquiring port ownership for all routing threads...
+[2025-07-31 10:14:35] [INFO] [Dummy-3] Opening port COM8 for owner IncomingPortOwner
+[2025-07-31 10:14:35] [INFO] [Dummy-3] Port COM8 successfully acquired by IncomingPortOwner
+[2025-07-31 10:14:35] [INFO] [Dummy-3] Successfully acquired COM8 for IncomingPortOwner
+[2025-07-31 10:14:35] [INFO] [Dummy-3] Opening port COM131 for owner Port131Owner
+[2025-07-31 10:14:35] [INFO] [Dummy-3] Port COM131 successfully acquired by Port131Owner
+[2025-07-31 10:14:35] [INFO] [Dummy-3] Successfully acquired COM131 for Port131Owner
+[2025-07-31 10:14:35] [INFO] [Dummy-3] Opening port COM141 for owner Port141Owner
+[2025-07-31 10:14:35] [INFO] [Dummy-3] Port COM141 successfully acquired by Port141Owner
+[2025-07-31 10:14:35] [INFO] [Dummy-3] Successfully acquired COM141 for Port141Owner
+[2025-07-31 10:14:35] [INFO] [Dummy-3] All ports acquired, starting routing threads...
+[2025-07-31 10:14:35] [INFO] [IncomingPortOwner] Starting incoming port handler: COM8->131&141
+[2025-07-31 10:14:35] [INFO] [Port131Owner] Starting outgoing port handler: COM131->Incoming
+[2025-07-31 10:14:35] [INFO] [Port141Owner] Starting outgoing port handler: COM141->Incoming
+[2025-07-31 10:14:35] [INFO] [Dummy-3] Started 3 routing threads with centralized port management
+[2025-07-31 10:14:35] [INFO] [Watchdog] Watchdog monitor started
+[2025-07-31 10:14:35] [INFO] [Dummy-3] SerialRouter started successfully
+[2025-07-31 10:14:38] [INFO] [Dummy-4] Stopping SerialRouter...
+[2025-07-31 10:14:38] [INFO] [IncomingPortOwner] COM8->131&141 handler shutting down
+[2025-07-31 10:14:38] [INFO] [Port131Owner] COM131->Incoming handler shutting down
+[2025-07-31 10:14:38] [INFO] [Port141Owner] COM141->Incoming handler shutting down
+[2025-07-31 10:14:40] [INFO] [Dummy-4] Releasing port ownership...
+[2025-07-31 10:14:41] [INFO] [Dummy-4] Port COM8 connection closed by IncomingPortOwner
+[2025-07-31 10:14:41] [INFO] [Dummy-4] Port COM8 released by IncomingPortOwner
+[2025-07-31 10:14:41] [INFO] [Dummy-4] Successfully released COM8 from IncomingPortOwner
+[2025-07-31 10:14:41] [INFO] [Dummy-4] Port COM131 connection closed by Port131Owner
+[2025-07-31 10:14:41] [INFO] [Dummy-4] Port COM131 released by Port131Owner
+[2025-07-31 10:14:41] [INFO] [Dummy-4] Successfully released COM131 from Port131Owner
+[2025-07-31 10:14:41] [INFO] [Dummy-4] Port COM141 connection closed by Port141Owner
+[2025-07-31 10:14:41] [INFO] [Dummy-4] Port COM141 released by Port141Owner
+[2025-07-31 10:14:41] [INFO] [Dummy-4] Successfully released COM141 from Port141Owner
+[2025-07-31 10:14:41] [INFO] [Dummy-4] SerialRouter stopped
+[2025-07-31 10:15:23] [INFO] [MainThread] PortManager initialized with advanced monitoring
+[2025-07-31 10:15:23] [INFO] [MainThread] SerialRouter initialized - Port: COM8, Baud: 115200/115200
+[2025-07-31 10:15:23] [INFO] [Dummy-5] Starting SerialRouter - COM8 <-> COM131 & COM141
+[2025-07-31 10:15:23] [INFO] [Dummy-5] Incoming baud: 115200, Outgoing baud: 115200
+[2025-07-31 10:15:23] [INFO] [Dummy-5] Acquiring port ownership for all routing threads...
+[2025-07-31 10:15:23] [INFO] [Dummy-5] Opening port COM8 for owner IncomingPortOwner
+[2025-07-31 10:15:23] [INFO] [Dummy-5] Port COM8 successfully acquired by IncomingPortOwner
+[2025-07-31 10:15:23] [INFO] [Dummy-5] Successfully acquired COM8 for IncomingPortOwner
+[2025-07-31 10:15:23] [INFO] [Dummy-5] Opening port COM131 for owner Port131Owner
+[2025-07-31 10:15:23] [INFO] [Dummy-5] Port COM131 successfully acquired by Port131Owner
+[2025-07-31 10:15:23] [INFO] [Dummy-5] Successfully acquired COM131 for Port131Owner
+[2025-07-31 10:15:23] [INFO] [Dummy-5] Opening port COM141 for owner Port141Owner
+[2025-07-31 10:15:23] [INFO] [Dummy-5] Port COM141 successfully acquired by Port141Owner
+[2025-07-31 10:15:23] [INFO] [Dummy-5] Successfully acquired COM141 for Port141Owner
+[2025-07-31 10:15:23] [INFO] [Dummy-5] All ports acquired, starting routing threads...
+[2025-07-31 10:15:23] [INFO] [IncomingPortOwner] Starting incoming port handler: COM8->131&141
+[2025-07-31 10:15:23] [INFO] [Port131Owner] Starting outgoing port handler: COM131->Incoming
+[2025-07-31 10:15:23] [INFO] [Port141Owner] Starting outgoing port handler: COM141->Incoming
+[2025-07-31 10:15:23] [INFO] [Dummy-5] Started 3 routing threads with centralized port management
+[2025-07-31 10:15:23] [INFO] [Watchdog] Watchdog monitor started
+[2025-07-31 10:15:23] [INFO] [Dummy-5] SerialRouter started successfully
+[2025-07-31 10:15:24] [INFO] [Dummy-6] Stopping SerialRouter...
+[2025-07-31 10:15:24] [INFO] [Port131Owner] COM131->Incoming handler shutting down
+[2025-07-31 10:15:24] [INFO] [IncomingPortOwner] COM8->131&141 handler shutting down
+[2025-07-31 10:15:24] [INFO] [Port141Owner] COM141->Incoming handler shutting down
+[2025-07-31 10:15:26] [INFO] [Dummy-6] Releasing port ownership...
+[2025-07-31 10:15:26] [INFO] [Dummy-6] Port COM8 connection closed by IncomingPortOwner
+[2025-07-31 10:15:26] [INFO] [Dummy-6] Port COM8 released by IncomingPortOwner
+[2025-07-31 10:15:26] [INFO] [Dummy-6] Successfully released COM8 from IncomingPortOwner
+[2025-07-31 10:15:26] [INFO] [Dummy-6] Port COM131 connection closed by Port131Owner
+[2025-07-31 10:15:26] [INFO] [Dummy-6] Port COM131 released by Port131Owner
+[2025-07-31 10:15:26] [INFO] [Dummy-6] Successfully released COM131 from Port131Owner
+[2025-07-31 10:15:26] [INFO] [Dummy-6] Port COM141 connection closed by Port141Owner
+[2025-07-31 10:15:26] [INFO] [Dummy-6] Port COM141 released by Port141Owner
+[2025-07-31 10:15:26] [INFO] [Dummy-6] Successfully released COM141 from Port141Owner
+[2025-07-31 10:15:26] [INFO] [Dummy-6] SerialRouter stopped
+[2025-07-31 10:15:26] [INFO] [MainThread] PortManager initialized with advanced monitoring
+[2025-07-31 10:15:26] [INFO] [MainThread] SerialRouter initialized - Port: COM17, Baud: 115200/115200
+[2025-07-31 10:15:26] [INFO] [Dummy-7] Starting SerialRouter - COM17 <-> COM131 & COM141
+[2025-07-31 10:15:26] [INFO] [Dummy-7] Incoming baud: 115200, Outgoing baud: 115200
+[2025-07-31 10:15:26] [INFO] [Dummy-7] Acquiring port ownership for all routing threads...
+[2025-07-31 10:15:26] [INFO] [Dummy-7] Opening port COM17 for owner IncomingPortOwner
+[2025-07-31 10:15:26] [ERROR] [Dummy-7] Failed to open port COM17 for IncomingPortOwner: Cannot configure port, something went wrong. Original message: PermissionError(13, 'A device attached to the system is not functioning.', None, 31)
+[2025-07-31 10:15:26] [ERROR] [Dummy-7] Failed to acquire COM17 for IncomingPortOwner
+[2025-07-31 10:15:26] [ERROR] [Dummy-7] SerialRouter failed to start - critical ports unavailable
+[2025-07-31 16:15:30] [INFO] [MainThread] PortManager initialized with advanced monitoring
+[2025-07-31 16:15:30] [INFO] [MainThread] SerialRouter initialized - Port: COM8, Baud: 115200/115200
+[2025-07-31 16:15:30] [INFO] [Dummy-1] Starting SerialRouter - COM8 <-> COM131 & COM141
+[2025-07-31 16:15:30] [INFO] [Dummy-1] Incoming baud: 115200, Outgoing baud: 115200
+[2025-07-31 16:15:30] [INFO] [Dummy-1] Acquiring port ownership for all routing threads...
+[2025-07-31 16:15:30] [INFO] [Dummy-1] Opening port COM8 for owner IncomingPortOwner
+[2025-07-31 16:15:30] [INFO] [Dummy-1] Port COM8 successfully acquired by IncomingPortOwner
+[2025-07-31 16:15:30] [INFO] [Dummy-1] Successfully acquired COM8 for IncomingPortOwner
+[2025-07-31 16:15:30] [INFO] [Dummy-1] Opening port COM131 for owner Port131Owner
+[2025-07-31 16:15:30] [INFO] [Dummy-1] Port COM131 successfully acquired by Port131Owner
+[2025-07-31 16:15:30] [INFO] [Dummy-1] Successfully acquired COM131 for Port131Owner
+[2025-07-31 16:15:30] [INFO] [Dummy-1] Opening port COM141 for owner Port141Owner
+[2025-07-31 16:15:30] [INFO] [Dummy-1] Port COM141 successfully acquired by Port141Owner
+[2025-07-31 16:15:30] [INFO] [Dummy-1] Successfully acquired COM141 for Port141Owner
+[2025-07-31 16:15:30] [INFO] [Dummy-1] All ports acquired, starting routing threads...
+[2025-07-31 16:15:30] [INFO] [IncomingPortOwner] Starting incoming port handler: COM8->131&141
+[2025-07-31 16:15:30] [INFO] [Port131Owner] Starting outgoing port handler: COM131->Incoming
+[2025-07-31 16:15:30] [INFO] [Port141Owner] Starting outgoing port handler: COM141->Incoming
+[2025-07-31 16:15:30] [INFO] [Dummy-1] Started 3 routing threads with centralized port management
+[2025-07-31 16:15:30] [INFO] [Watchdog] Watchdog monitor started
+[2025-07-31 16:15:30] [INFO] [Dummy-1] SerialRouter started successfully
+[2025-07-31 16:15:32] [INFO] [Dummy-2] Stopping SerialRouter...
+[2025-07-31 16:15:32] [INFO] [Port141Owner] COM141->Incoming handler shutting down
+[2025-07-31 16:15:32] [INFO] [Port131Owner] COM131->Incoming handler shutting down
+[2025-07-31 16:15:32] [INFO] [IncomingPortOwner] COM8->131&141 handler shutting down
+[2025-07-31 16:15:34] [INFO] [Dummy-2] Releasing port ownership...
+[2025-07-31 16:15:34] [INFO] [Dummy-2] Port COM8 connection closed by IncomingPortOwner
+[2025-07-31 16:15:34] [INFO] [Dummy-2] Port COM8 released by IncomingPortOwner
+[2025-07-31 16:15:34] [INFO] [Dummy-2] Successfully released COM8 from IncomingPortOwner
+[2025-07-31 16:15:34] [INFO] [Dummy-2] Port COM131 connection closed by Port131Owner
+[2025-07-31 16:15:34] [INFO] [Dummy-2] Port COM131 released by Port131Owner
+[2025-07-31 16:15:34] [INFO] [Dummy-2] Successfully released COM131 from Port131Owner
+[2025-07-31 16:15:34] [INFO] [Dummy-2] Port COM141 connection closed by Port141Owner
+[2025-07-31 16:15:34] [INFO] [Dummy-2] Port COM141 released by Port141Owner
+[2025-07-31 16:15:34] [INFO] [Dummy-2] Successfully released COM141 from Port141Owner
+[2025-07-31 16:15:34] [INFO] [Dummy-2] SerialRouter stopped
+[2025-07-31 16:16:19] [INFO] [MainThread] PortManager initialized with advanced monitoring
+[2025-07-31 16:16:19] [INFO] [MainThread] SerialRouter initialized - Port: COM8, Baud: 115200/115200
+[2025-07-31 16:16:19] [INFO] [Dummy-1] Starting SerialRouter - COM8 <-> COM131 & COM141
+[2025-07-31 16:16:19] [INFO] [Dummy-1] Incoming baud: 115200, Outgoing baud: 115200
+[2025-07-31 16:16:19] [INFO] [Dummy-1] Acquiring port ownership for all routing threads...
+[2025-07-31 16:16:19] [INFO] [Dummy-1] Opening port COM8 for owner IncomingPortOwner
+[2025-07-31 16:16:19] [INFO] [Dummy-1] Port COM8 successfully acquired by IncomingPortOwner
+[2025-07-31 16:16:19] [INFO] [Dummy-1] Successfully acquired COM8 for IncomingPortOwner
+[2025-07-31 16:16:19] [INFO] [Dummy-1] Opening port COM131 for owner Port131Owner
+[2025-07-31 16:16:19] [INFO] [Dummy-1] Port COM131 successfully acquired by Port131Owner
+[2025-07-31 16:16:19] [INFO] [Dummy-1] Successfully acquired COM131 for Port131Owner
+[2025-07-31 16:16:19] [INFO] [Dummy-1] Opening port COM141 for owner Port141Owner
+[2025-07-31 16:16:19] [INFO] [Dummy-1] Port COM141 successfully acquired by Port141Owner
+[2025-07-31 16:16:19] [INFO] [Dummy-1] Successfully acquired COM141 for Port141Owner
+[2025-07-31 16:16:19] [INFO] [Dummy-1] All ports acquired, starting routing threads...
+[2025-07-31 16:16:19] [INFO] [IncomingPortOwner] Starting incoming port handler: COM8->131&141
+[2025-07-31 16:16:19] [INFO] [Port131Owner] Starting outgoing port handler: COM131->Incoming
+[2025-07-31 16:16:19] [INFO] [Port141Owner] Starting outgoing port handler: COM141->Incoming
+[2025-07-31 16:16:19] [INFO] [Dummy-1] Started 3 routing threads with centralized port management
+[2025-07-31 16:16:19] [INFO] [Watchdog] Watchdog monitor started
+[2025-07-31 16:16:19] [INFO] [Dummy-1] SerialRouter started successfully
+[2025-07-31 16:16:24] [INFO] [Dummy-2] Stopping SerialRouter...
+[2025-07-31 16:16:24] [INFO] [Port131Owner] COM131->Incoming handler shutting down
+[2025-07-31 16:16:24] [INFO] [Port141Owner] COM141->Incoming handler shutting down
+[2025-07-31 16:16:24] [INFO] [IncomingPortOwner] COM8->131&141 handler shutting down
+[2025-07-31 16:16:26] [INFO] [Dummy-2] Releasing port ownership...
+[2025-07-31 16:16:26] [INFO] [Dummy-2] Port COM8 connection closed by IncomingPortOwner
+[2025-07-31 16:16:26] [INFO] [Dummy-2] Port COM8 released by IncomingPortOwner
+[2025-07-31 16:16:26] [INFO] [Dummy-2] Successfully released COM8 from IncomingPortOwner
+[2025-07-31 16:16:26] [INFO] [Dummy-2] Port COM131 connection closed by Port131Owner
+[2025-07-31 16:16:26] [INFO] [Dummy-2] Port COM131 released by Port131Owner
+[2025-07-31 16:16:26] [INFO] [Dummy-2] Successfully released COM131 from Port131Owner
+[2025-07-31 16:16:26] [INFO] [Dummy-2] Port COM141 connection closed by Port141Owner
+[2025-07-31 16:16:26] [INFO] [Dummy-2] Port COM141 released by Port141Owner
+[2025-07-31 16:16:26] [INFO] [Dummy-2] Successfully released COM141 from Port141Owner
+[2025-07-31 16:16:26] [INFO] [Dummy-2] SerialRouter stopped
