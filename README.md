@@ -11,22 +11,20 @@ A serial port routing application designed for reliable operation in offshore en
       <td align="center" width="50%">
         <img width="420" alt="SerialRouter real-time monitoring dashboard displaying thread health, data transfer metrics, and operational status" src="https://github.com/user-attachments/assets/e929fbd7-9db0-49be-b433-8128fc68626e" />
         <br/>
-        <sub><b>Operations Monitoring Console</b></sub>
-        <br/>
-        <sub>Real-time telemetry • Thread health indicators • Performance analytics</sub>
-      </td>
-      <td align="center" width="50%">
-        <img width="420" alt="SerialRouter configuration panel featuring port auto-detection and persistent settings management" src="https://github.com/user-attachments/assets/64c110e6-c20a-4967-859c-b328bc7592d2" />
-        <br/>
         <sub><b>System Configuration Panel</b></sub>
         <br/>
         <sub>Automated port detection • Persistent configuration • Service deployment</sub>
       </td>
+      <td align="center" width="50%">
+        <img width="420" alt="SerialRouter configuration panel featuring port auto-detection and persistent settings management" src="https://github.com/user-attachments/assets/64c110e6-c20a-4967-859c-b328bc7592d2" />
+        <br/>
+        <sub><b>Operations Monitoring Console</b></sub>
+        <br/>
+        <sub>Real-time telemetry • Thread health indicators • Performance analytics</sub>
+      </td>
     </tr>
   </table>
 </div>
-
-
 ## Overview
 
 SerialRouter was developed for offshore applications requiring uninterrupted serial communication routing. The system features a production-ready core engine with automatic failover, comprehensive monitoring, and a modern Qt6 GUI interface for configuration and real-time system oversight.
