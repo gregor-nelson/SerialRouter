@@ -11,28 +11,20 @@ A serial port routing application designed for reliable operation in offshore en
 
 ## Overview
 
-SerialRouter was developed for critical offshore applications requiring uninterrupted serial communication routing. The system features a production-ready core engine with automatic failover, comprehensive monitoring, and an intuitive PyQt6 GUI interface for configuration and real-time system oversight.
-
-### Key Features
-
-- **Production-Grade Reliability**: Thread-safe operation with automatic recovery and watchdog monitoring
-- **Fixed Routing Architecture**: One incoming port distributes to COM131 and COM141, with full bidirectional communication
-- **Real-Time Monitoring**: Live data transfer statistics, thread health monitoring, and error tracking
-- **Intuitive GUI**: Professional PyQt6 interface with configuration management and activity logging
-- **Offshore Ready**: Designed for unmanned, long-term operation in challenging environments
+SerialRouter was developed for offshore applications requiring uninterrupted serial communication routing. The system features a production-ready core engine with automatic failover, comprehensive monitoring, and a modern Qt6 GUI interface for configuration and real-time system oversight.
 
 ## Architecture
 
 ### Core Components
 
-**SerialRouterCore**: Production-hardened routing engine featuring:
+**SerialRouterCore**: Routing engine:
 - Three dedicated routing threads with exclusive port ownership
 - Centralised PortManager preventing access conflicts
 - Exponential backoff retry logic for connection failures
 - Automatic thread restart with rate limiting
 - Comprehensive error handling and resource management
 
-**GUI Application**: Professional interface providing:
+**GUI Application**: Graphical interface:
 - Real-time monitoring dashboard with live statistics
 - Port configuration with auto-detection
 - Activity logging with integrated backend log streaming
