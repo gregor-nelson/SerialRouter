@@ -11,13 +11,9 @@ A serial port routing application designed for reliable operation in offshore en
       <td align="center" width="50%">
         <img width="420" alt="SerialRouter real-time monitoring dashboard displaying thread health, data transfer metrics, and operational status" src="https://github.com/user-attachments/assets/e929fbd7-9db0-49be-b433-8128fc68626e" />
         <br/>
-        <sub><b>System Configuration Panel</b></sub>
-        <br/>
       </td>
       <td align="center" width="50%">
         <img width="420" alt="SerialRouter configuration panel featuring port auto-detection and persistent settings management" src="https://github.com/user-attachments/assets/64c110e6-c20a-4967-859c-b328bc7592d2" />
-        <br/>
-        <sub><b>Operations Monitoring Console</b></sub>
         <br/>
       </td>
     </tr>
