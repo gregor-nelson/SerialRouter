@@ -5,31 +5,27 @@ A serial port routing application designed for reliable operation in offshore en
 
 ![SerialRouter v2.0](https://img.shields.io/badge/SerialRouter-v2.0-blue)
 ![Python](https://img.shields.io/badge/Python-3.7+-green)
-
-
 <div align="center">
   <table>
     <tr>
       <td align="center" width="50%">
-        <img width="420" alt="SerialRouter real-time monitoring dashboard showing thread health, data transfer metrics, and system status" src="https://github.com/user-attachments/assets/e929fbd7-9db0-49be-b433-8128fc68626e" />
+        <img width="420" alt="SerialRouter real-time monitoring dashboard displaying thread health, data transfer metrics, and operational status" src="https://github.com/user-attachments/assets/e929fbd7-9db0-49be-b433-8128fc68626e" />
         <br/>
-        <sub><b>📊 Live Operations Dashboard</b></sub>
+        <sub><b>Operations Monitoring Console</b></sub>
         <br/>
-        <sub>Real-time monitoring • Thread health indicators • Performance metrics</sub>
+        <sub>Real-time telemetry • Thread health indicators • Performance analytics</sub>
       </td>
       <td align="center" width="50%">
-        <img width="420" alt="SerialRouter configuration panel with port auto-detection and settings management" src="https://github.com/user-attachments/assets/64c110e6-c20a-4967-859c-b328bc7592d2" />
+        <img width="420" alt="SerialRouter configuration panel featuring port auto-detection and persistent settings management" src="https://github.com/user-attachments/assets/64c110e6-c20a-4967-859c-b328bc7592d2" />
         <br/>
-        <sub><b>⚙️ Configuration Management</b></sub>
+        <sub><b>System Configuration Panel</b></sub>
         <br/>
-        <sub>Port auto-detection • Persistent settings • One-click deployment</sub>
+        <sub>Automated port detection • Persistent configuration • Service deployment</sub>
       </td>
     </tr>
   </table>
 </div>
 
-<img width="878" height="633" alt="image" src="https://github.com/user-attachments/assets/e929fbd7-9db0-49be-b433-8128fc68626e" />
-<img width="878" height="633" alt="image" src="https://github.com/user-attachments/assets/64c110e6-c20a-4967-859c-b328bc7592d2" />
 
 ## Overview
 
