@@ -44,45 +44,6 @@ SerialRouter was developed for offshore applications requiring uninterrupted ser
                                            └─────────────┘
 ```
 
-## Installation
-
-### Prerequisites
-
-- Python 3.7 or later
-- PyQt6 (for GUI operation)
-- pyserial (for serial communication)
-
-### Setup
-
-1. **Clone or extract the project files**
-2. **Install required dependencies:**
-   ```bash
-   pip install PyQt6 pyserial
-   ```
-3. **Ensure the directory structure is intact:**
-   ```
-   SerialRouter/
-   ├── main.py
-   ├── config/
-   │   └── serial_router_config.json
-   ├── src/
-   │   ├── core/
-   │   │   └── router_engine.py
-   │   └── gui/
-   │       └── main_window.py
-   └── tests/
-       └── test_gui_integration.py
-   ```
-
-## Usage
-
-### GUI Mode (Recommended)
-
-Launch the graphical interface:
-```bash
-python main.py
-```
-
 **Configuration Steps:**
 1. Select your incoming COM port from the dropdown menu
 2. Configure baud rates for incoming and outgoing ports
@@ -96,45 +57,9 @@ Run the core engine directly for server deployments:
 ```bash
 python src/core/router_engine.py
 ```
-
-### Testing
-
-Validate the installation and integration:
-```bash
-python tests/test_gui_integration.py
-```
-
-## Configuration
-
-Settings are managed through `config/serial_router_config.json`:
-
-```json
-{
-  "incoming_port": "COM54",
-  "incoming_baud": 115200,
-  "outgoing_baud": 115200,
-  "timeout": 0.1,
-  "retry_delay_max": 30,
-  "log_level": "INFO"
-}
-```
-
-### Configuration Options
-
-| Parameter | Description | Default | Range |
-|-----------|-------------|---------|-------|
-| `incoming_port` | Configurable COM port | "COM54" | Any available COM port |
-| `incoming_baud` | Incoming port baud rate | 115200 | 1200-921600 |
-| `outgoing_baud` | Outgoing ports baud rate | 115200 | 1200-921600 |
-| `timeout` | Serial port timeout (seconds) | 0.1 | 0.001-10.0 |
-| `retry_delay_max` | Maximum retry delay (seconds) | 30 | 1-300 |
-| `log_level` | Logging verbosity | "INFO" | DEBUG, INFO, WARNING, ERROR |
-
 ## Monitoring & Logging
 
-### Real-Time Monitoring
-
-The GUI provides comprehensive system monitoring:
+The GUI provides detailed system monitoring:
 
 - **Thread Health**: Active thread count with visual indicators
 - **Data Transfer**: Live byte counters for all routing directions
@@ -193,11 +118,6 @@ status = router.get_status()
 - Excessive restarts indicate hardware or driver issues
 - Check serial cable connections and port availability
 
-**Configuration Not Saving**
-- Ensure the `config/` directory exists and is writable
-- Check file permissions on `serial_router_config.json`
-- Verify JSON syntax if editing configuration manually
-
 ### Log Analysis
 
 Monitor `serial_router.log` for detailed operation information:
@@ -215,14 +135,6 @@ Monitor `serial_router.log` for detailed operation information:
 - **Monitoring**: Comprehensive status API with nested health information
 - **Memory**: Automatic counter resets and queue size limits prevent memory growth
 
-## Support
 
-For technical support or deployment assistance:
-- Review the activity logs for detailed error information
-- Check thread health and port connection status in the GUI
-- Validate configuration settings and port availability
-- Ensure proper serial cable connections and port permissions
-
----
 
 *SerialRouter v2.0 - Production-ready serial communication routing for offshore environments*
