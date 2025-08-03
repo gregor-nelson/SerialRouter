@@ -7,6 +7,7 @@ A serial port routing application designed for reliable operation in offshore en
 ![Python](https://img.shields.io/badge/Python-3.7+-green)
 
 <img width="878" height="633" alt="image" src="https://github.com/user-attachments/assets/e929fbd7-9db0-49be-b433-8128fc68626e" />
+<img width="866" height="626" alt="image" src="https://github.com/user-attachments/assets/64c110e6-c20a-4967-859c-b328bc7592d2" />
 
 ## Overview
 
