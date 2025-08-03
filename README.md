@@ -1,6 +1,6 @@
 # SerialRouter
 
-A production-hardened serial port routing application designed for reliable operation in offshore environments. SerialRouter provides robust bidirectional communication between one configurable incoming port and two fixed outgoing ports (COM131, COM141) with comprehensive monitoring and automatic recovery capabilities.
+A serial port routing application designed for reliable operation in offshore environments. SerialRouter provides robust bidirectional communication between one configurable incoming port and two virtual outgoing ports with comprehensive monitoring and automatic recovery capabilities.
 
 
 ![SerialRouter v2.0](https://img.shields.io/badge/SerialRouter-v2.0-blue)
