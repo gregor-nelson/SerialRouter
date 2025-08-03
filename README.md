@@ -5,7 +5,6 @@ A serial port routing application designed for reliable operation in offshore en
 
 ![SerialRouter v2.0](https://img.shields.io/badge/SerialRouter-v2.0-blue)
 ![Python](https://img.shields.io/badge/Python-3.7+-green)
-![License](https://img.shields.io/badge/License-Proprietary-red)
 
 <img width="871" height="624" alt="port_router_screen" src="https://github.com/user-attachments/assets/0b135ea0-80ca-4367-8a1b-784c8f468de9" />
 
