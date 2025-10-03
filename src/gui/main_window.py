@@ -100,6 +100,7 @@ class SerialRouterMainWindow(QMainWindow):
         self.log_handler: Optional[LogHandler] = None
         self._router_state_lock = threading.Lock()  # Thread synchronisation to prevent concurrent state modification during router operations
         self._router_state_changing = False
+        self._initializing = True  # Flag to suppress validation warnings during startup
         
         # Monitoring
         self.status_timer = QTimer()
@@ -121,10 +122,29 @@ class SerialRouterMainWindow(QMainWindow):
         self.setup_logging()
         self.apply_theme()
         self.refresh_available_ports()
-        
+
+        # Load saved configuration if available
+        self.load_config()
+
+        # Update monitoring labels with selected ports
+        self._update_port_labels()
+
+        # Update port tooltips with paired port detection
+        self._update_port_tooltips()
+
+        # Update connection diagram with initial port configuration
+        if self.connection_diagram:
+            port1, port2 = self._get_selected_outgoing_ports()
+            com0com_ports = self.port_enumerator.get_com0com_ports()
+            com0com_names = [p.port_name for p in com0com_ports]
+            self.connection_diagram.set_outgoing_ports(port1, port2, com0com_names)
+
+        # Initialization complete - enable validation warnings
+        self._initializing = False
+
         # Connect log signal to handler
         self.log_message_signal.connect(self.add_log_message)
-        
+
         # Start status monitoring
         self.status_timer.start(1000)  # 1 second updates
         
@@ -249,19 +269,27 @@ class SerialRouterMainWindow(QMainWindow):
         self.incoming_baud_spin.setSingleStep(1200)
         config_layout.addWidget(self.incoming_baud_spin, 1, 1)
         
-        # Outgoing Ports (Fixed)
-        config_layout.addWidget(QLabel("Outgoing Ports:"), 2, 0)
-        outgoing_label = QLabel("COM131, COM141 (Fixed)")
-        outgoing_label.setProperty("class", "description")
-        config_layout.addWidget(outgoing_label, 2, 1)
-        
+        # Outgoing Port 1
+        config_layout.addWidget(QLabel("Outgoing Port 1:"), 2, 0)
+        self.outgoing_port1_combo = QComboBox()
+        self.outgoing_port1_combo.setMinimumWidth(120)
+        self.outgoing_port1_combo.currentTextChanged.connect(self.on_outgoing_port_changed)
+        config_layout.addWidget(self.outgoing_port1_combo, 2, 1)
+
+        # Outgoing Port 2
+        config_layout.addWidget(QLabel("Outgoing Port 2:"), 3, 0)
+        self.outgoing_port2_combo = QComboBox()
+        self.outgoing_port2_combo.setMinimumWidth(120)
+        self.outgoing_port2_combo.currentTextChanged.connect(self.on_outgoing_port_changed)
+        config_layout.addWidget(self.outgoing_port2_combo, 3, 1)
+
         # Outgoing Port Baud Rate
-        config_layout.addWidget(QLabel("Outgoing Baud:"), 3, 0)
+        config_layout.addWidget(QLabel("Outgoing Baud:"), 4, 0)
         self.outgoing_baud_spin = QSpinBox()
         self.outgoing_baud_spin.setRange(1200, 921600) 
         self.outgoing_baud_spin.setValue(115200)
         self.outgoing_baud_spin.setSingleStep(1200)
-        config_layout.addWidget(self.outgoing_baud_spin, 3, 1)
+        config_layout.addWidget(self.outgoing_baud_spin, 4, 1)
         
         # Add control buttons at bottom of configuration panel
         control_frame = QFrame()
@@ -381,14 +409,14 @@ class SerialRouterMainWindow(QMainWindow):
         """Show detailed analysis of available ports."""
         try:
             self.add_log_message("=== Detailed Port Analysis ===")
-            
+
             all_ports = self.port_enumerator.enumerate_ports()
             if not all_ports:
                 self.add_log_message("No serial ports detected on this system")
                 return
-            
-            # Reserved ports for outgoing routing
-            excluded_ports = {"COM131", "COM132", "COM141", "COM142"}
+
+            # Get dynamically excluded ports based on current outgoing selection
+            excluded_ports = self._get_excluded_ports()
             
             # Group ports by type for better presentation
             port_groups = {
@@ -484,20 +512,178 @@ class SerialRouterMainWindow(QMainWindow):
         AboutDialog.show_about(self)
         
         # Add stylized console log information
-        self.add_log_message("╔══════════════════════════════════════════════════════════════════╗")
-        self.add_log_message("║                   SerialRouter v2.0 - Operation Guide            ║")
-        self.add_log_message("╠══════════════════════════════════════════════════════════════════╣")
-        self.add_log_message("║ • Routes incoming port to COM131 & COM141 (virtual port pairs)   ║")
-        self.add_log_message("║ • Connect applications to COM132 & COM142 (paired endpoints)     ║")
-        self.add_log_message("║ • Select START ROUTING to begin, STOP ROUTING to end             ║")
-        self.add_log_message("║ • Configure incoming port before starting operations             ║")
-        self.add_log_message("╚══════════════════════════════════════════════════════════════════╝")
+        port1, port2 = self._get_selected_outgoing_ports()
+        self.add_log_message(" ╔══════════════════════════════════════════════════════════════════╗")
+        self.add_log_message(" ║                   SerialRouter v2.0 - Operation Guide            ║")
+        self.add_log_message(" ╠══════════════════════════════════════════════════════════════════╣")
+        self.add_log_message(" ║ • Routes incoming port to COM131 & COM41 (Default port pairs)    ║")
+        self.add_log_message(" ║ • Connect applications to paired endpoints (COM132 & COM142)     ║")
+        self.add_log_message(" ║ • Select START ROUTING to begin, STOP ROUTING to end             ║")
+        self.add_log_message(" ║ • Configure incoming port before starting operations             ║")
+        self.add_log_message(" ╚══════════════════════════════════════════════════════════════════╝")
     
     def on_incoming_port_changed(self, port_name: str):
         """Handle incoming port selection changes."""
         if hasattr(self, 'connection_diagram') and port_name:
             if self.connection_diagram:
                 self.connection_diagram.set_incoming_port(port_name)
+
+    def on_outgoing_port_changed(self):
+        """Handle outgoing port selection changes - validate and update diagram."""
+        if not hasattr(self, 'outgoing_port1_combo') or not hasattr(self, 'outgoing_port2_combo'):
+            return
+
+        self.validate_port_configuration()
+
+        # Update monitoring labels with new port selection
+        self._update_port_labels()
+
+        # Update tooltips with paired port detection
+        self._update_port_tooltips()
+
+        # Update connection diagram with new ports
+        port1 = self.outgoing_port1_combo.currentText()
+        port2 = self.outgoing_port2_combo.currentText()
+        if self.connection_diagram and port1 and port2:
+            # Get all com0com ports for proximity detection
+            com0com_ports = self.port_enumerator.get_com0com_ports()
+            com0com_names = [p.port_name for p in com0com_ports]
+            self.connection_diagram.set_outgoing_ports(port1, port2, com0com_names)
+
+    def _get_selected_outgoing_ports(self):
+        """Returns currently selected outgoing ports from UI dropdowns."""
+        if hasattr(self, 'outgoing_port1_combo') and hasattr(self, 'outgoing_port2_combo'):
+            return (
+                self.outgoing_port1_combo.currentText(),
+                self.outgoing_port2_combo.currentText()
+            )
+        return ("COM131", "COM141")  # Safe fallback
+
+    def _update_port_labels(self):
+        """Update monitoring section labels with current port selection."""
+        port1, port2 = self._get_selected_outgoing_ports()
+        # Just show the port number, keep formatting simple
+        self.port1_label.setText(f"{port1.replace('COM', '')} → IN:")
+        self.port2_label.setText(f"{port2.replace('COM', '')} → IN:")
+
+    def _update_port_tooltips(self):
+        """Update tooltips to show detected paired ports."""
+        if not hasattr(self, 'outgoing_port1_combo') or not hasattr(self, 'outgoing_port2_combo'):
+            return
+
+        port1 = self.outgoing_port1_combo.currentText()
+        port2 = self.outgoing_port2_combo.currentText()
+
+        # Get all com0com ports for pairing detection
+        com0com_ports = self.port_enumerator.get_com0com_ports()
+        com0com_names = [p.port_name for p in com0com_ports]
+
+        # Detect paired port for port1
+        if port1:
+            paired1 = self._detect_paired_port(port1, com0com_names)
+            if paired1.startswith("COM"):
+                # High confidence - found neighbor
+                self.outgoing_port1_combo.setToolTip(f"Router writes to {port1}\nApplications read from paired port {paired1}")
+            else:
+                # Low confidence - generic fallback
+                self.outgoing_port1_combo.setToolTip(f"Router writes to {port1}\nVerify paired port in com0com setup")
+
+        # Detect paired port for port2
+        if port2:
+            paired2 = self._detect_paired_port(port2, com0com_names)
+            if paired2.startswith("COM"):
+                # High confidence - found neighbor
+                self.outgoing_port2_combo.setToolTip(f"Router writes to {port2}\nApplications read from paired port {paired2}")
+            else:
+                # Low confidence - generic fallback
+                self.outgoing_port2_combo.setToolTip(f"Router writes to {port2}\nVerify paired port in com0com setup")
+
+    def _detect_paired_port(self, port: str, all_com0com_ports: list) -> str:
+        """
+        Detect the paired port using proximity algorithm.
+        Returns the paired port name or a generic label if detection fails.
+        """
+        try:
+            num = int(port.replace("COM", ""))
+            # Check +1 and -1 neighbors
+            candidates = [f"COM{num + 1}", f"COM{num - 1}"]
+            for candidate in candidates:
+                if candidate in all_com0com_ports:
+                    return candidate
+            # No neighbor found
+            return "Unknown"
+        except:
+            return "Unknown"
+
+    def _get_excluded_ports(self) -> set:
+        """
+        Get ports that should be excluded from incoming port selection.
+        Returns the currently selected outgoing ports plus their likely paired ports.
+        """
+        excluded = set()
+        port1, port2 = self._get_selected_outgoing_ports()
+
+        # Add the selected outgoing ports
+        if port1:
+            excluded.add(port1)
+        if port2:
+            excluded.add(port2)
+
+        # Add their probable paired ports using proximity algorithm
+        try:
+            for port in [port1, port2]:
+                if not port:
+                    continue
+                num = int(port.replace("COM", ""))
+                # Check +1 and -1 neighbors (likely pairs)
+                excluded.add(f"COM{num + 1}")
+                excluded.add(f"COM{num - 1}")
+        except:
+            # If parsing fails, fall back to default reserved ports
+            excluded.update({"COM131", "COM132", "COM141", "COM142"})
+
+        return excluded
+
+    def validate_port_configuration(self) -> bool:
+        """Validate current port configuration."""
+        if not hasattr(self, 'outgoing_port1_combo') or not hasattr(self, 'outgoing_port2_combo'):
+            return True
+
+        incoming = self.incoming_port_combo.currentText()
+        port1 = self.outgoing_port1_combo.currentText()
+        port2 = self.outgoing_port2_combo.currentText()
+
+        # Rule 1: Both ports cannot be the same
+        if port1 == port2 and port1:
+            if not self._initializing:
+                self.add_log_message(f"Warning: Both outgoing ports set to {port1} - select different ports")
+            return False
+
+        # Rule 2: Outgoing port cannot be same as incoming
+        if incoming == port1 or incoming == port2:
+            if not self._initializing:
+                self.add_log_message(f"Warning: Outgoing port cannot be same as incoming port {incoming}")
+            return False
+
+        # Rule 3: CRITICAL - Prevent paired ports (would cause feedback loop)
+        if port1 and port2:
+            try:
+                num1 = int(port1.replace("COM", ""))
+                num2 = int(port2.replace("COM", ""))
+
+                # Check if ports are adjacent (likely paired in com0com)
+                if abs(num1 - num2) == 1:
+                    if not self._initializing:
+                        self.add_log_message(
+                            f"ERROR: {port1} and {port2} appear to be paired ports! "
+                            f"This will create a feedback loop. Select non-adjacent ports."
+                        )
+                    return False
+            except:
+                # If parsing fails, allow the configuration (can't validate)
+                pass
+
+        return True
     
     def create_control_group(self, parent_layout):
         """Legacy method - functionality moved to configuration panel."""
@@ -563,14 +749,16 @@ class SerialRouterMainWindow(QMainWindow):
         monitor_layout.addWidget(QLabel("IN → OUT:"), 6, 0)
         self.bytes_in_out_label = QLabel("0 bytes")
         monitor_layout.addWidget(self.bytes_in_out_label, 6, 1)
-        
-        # COM131 -> Incoming
-        monitor_layout.addWidget(QLabel("131 → IN:"), 6, 2)
+
+        # Port1 -> Incoming (dynamic label)
+        self.port1_label = QLabel()
+        monitor_layout.addWidget(self.port1_label, 6, 2)
         self.bytes_131_in_label = QLabel("0 bytes")
         monitor_layout.addWidget(self.bytes_131_in_label, 6, 3)
-        
-        # COM141 -> Incoming  
-        monitor_layout.addWidget(QLabel("141 → IN:"), 7, 0)
+
+        # Port2 -> Incoming (dynamic label)
+        self.port2_label = QLabel()
+        monitor_layout.addWidget(self.port2_label, 7, 0)
         self.bytes_141_in_label = QLabel("0 bytes")
         monitor_layout.addWidget(self.bytes_141_in_label, 7, 1)
         
@@ -642,7 +830,14 @@ class SerialRouterMainWindow(QMainWindow):
     def refresh_available_ports(self):
         """Refresh the list of available COM ports using enhanced port enumerator."""
         current_port = self.incoming_port_combo.currentText()
+        current_out1 = self.outgoing_port1_combo.currentText() if hasattr(self, 'outgoing_port1_combo') else ""
+        current_out2 = self.outgoing_port2_combo.currentText() if hasattr(self, 'outgoing_port2_combo') else ""
+
         self.incoming_port_combo.clear()
+        if hasattr(self, 'outgoing_port1_combo'):
+            self.outgoing_port1_combo.clear()
+        if hasattr(self, 'outgoing_port2_combo'):
+            self.outgoing_port2_combo.clear()
         
         try:
             # Use our robust port enumerator
@@ -657,47 +852,38 @@ class SerialRouterMainWindow(QMainWindow):
             # Separate ports by type for better user experience
             physical_ports = []
             moxa_ports = []
+            com0com_ports = []
             other_virtual_ports = []
-            
+
             for port in all_ports:
                 if port.port_type == PortType.PHYSICAL:
                     physical_ports.append(port)
                 elif port.port_type == PortType.MOXA_VIRTUAL:
                     moxa_ports.append(port)
+                elif port.port_type == PortType.COM0COM_VIRTUAL:
+                    com0com_ports.append(port)
                 else:
                     other_virtual_ports.append(port)
-            
-            # Excluded ports - these are reserved for outgoing routing and com0com pairs
-            excluded_ports = {"COM131", "COM132", "COM141", "COM142"}
-            
-            # Add ports to dropdown in order of priority: Physical, Moxa, Others
+
+            # Add ports to incoming dropdown in order of priority: Physical, Moxa, Other Virtual
+            # CRITICAL: com0com ports are NEVER added to incoming dropdown (outgoing only)
             port_items = []
             port_details = []
-            excluded_count = 0
-            
+
             # Add physical ports first (preferred for incoming)
             for port in physical_ports:
-                if port.port_name not in excluded_ports:
-                    port_items.append(port.port_name)
-                    port_details.append(f"{port.port_name} (Physical)")
-                else:
-                    excluded_count += 1
-            
-            # Add Moxa ports next (but exclude reserved outgoing ports)
+                port_items.append(port.port_name)
+                port_details.append(f"{port.port_name} (Physical)")
+
+            # Add Moxa ports next (common for incoming in marine/offshore)
             for port in moxa_ports:
-                if port.port_name not in excluded_ports:
-                    port_items.append(port.port_name)
-                    port_details.append(f"{port.port_name} (Moxa Virtual)")
-                else:
-                    excluded_count += 1
-            
-            # Add other virtual ports last (but exclude reserved outgoing ports)
+                port_items.append(port.port_name)
+                port_details.append(f"{port.port_name} (Moxa Virtual)")
+
+            # Add other non-com0com virtual ports last
             for port in other_virtual_ports:
-                if port.port_name not in excluded_ports:
-                    port_items.append(port.port_name)
-                    port_details.append(f"{port.port_name} (Virtual)")
-                else:
-                    excluded_count += 1
+                port_items.append(port.port_name)
+                port_details.append(f"{port.port_name} (Virtual)")
             
             # Populate the dropdown
             if port_items:
@@ -719,29 +905,49 @@ class SerialRouterMainWindow(QMainWindow):
             else:
                 self.incoming_port_combo.addItem("COM54")
             
+            # Populate outgoing port dropdowns with com0com ports only
+            if hasattr(self, 'outgoing_port1_combo') and hasattr(self, 'outgoing_port2_combo'):
+                com0com_ports = self.port_enumerator.get_com0com_ports()
+                com0com_names = [p.port_name for p in com0com_ports]
+
+                if com0com_names:
+                    self.outgoing_port1_combo.addItems(com0com_names)
+                    self.outgoing_port2_combo.addItems(com0com_names)
+
+                    # Set defaults: restore previous or use COM131/COM141
+                    if current_out1 and current_out1 in com0com_names:
+                        self.outgoing_port1_combo.setCurrentText(current_out1)
+                    elif "COM131" in com0com_names:
+                        self.outgoing_port1_combo.setCurrentText("COM131")
+
+                    if current_out2 and current_out2 in com0com_names:
+                        self.outgoing_port2_combo.setCurrentText(current_out2)
+                    elif "COM141" in com0com_names:
+                        self.outgoing_port2_combo.setCurrentText("COM141")
+                else:
+                    # No com0com ports found - add defaults anyway
+                    self.outgoing_port1_combo.addItems(["COM131"])
+                    self.outgoing_port2_combo.addItems(["COM141"])
+                    self.add_log_message("Warning: No com0com ports detected - using defaults")
+
             # Report findings with port type details
             total_ports = len(all_ports)
             available_ports = len(port_items)
             moxa_count = len(moxa_ports)
             physical_count = len(physical_ports)
-            
-            self.add_log_message(f"Port scan: {total_ports} total, {available_ports} available for incoming ({physical_count} Physical, {moxa_count} Moxa Virtual)")
-            
-            # Show excluded ports information
-            if excluded_count > 0:
-                excluded_found = [port for port in excluded_ports if any(p.port_name == port for p in all_ports)]
-                if excluded_found:
-                    self.add_log_message(f"Excluded outgoing ports: {', '.join(excluded_found)} (reserved for COM131/141 routing)")
-            
+            com0com_count = len(com0com_ports)
+
+            self.add_log_message(f"Port scan: {total_ports} total, {available_ports} available for incoming ({physical_count} Physical, {moxa_count} Moxa, {com0com_count} com0com)")
+
+            # Show com0com ports information (reserved for outgoing only)
+            if com0com_ports:
+                com0com_names_list = [p.port_name for p in com0com_ports]
+                self.add_log_message(f"com0com ports reserved for outgoing: {', '.join(com0com_names_list)}")
+
             # Show Moxa ports specifically (important for offshore operations)
             if moxa_ports:
-                available_moxa = [p.port_name for p in moxa_ports if p.port_name not in excluded_ports]
-                if available_moxa:
-                    self.add_log_message(f"Available Moxa ports: {', '.join(available_moxa)}")
-                    
-                excluded_moxa = [p.port_name for p in moxa_ports if p.port_name in excluded_ports]
-                if excluded_moxa:
-                    self.add_log_message(f"Reserved Moxa ports: {', '.join(excluded_moxa)} (outgoing routing)")
+                moxa_names = [p.port_name for p in moxa_ports]
+                self.add_log_message(f"Available Moxa ports: {', '.join(moxa_names)}")
             
         except Exception as e:
             self.add_log_message(f"Error scanning ports: {str(e)}")
@@ -754,24 +960,34 @@ class SerialRouterMainWindow(QMainWindow):
         port = self.incoming_port_combo.currentText()
         if not port or port in ["No COM ports available", "Error reading ports"]:
             return False
-        
+
         # Critical safety check: prevent using reserved outgoing ports as incoming
-        excluded_ports = {"COM131", "COM132", "COM141", "COM142"}
+        excluded_ports = self._get_excluded_ports()
         if port in excluded_ports:
             self.add_log_message(f"ERROR: Cannot use {port} as incoming port - reserved for outgoing routing")
             return False
         
         try:
+            # Get current outgoing ports
+            outgoing_ports = []
+            if hasattr(self, 'outgoing_port1_combo') and hasattr(self, 'outgoing_port2_combo'):
+                outgoing_ports = [
+                    self.outgoing_port1_combo.currentText(),
+                    self.outgoing_port2_combo.currentText()
+                ]
+            else:
+                outgoing_ports = ["COM131", "COM141"]
+
             # Validate that router ports exist using our enumerator
-            validation = self.port_enumerator.validate_router_ports(port, ["COM131", "COM141"])
+            validation = self.port_enumerator.validate_router_ports(port, outgoing_ports)
             
             if not validation.get(port, False):
                 self.add_log_message(f"Warning: Selected port {port} not found during validation")
                 return False
                 
-            # Check that fixed outgoing ports are available
+            # Check that selected outgoing ports are available
             missing_ports = []
-            for outgoing_port in ["COM131", "COM141"]:
+            for outgoing_port in outgoing_ports:
                 if not validation.get(outgoing_port, False):
                     missing_ports.append(outgoing_port)
             
@@ -811,6 +1027,10 @@ class SerialRouterMainWindow(QMainWindow):
         if not self.validate_selected_port():
             self.add_log_message("Cannot start: Selected port is not available")
             return
+
+        if not self.validate_port_configuration():
+            self.add_log_message("Cannot start: Invalid port configuration")
+            return
             
         with self._router_state_lock:  # Ensure atomic state change to prevent concurrent router operations
             if self._router_state_changing:
@@ -819,19 +1039,20 @@ class SerialRouterMainWindow(QMainWindow):
         try:
             # Apply current configuration
             config = self.get_current_config()
-            
+
             # Initialize router core with GUI values
             self.router_core = SerialRouterCore(
                 incoming_port=config["incoming_port"],
                 incoming_baud=config["incoming_baud"],
-                outgoing_baud=config["outgoing_baud"]
+                outgoing_baud=config["outgoing_baud"],
+                outgoing_ports=config["outgoing_ports"]
             )
             
             # Setup logging integration
             if self.log_handler:
                 self.router_core.logger.addHandler(self.log_handler)
                 
-            self.add_log_message(f"Starting router: {config['incoming_port']} <-> COM131 & COM141")
+            self.add_log_message(f"Starting router: {config['incoming_port']} <-> {config['outgoing_ports'][0]} & {config['outgoing_ports'][1]}")
             
             # Clean up existing thread first to prevent leaks
             if hasattr(self, 'control_thread') and self.control_thread:
@@ -931,7 +1152,12 @@ class SerialRouterMainWindow(QMainWindow):
         self.ribbon.set_routing_state(True)
         self.ribbon.set_busy(False)
         self.enhanced_status.set_state(EnhancedStatusWidget.STATE_ACTIVE)
-        
+
+        # Lock port configuration during routing
+        self.incoming_port_combo.setEnabled(False)
+        self.outgoing_port1_combo.setEnabled(False)
+        self.outgoing_port2_combo.setEnabled(False)
+
         # Update connection diagram with active state
         self.update_connection_diagram_state()
         
@@ -946,12 +1172,18 @@ class SerialRouterMainWindow(QMainWindow):
         self.ribbon.set_routing_state(False)
         self.ribbon.set_busy(False)
         self.enhanced_status.set_state(EnhancedStatusWidget.STATE_OFFLINE)
-        
+
+        # Unlock port configuration when routing stops
+        self.incoming_port_combo.setEnabled(True)
+        self.outgoing_port1_combo.setEnabled(True)
+        self.outgoing_port2_combo.setEnabled(True)
+
         # Reset connection diagram to inactive state
         if self.connection_diagram:
+            port1, port2 = self._get_selected_outgoing_ports()
             self.connection_diagram.set_connection_states({
-                "COM131": False,
-                "COM141": False
+                port1: False,
+                port2: False
             })
         
     def update_connection_diagram_state(self):
@@ -962,24 +1194,26 @@ class SerialRouterMainWindow(QMainWindow):
         try:
             status = self.router_core.get_status()
             port_connections = status.get("port_connections", {})
-            
+
             # Update connection states based on actual port status
+            port1, port2 = self._get_selected_outgoing_ports()
             connection_states = {}
-            for port in ["COM131", "COM141"]:
+            for port in [port1, port2]:
                 if port in port_connections:
                     connection_states[port] = port_connections[port].get("connected", False)
                 else:
                     connection_states[port] = False
-                    
+
             if self.connection_diagram:
                 self.connection_diagram.set_connection_states(connection_states)
             
         except Exception as e:
             # Fallback to basic active state
             if self.connection_diagram:
+                port1, port2 = self._get_selected_outgoing_ports()
                 self.connection_diagram.set_connection_states({
-                    "COM131": True,
-                    "COM141": True
+                    port1: True,
+                    port2: True
                 })
         
     def update_status_display(self):
@@ -1121,15 +1355,18 @@ class SerialRouterMainWindow(QMainWindow):
                 
             # Bytes transferred - Updated for new PortManager architecture
             bytes_data = status.get("bytes_transferred", {})
-            
+
             # Get the actual incoming port name from status
             incoming_port = status.get("incoming_port", "COM54")
-            
+
+            # Get currently selected outgoing ports
+            port1, port2 = self._get_selected_outgoing_ports()
+
             # Format byte counts with dynamic port names
             directions_and_labels = [
-                (f"{incoming_port}->131&141", self.bytes_in_out_label),
-                ("COM131->Incoming", self.bytes_131_in_label), 
-                ("COM141->Incoming", self.bytes_141_in_label)
+                (f"{incoming_port}->{port1.replace('COM', '')}&{port2.replace('COM', '')}", self.bytes_in_out_label),
+                (f"{port1}->Incoming", self.bytes_131_in_label),
+                (f"{port2}->Incoming", self.bytes_141_in_label)
             ]
             
             for direction, label in directions_and_labels:
@@ -1151,7 +1388,8 @@ class SerialRouterMainWindow(QMainWindow):
                 # Update labels with PortManager data if routing stats are empty
                 if total_bytes == 0:
                     # Show PortManager port stats as fallback
-                    for port_name in [incoming_port, "COM131", "COM141"]:
+                    port1, port2 = self._get_selected_outgoing_ports()
+                    for port_name in [incoming_port, port1, port2]:
                         if port_name in port_connections:
                             # This provides additional monitoring even when no data flows
                             pass
@@ -1207,14 +1445,78 @@ class SerialRouterMainWindow(QMainWindow):
             
     def get_current_config(self) -> Dict[str, Any]:
         """Get current configuration from UI controls."""
+        outgoing_ports = []
+        if hasattr(self, 'outgoing_port1_combo') and hasattr(self, 'outgoing_port2_combo'):
+            outgoing_ports = [
+                self.outgoing_port1_combo.currentText(),
+                self.outgoing_port2_combo.currentText()
+            ]
+        else:
+            outgoing_ports = ["COM131", "COM141"]  # Fallback
+
         return {
-            "incoming_port": self.incoming_port_combo.currentText(),  # Use actual selected port
+            "incoming_port": self.incoming_port_combo.currentText(),
             "incoming_baud": self.incoming_baud_spin.value(),
             "outgoing_baud": self.outgoing_baud_spin.value(),
+            "outgoing_ports": outgoing_ports,
             "timeout": 0.1,
             "retry_delay_max": 30,
             "log_level": "INFO"
         }
+
+    def load_config(self):
+        """Load configuration from file with validation."""
+        try:
+            with open('serial_router_config.json', 'r') as f:
+                config = json.load(f)
+
+            # Get list of available com0com ports for validation
+            com0com_ports = self.port_enumerator.get_com0com_ports()
+            available_port_names = [p.port_name for p in com0com_ports]
+
+            # Apply saved outgoing port 1 with validation
+            if 'outgoing_port1' in config and hasattr(self, 'outgoing_port1_combo'):
+                port1 = config['outgoing_port1']
+                index = self.outgoing_port1_combo.findText(port1)
+                if index >= 0:
+                    # Port exists in dropdown, apply it
+                    self.outgoing_port1_combo.setCurrentIndex(index)
+                else:
+                    # Port no longer exists
+                    self.add_log_message(f"Warning: Saved port {port1} no longer available, using default")
+
+            # Apply saved outgoing port 2 with validation
+            if 'outgoing_port2' in config and hasattr(self, 'outgoing_port2_combo'):
+                port2 = config['outgoing_port2']
+                index = self.outgoing_port2_combo.findText(port2)
+                if index >= 0:
+                    # Port exists in dropdown, apply it
+                    self.outgoing_port2_combo.setCurrentIndex(index)
+                else:
+                    # Port no longer exists
+                    self.add_log_message(f"Warning: Saved port {port2} no longer available, using default")
+
+            self.add_log_message("Configuration loaded from file")
+
+        except FileNotFoundError:
+            pass  # No config file yet, use defaults
+        except Exception as e:
+            self.add_log_message(f"Error loading configuration: {e}")
+
+    def save_config(self):
+        """Save current configuration to file."""
+        try:
+            config = {}
+            if hasattr(self, 'outgoing_port1_combo'):
+                config['outgoing_port1'] = self.outgoing_port1_combo.currentText()
+            if hasattr(self, 'outgoing_port2_combo'):
+                config['outgoing_port2'] = self.outgoing_port2_combo.currentText()
+
+            with open('serial_router_config.json', 'w') as f:
+                json.dump(config, f, indent=2)
+
+        except Exception as e:
+            self.add_log_message(f"Error saving configuration: {e}")
         
             
     def clear_activity_log(self):
@@ -1267,6 +1569,9 @@ class SerialRouterMainWindow(QMainWindow):
                 self.control_thread.terminate()
                 self.control_thread.wait(2000)
                 
+        # Save configuration before exit
+        self.save_config()
+
         # Final cleanup
         self.cleanup_router_core()
         if self.tray_icon:

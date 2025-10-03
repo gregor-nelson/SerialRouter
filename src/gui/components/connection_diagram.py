@@ -323,18 +323,61 @@ class ConnectionDiagramWidget(QGraphicsView):
         self.incoming_port = "COM54"
         self.internal_ports = ["COM131", "COM141"]
         self.external_ports = ["COM132", "COM142"]
-        
+
         # Graphics items
         self.nodes = {}
         self.connections = {}
-        
+
         # Connection state tracking
         self.connection_states = {
             "COM131": False,
             "COM141": False
         }
-        
+
         self.setup_diagram()
+
+    def set_outgoing_ports(self, port1: str, port2: str, all_com0com_ports: list = None):
+        """Update diagram with new outgoing port configuration."""
+        self.internal_ports = [port1, port2]
+        self.all_com0com_ports = all_com0com_ports or []
+
+        # Calculate paired ports using proximity algorithm
+        self.external_ports = [
+            self._calculate_paired_port(port1, 1),
+            self._calculate_paired_port(port2, 2)
+        ]
+        # Update connection state tracking
+        self.connection_states = {
+            port1: self.connection_states.get(port1, False),
+            port2: self.connection_states.get(port2, False)
+        }
+        self.setup_diagram()
+
+    def _calculate_paired_port(self, port: str, port_index: int) -> str:
+        """
+        Calculate the paired com0com port using proximity algorithm.
+        Checks +1 and -1 neighbors. Falls back to generic label if detection fails.
+        """
+        try:
+            num = int(port.replace("COM", ""))
+
+            # Check both +1 and -1 neighbors
+            candidates = [
+                f"COM{num + 1}",  # Check next port
+                f"COM{num - 1}"   # Check previous port
+            ]
+
+            # Find which candidate exists in com0com port list
+            for candidate in candidates:
+                if candidate in self.all_com0com_ports:
+                    return candidate
+
+            # Fallback: proximity detection failed
+            return f"com0com Port {port_index}"
+
+        except:
+            # Parsing failed, use generic fallback
+            return f"com0com Port {port_index}"
     
     def setup_diagram(self):
         """Initialize the graphics scene with nodes and connections."""
@@ -403,17 +446,17 @@ class ConnectionDiagramWidget(QGraphicsView):
         any_connected = any(self.connection_states.values())
         if "router" in self.nodes:
             self.nodes["router"].set_connected(any_connected)
-        
+
         # Update main connection (active if any output is active)
         if "main" in self.connections:
             self.connections["main"].set_active(any_connected)
-        
-        # Update individual connections
-        app1_connected = self.connection_states.get("COM131", False)
+
+        # Update individual connections using dynamic port names
+        app1_connected = self.connection_states.get(self.internal_ports[0], False)
         if "app1" in self.connections:
             self.connections["app1"].set_active(app1_connected)
-        
-        app2_connected = self.connection_states.get("COM141", False)
+
+        app2_connected = self.connection_states.get(self.internal_ports[1], False)
         if "app2" in self.connections:
             self.connections["app2"].set_active(app2_connected)
     
