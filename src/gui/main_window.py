@@ -182,7 +182,7 @@ class SerialRouterMainWindow(QMainWindow):
         
     def init_ui(self):
         """Initialize the user interface."""
-        self.setWindowTitle("SerialRouter v2.0 - Production Control")
+        self.setWindowTitle("Serial Router")
         self.setMinimumSize(880, 600)
         # Don't set maximum size to preserve maximize functionality
         self.resize(880, 600)
