@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+  <!-- System Health/Heartbeat icon -->
+  <circle cx="8" cy="8" r="7" fill="#6F42C1" stroke="#5A2D91" stroke-width="0.5"/>
+  <!-- Heartbeat line -->
+  <path d="M3 8 L5 8 L6 6 L7 10 L8 8 L9 8 L10 6 L11 8 L13 8" stroke="#FFFFFF" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+</svg>

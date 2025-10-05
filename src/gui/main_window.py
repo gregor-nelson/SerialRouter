@@ -666,16 +666,15 @@ class SerialRouterMainWindow(QMainWindow):
         pass
         
     def create_monitoring_group(self, parent_layout):
-        """Create the real-time monitoring group with two-column grid layout."""
-        from PyQt6.QtWidgets import QSizePolicy
+        """Create the real-time monitoring group with clean, scannable layout."""
+        from PyQt6.QtWidgets import QSizePolicy, QFormLayout
 
         monitor_group = QGroupBox("Data Flow Monitor")
         monitor_layout = QGridLayout(monitor_group)
-        monitor_layout.setSpacing(5)
-        monitor_layout.setHorizontalSpacing(20)  # Fixed gap between columns
-        monitor_layout.setVerticalSpacing(5)  # Slightly more vertical spacing for clarity
-        monitor_layout.setColumnMinimumWidth(0, 200)  # Minimum width for left column
-        monitor_layout.setColumnMinimumWidth(1, 200)  # Minimum width for right column
+        monitor_layout.setSpacing(8)
+        monitor_layout.setHorizontalSpacing(15)
+        monitor_layout.setVerticalSpacing(6)
+        monitor_layout.setContentsMargins(10, 10, 10, 10)
 
         # Row 0-2: Two-column channel stats
         # Left Column (col 0): Outgoing Channels
@@ -683,61 +682,53 @@ class SerialRouterMainWindow(QMainWindow):
         monitor_layout.addWidget(outgoing_header, 0, 0)
 
         # Port 1 subsection
-        self.port1_widget = self._create_port_widget("1", "outgoing")
-        self.port1_widget.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
-        monitor_layout.addWidget(self.port1_widget, 1, 0)
+        self.port1_group = self._create_port_group("Port 1", "1")
+        monitor_layout.addWidget(self.port1_group, 1, 0)
 
         # Port 2 subsection
-        self.port2_widget = self._create_port_widget("2", "outgoing")
-        self.port2_widget.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
-        monitor_layout.addWidget(self.port2_widget, 2, 0)
+        self.port2_group = self._create_port_group("Port 2", "2")
+        monitor_layout.addWidget(self.port2_group, 2, 0)
 
         # Right Column (col 1): Incoming Channel
         incoming_header = self._create_section_header('data_inbound', 'Incoming Channel')
         monitor_layout.addWidget(incoming_header, 0, 1)
 
-        self.incoming_widget = self._create_incoming_widget()
-        self.incoming_widget.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
-        monitor_layout.addWidget(self.incoming_widget, 1, 1, 2, 1)  # Span 2 rows to match left column height
+        self.incoming_group = self._create_incoming_group()
+        monitor_layout.addWidget(self.incoming_group, 1, 1, 2, 1)  # Span 2 rows
 
         # Row 3-4: System Health spans full width
         health_header = self._create_section_header('session_stats', 'System Health')
         monitor_layout.addWidget(health_header, 3, 0, 1, 2)  # Span both columns
 
-        self.health_widget = self._create_health_widget()
-        self.health_widget.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
-        monitor_layout.addWidget(self.health_widget, 4, 0, 1, 2)  # Span both columns
+        self.health_group = self._create_health_group()
+        monitor_layout.addWidget(self.health_group, 4, 0, 1, 2)  # Span both columns
 
-        # Add horizontal stretch column to absorb extra width
-        monitor_layout.setColumnStretch(0, 0)  # No stretch - fixed width
-        monitor_layout.setColumnStretch(1, 0)  # No stretch - fixed width
-        monitor_layout.setColumnStretch(2, 1)  # Stretch column absorbs extra space
-
-        # Add vertical stretch to push content to top
+        # Configure stretch
+        monitor_layout.setColumnStretch(0, 1)
+        monitor_layout.setColumnStretch(1, 1)
         monitor_layout.setRowStretch(5, 1)
 
         parent_layout.addWidget(monitor_group)
 
     def _create_section_header(self, icon_name: str, text: str) -> QWidget:
-        """Create a section header with icon and text, matching ribbon toolbar style."""
+        """Create a clean section header with icon and text."""
         container = QWidget()
         layout = QHBoxLayout(container)
-        layout.setContentsMargins(0, 8, 0, 4)  # More top padding for visual separation
+        layout.setContentsMargins(0, 0, 0, 4)
         layout.setSpacing(6)
 
         # Add icon using stats icon loader
         icon = resource_manager.get_stats_icon(icon_name)
         if not icon.isNull():
             icon_label = QLabel()
-            icon_label.setPixmap(icon.pixmap(16, 16))  # Match ribbon icon size
+            icon_label.setPixmap(icon.pixmap(16, 16))
             layout.addWidget(icon_label)
 
         # Add text label
         text_label = QLabel(text)
-        text_label.setProperty("class", "section-header")
         font = text_label.font()
         font.setBold(True)
-        font.setPointSize(9)  # Slightly larger for section headers
+        font.setPointSize(9)
         text_label.setFont(font)
         layout.addWidget(text_label)
 
@@ -745,289 +736,244 @@ class SerialRouterMainWindow(QMainWindow):
 
         return container
 
-    def _create_port_widget(self, port_num: str, direction: str) -> QWidget:
-        """Create port stat display with tree indent."""
-        container = QWidget()
-        layout = QVBoxLayout(container)
-        layout.setContentsMargins(20, 3, 0, 8)  # Indent for tree effect, bottom padding for spacing
-        layout.setSpacing(3)
+    def _create_port_group(self, title: str, port_num: str) -> QWidget:
+        """Create a clean port statistics group with clear metric display."""
+        from PyQt6.QtWidgets import QFormLayout
 
-        # Simple header: "├─ Port 1" or "├─ Port 2"
-        header_text = f"├─ Port {port_num}"
+        # Use QWidget instead of QGroupBox for borderless design
+        group = QWidget()
+        main_layout = QVBoxLayout(group)
+        main_layout.setContentsMargins(0, 0, 0, 0)
+        main_layout.setSpacing(4)
 
-        header = QLabel(header_text)
-        font = header.font()
-        font.setFamily("Consolas, Courier New, monospace")
-        font.setPointSize(8)
-        header.setFont(font)
-        header.setStyleSheet("color: #555;")  # Subtle color for tree structure
-        layout.addWidget(header)
+        # Add title label
+        title_label = QLabel(title)
+        title_font = title_label.font()
+        title_font.setBold(True)
+        title_font.setPointSize(8)
+        title_label.setFont(title_font)
+        main_layout.addWidget(title_label)
 
-        # Store reference to header for potential dynamic updates
-        if port_num == "1":
-            self.port1_header = header
-        else:
-            self.port2_header = header
+        # Metrics container
+        metrics_container = QWidget()
+        layout = QFormLayout(metrics_container)
+        layout.setSpacing(4)
+        layout.setContentsMargins(8, 4, 0, 4)
+        layout.setLabelAlignment(Qt.AlignmentFlag.AlignRight)
 
-        # Metrics row 1: ↑ To Client
-        to_client_row = QHBoxLayout()
-        to_client_row.setSpacing(8)
-        to_label = QLabel("  │   ↑ To Client:")
-        to_label.setFont(font)
-        to_label.setStyleSheet("color: #555;")
-        to_client_row.addWidget(to_label)
+        # Monospace font for numeric values
+        value_font = QFont("Consolas, Courier New, monospace")
+        value_font.setPointSize(8)
+
+        # To Client metrics
+        to_client_container = QWidget()
+        to_client_layout = QHBoxLayout(to_client_container)
+        to_client_layout.setContentsMargins(0, 0, 0, 0)
+        to_client_layout.setSpacing(8)
 
         bytes_out_label = QLabel("0 bytes")
-        bytes_out_label.setProperty("class", "metric-value")
-        metric_font = bytes_out_label.font()
-        metric_font.setFamily("Consolas, Courier New, monospace")
-        metric_font.setPointSize(8)
-        bytes_out_label.setFont(metric_font)
-        to_client_row.addWidget(bytes_out_label)
+        bytes_out_label.setFont(value_font)
+        to_client_layout.addWidget(bytes_out_label)
 
-        rate_sep = QLabel("│")
-        rate_sep.setStyleSheet("color: #ccc;")
-        to_client_row.addWidget(rate_sep)
-
-        rate_label = QLabel("Rate:")
-        rate_label.setFont(font)
-        rate_label.setStyleSheet("color: #555;")
-        to_client_row.addWidget(rate_label)
+        to_client_layout.addWidget(QLabel("@"))
 
         rate_out_label = QLabel("0 B/s")
-        rate_out_label.setProperty("class", "metric-value")
-        rate_out_label.setFont(metric_font)
-        to_client_row.addWidget(rate_out_label)
+        rate_out_label.setFont(value_font)
+        to_client_layout.addWidget(rate_out_label)
+        to_client_layout.addStretch()
 
-        to_client_row.addStretch()
-        layout.addLayout(to_client_row)
+        layout.addRow("↑ To Client:", to_client_container)
+
+        # From Client metrics
+        from_client_container = QWidget()
+        from_client_layout = QHBoxLayout(from_client_container)
+        from_client_layout.setContentsMargins(0, 0, 0, 0)
+        from_client_layout.setSpacing(8)
+
+        bytes_in_label = QLabel("0 bytes")
+        bytes_in_label.setFont(value_font)
+        from_client_layout.addWidget(bytes_in_label)
+
+        from_client_layout.addWidget(QLabel("@"))
+
+        rate_in_label = QLabel("0 B/s")
+        rate_in_label.setFont(value_font)
+        from_client_layout.addWidget(rate_in_label)
+        from_client_layout.addStretch()
+
+        layout.addRow("↓ From Client:", from_client_container)
 
         # Store label references
         if port_num == "1":
             self.port1_bytes_out = bytes_out_label
             self.port1_rate_out = rate_out_label
-        else:
-            self.port2_bytes_out = bytes_out_label
-            self.port2_rate_out = rate_out_label
-
-        # Metrics row 2: ↓ From Client
-        from_client_row = QHBoxLayout()
-        from_client_row.setSpacing(8)
-        from_label = QLabel("  │   ↓ From Client:")
-        from_label.setFont(font)
-        from_label.setStyleSheet("color: #555;")
-        from_client_row.addWidget(from_label)
-
-        bytes_in_label = QLabel("0 bytes")
-        bytes_in_label.setProperty("class", "metric-value")
-        bytes_in_label.setFont(metric_font)
-        from_client_row.addWidget(bytes_in_label)
-
-        rate_sep2 = QLabel("│")
-        rate_sep2.setStyleSheet("color: #ccc;")
-        from_client_row.addWidget(rate_sep2)
-
-        rate_label2 = QLabel("Rate:")
-        rate_label2.setFont(font)
-        rate_label2.setStyleSheet("color: #555;")
-        from_client_row.addWidget(rate_label2)
-
-        rate_in_label = QLabel("0 B/s")
-        rate_in_label.setProperty("class", "metric-value")
-        rate_in_label.setFont(metric_font)
-        from_client_row.addWidget(rate_in_label)
-
-        from_client_row.addStretch()
-        layout.addLayout(from_client_row)
-
-        # Store label references
-        if port_num == "1":
             self.port1_bytes_in = bytes_in_label
             self.port1_rate_in = rate_in_label
         else:
+            self.port2_bytes_out = bytes_out_label
+            self.port2_rate_out = rate_out_label
             self.port2_bytes_in = bytes_in_label
             self.port2_rate_in = rate_in_label
 
-        return container
+        main_layout.addWidget(metrics_container)
+        return group
 
-    def _create_incoming_widget(self) -> QWidget:
-        """Create incoming port stats."""
-        container = QWidget()
-        layout = QVBoxLayout(container)
-        layout.setContentsMargins(20, 3, 0, 8)
-        layout.setSpacing(3)
+    def _create_incoming_group(self) -> QWidget:
+        """Create incoming port statistics group."""
+        from PyQt6.QtWidgets import QFormLayout
 
-        # Header: "└─ Port <dynamic>"
+        # Use QWidget instead of QGroupBox for borderless design
+        group = QWidget()
+        main_layout = QVBoxLayout(group)
+        main_layout.setContentsMargins(0, 0, 0, 0)
+        main_layout.setSpacing(4)
+
+        # Add dynamic title label
         incoming_port = self.incoming_port_combo.currentText() if hasattr(self, 'incoming_port_combo') else "COM54"
-        self.incoming_header = QLabel(f"└─ Port {incoming_port}")
-        font = self.incoming_header.font()
-        font.setFamily("Consolas, Courier New, monospace")
-        font.setPointSize(8)
-        self.incoming_header.setFont(font)
-        self.incoming_header.setStyleSheet("color: #555;")
-        layout.addWidget(self.incoming_header)
+        self.incoming_title_label = QLabel(f"Incoming Port ({incoming_port})")
+        title_font = self.incoming_title_label.font()
+        title_font.setBold(True)
+        title_font.setPointSize(8)
+        self.incoming_title_label.setFont(title_font)
+        main_layout.addWidget(self.incoming_title_label)
 
-        # Metrics row
-        metrics_row = QHBoxLayout()
-        metrics_row.setSpacing(8)
-        metrics_label = QLabel("    Total Routed:")
-        metrics_label.setFont(font)
-        metrics_label.setStyleSheet("color: #555;")
-        metrics_row.addWidget(metrics_label)
+        # Metrics container
+        metrics_container = QWidget()
+        layout = QFormLayout(metrics_container)
+        layout.setSpacing(4)
+        layout.setContentsMargins(8, 4, 0, 4)
+        layout.setLabelAlignment(Qt.AlignmentFlag.AlignRight)
+
+        # Monospace font for numeric values
+        value_font = QFont("Consolas, Courier New, monospace")
+        value_font.setPointSize(8)
+
+        # Total Routed metrics
+        routed_container = QWidget()
+        routed_layout = QHBoxLayout(routed_container)
+        routed_layout.setContentsMargins(0, 0, 0, 0)
+        routed_layout.setSpacing(8)
 
         self.bytes_routed_label = QLabel("0 bytes")
-        self.bytes_routed_label.setProperty("class", "metric-value")
-        metric_font = self.bytes_routed_label.font()
-        metric_font.setFamily("Consolas, Courier New, monospace")
-        metric_font.setPointSize(8)
-        self.bytes_routed_label.setFont(metric_font)
-        metrics_row.addWidget(self.bytes_routed_label)
+        self.bytes_routed_label.setFont(value_font)
+        routed_layout.addWidget(self.bytes_routed_label)
 
-        rate_sep = QLabel("│")
-        rate_sep.setStyleSheet("color: #ccc;")
-        metrics_row.addWidget(rate_sep)
-
-        rate_label = QLabel("Rate:")
-        rate_label.setFont(font)
-        rate_label.setStyleSheet("color: #555;")
-        metrics_row.addWidget(rate_label)
+        routed_layout.addWidget(QLabel("@"))
 
         self.rate_routed_label = QLabel("0 B/s")
-        self.rate_routed_label.setProperty("class", "metric-value")
-        self.rate_routed_label.setFont(metric_font)
-        metrics_row.addWidget(self.rate_routed_label)
+        self.rate_routed_label.setFont(value_font)
+        routed_layout.addWidget(self.rate_routed_label)
+        routed_layout.addStretch()
 
-        metrics_row.addStretch()
-        layout.addLayout(metrics_row)
+        layout.addRow("Total Routed:", routed_container)
 
-        return container
+        main_layout.addWidget(metrics_container)
+        return group
 
-    def _create_health_widget(self) -> QWidget:
-        """Create system health display with session info."""
-        container = QWidget()
-        layout = QVBoxLayout(container)
-        layout.setContentsMargins(20, 3, 0, 8)
-        layout.setSpacing(3)
+    def _create_health_group(self) -> QWidget:
+        """Create system health display with clean grid layout."""
+        from PyQt6.QtWidgets import QFormLayout
 
-        # Create consistent font for tree structure
-        tree_font = QFont("Consolas, Courier New, monospace", 8)
-        label_font = QFont("Consolas, Courier New, monospace", 8)
+        # Use QWidget instead of QGroupBox for borderless design
+        group = QWidget()
+        main_layout = QVBoxLayout(group)
+        main_layout.setContentsMargins(0, 0, 0, 0)
+        main_layout.setSpacing(4)
 
-        # Row 1: Connections and Threads
-        row1 = QHBoxLayout()
-        row1.setSpacing(8)
-        conn_label = QLabel("├─ Connections:")
-        conn_label.setFont(tree_font)
-        conn_label.setStyleSheet("color: #555;")
-        row1.addWidget(conn_label)
+        # Add title label
+        title_label = QLabel("System Status")
+        title_font = title_label.font()
+        title_font.setBold(True)
+        title_font.setPointSize(8)
+        title_label.setFont(title_font)
+        main_layout.addWidget(title_label)
 
+        # Metrics grid container
+        metrics_container = QWidget()
+        layout = QGridLayout(metrics_container)
+        layout.setSpacing(6)
+        layout.setContentsMargins(8, 4, 0, 4)
+        layout.setHorizontalSpacing(15)
+        layout.setVerticalSpacing(4)
+
+        # Monospace font for numeric values
+        value_font = QFont("Consolas, Courier New, monospace")
+        value_font.setPointSize(8)
+
+        # Column 1: Connection & Thread Status
+        col1_row = 0
+
+        # Connections
+        conn_label = QLabel("Connections:")
+        layout.addWidget(conn_label, col1_row, 0, Qt.AlignmentFlag.AlignRight)
         self.connections_label = QLabel("0/3")
-        self.connections_label.setProperty("class", "metric-value")
-        self.connections_label.setFont(label_font)
-        row1.addWidget(self.connections_label)
+        self.connections_label.setFont(value_font)
+        layout.addWidget(self.connections_label, col1_row, 1)
+        col1_row += 1
 
-        sep1 = QLabel("│")
-        sep1.setStyleSheet("color: #ccc;")
-        row1.addWidget(sep1)
-
+        # Threads
         thread_label = QLabel("Threads:")
-        thread_label.setFont(tree_font)
-        thread_label.setStyleSheet("color: #555;")
-        row1.addWidget(thread_label)
-
+        layout.addWidget(thread_label, col1_row, 0, Qt.AlignmentFlag.AlignRight)
         self.thread_status_label = QLabel("0/3 Active")
-        self.thread_status_label.setProperty("class", "metric-value")
-        self.thread_status_label.setFont(label_font)
-        row1.addWidget(self.thread_status_label)
-        row1.addStretch()
-        layout.addLayout(row1)
+        self.thread_status_label.setFont(value_font)
+        layout.addWidget(self.thread_status_label, col1_row, 1)
+        col1_row += 1
 
-        # Row 2: Uptime and Health
-        row2 = QHBoxLayout()
-        row2.setSpacing(8)
-        uptime_label = QLabel("├─ Uptime:")
-        uptime_label.setFont(tree_font)
-        uptime_label.setStyleSheet("color: #555;")
-        row2.addWidget(uptime_label)
-
-        self.uptime_label = QLabel("0 hours")
-        self.uptime_label.setProperty("class", "metric-value")
-        self.uptime_label.setFont(label_font)
-        row2.addWidget(self.uptime_label)
-
-        sep2 = QLabel("│")
-        sep2.setStyleSheet("color: #ccc;")
-        row2.addWidget(sep2)
-
-        health_label = QLabel("Health:")
-        health_label.setFont(tree_font)
-        health_label.setStyleSheet("color: #555;")
-        row2.addWidget(health_label)
-
-        self.health_status_label = QLabel("Offline")
-        self.health_status_label.setProperty("class", "metric-value")
-        self.health_status_label.setFont(label_font)
-        row2.addWidget(self.health_status_label)
-        row2.addStretch()
-        layout.addLayout(row2)
-
-        # Row 3: Errors and Queue
-        row3 = QHBoxLayout()
-        row3.setSpacing(8)
-        error_label = QLabel("├─ Errors:")
-        error_label.setFont(tree_font)
-        error_label.setStyleSheet("color: #555;")
-        row3.addWidget(error_label)
-
+        # Errors
+        error_label = QLabel("Errors:")
+        layout.addWidget(error_label, col1_row, 0, Qt.AlignmentFlag.AlignRight)
         self.error_count_label = QLabel("0")
-        self.error_count_label.setProperty("class", "metric-value")
-        self.error_count_label.setFont(label_font)
-        row3.addWidget(self.error_count_label)
+        self.error_count_label.setFont(value_font)
+        layout.addWidget(self.error_count_label, col1_row, 1)
 
-        sep3 = QLabel("│")
-        sep3.setStyleSheet("color: #ccc;")
-        row3.addWidget(sep3)
+        # Column 2: Health & Performance
+        col2_row = 0
 
+        # Health Status
+        health_label = QLabel("Health:")
+        layout.addWidget(health_label, col2_row, 2, Qt.AlignmentFlag.AlignRight)
+        self.health_status_label = QLabel("Offline")
+        self.health_status_label.setFont(value_font)
+        layout.addWidget(self.health_status_label, col2_row, 3)
+        col2_row += 1
+
+        # Queue Utilization
         queue_label = QLabel("Queue:")
-        queue_label.setFont(tree_font)
-        queue_label.setStyleSheet("color: #555;")
-        row3.addWidget(queue_label)
-
+        layout.addWidget(queue_label, col2_row, 2, Qt.AlignmentFlag.AlignRight)
         self.queue_util_label = QLabel("0%")
-        self.queue_util_label.setProperty("class", "metric-value")
-        self.queue_util_label.setFont(label_font)
-        row3.addWidget(self.queue_util_label)
-        row3.addStretch()
-        layout.addLayout(row3)
+        self.queue_util_label.setFont(value_font)
+        layout.addWidget(self.queue_util_label, col2_row, 3)
+        col2_row += 1
 
-        # Row 4: Session info (moved from footer)
-        row4 = QHBoxLayout()
-        row4.setSpacing(8)
-        session_label = QLabel("└─ Session:")
-        session_label.setFont(tree_font)
-        session_label.setStyleSheet("color: #555;")
-        row4.addWidget(session_label)
+        # Uptime
+        uptime_label = QLabel("Uptime:")
+        layout.addWidget(uptime_label, col2_row, 2, Qt.AlignmentFlag.AlignRight)
+        self.uptime_label = QLabel("0 hours")
+        self.uptime_label.setFont(value_font)
+        layout.addWidget(self.uptime_label, col2_row, 3)
 
+        # Column 3: Session Info
+        col3_row = 0
+
+        # Session Duration
+        session_label = QLabel("Session:")
+        layout.addWidget(session_label, col3_row, 4, Qt.AlignmentFlag.AlignRight)
         self.session_duration_label = QLabel("0h 0m")
-        self.session_duration_label.setProperty("class", "metric-value")
-        self.session_duration_label.setFont(label_font)
-        row4.addWidget(self.session_duration_label)
+        self.session_duration_label.setFont(value_font)
+        layout.addWidget(self.session_duration_label, col3_row, 5)
+        col3_row += 1
 
-        sep4 = QLabel("│")
-        sep4.setStyleSheet("color: #ccc;")
-        row4.addWidget(sep4)
-
+        # Last Reset
         reset_label = QLabel("Last Reset:")
-        reset_label.setFont(tree_font)
-        reset_label.setStyleSheet("color: #555;")
-        row4.addWidget(reset_label)
-
+        layout.addWidget(reset_label, col3_row, 4, Qt.AlignmentFlag.AlignRight)
         self.last_reset_label = QLabel("Never")
-        self.last_reset_label.setProperty("class", "metric-value")
-        self.last_reset_label.setFont(label_font)
-        row4.addWidget(self.last_reset_label)
-        row4.addStretch()
-        layout.addLayout(row4)
+        self.last_reset_label.setFont(value_font)
+        layout.addWidget(self.last_reset_label, col3_row, 5)
+
+        # Configure column stretch
+        layout.setColumnStretch(1, 1)
+        layout.setColumnStretch(3, 1)
+        layout.setColumnStretch(5, 1)
 
         # Keep legacy labels for backward compatibility
         self.throughput_label = QLabel("0 bytes/sec")
@@ -1041,7 +987,8 @@ class SerialRouterMainWindow(QMainWindow):
                       self.error_rate_label, self.restart_count_label]:
             label.setVisible(False)
 
-        return container
+        main_layout.addWidget(metrics_container)
+        return group
 
     def _create_session_footer(self) -> QWidget:
         """Create session info footer."""
@@ -1511,15 +1458,15 @@ class SerialRouterMainWindow(QMainWindow):
             # Reset displays when not running
             self.uptime_label.setText("0 hours")
             self.connections_label.setText("0/3")
+            self.connections_label.setStyleSheet("")  # Clear styling
             self.health_status_label.setText("Offline")
-            self.health_status_label.setProperty("class", "metric-value status-error")
-            self.health_status_label.setStyleSheet("color: #757575; font-weight: 600;")  # Gray for offline
+            self.health_status_label.setStyleSheet("color: #757575;")  # Gray for offline
             self.thread_status_label.setText("0/3 Active")
-            self.thread_status_label.setProperty("class", "metric-value status-error")
-            self.thread_status_label.setStyleSheet("color: #757575; font-weight: 600;")  # Gray for offline
+            self.thread_status_label.setStyleSheet("color: #757575;")  # Gray for offline
             self.error_count_label.setText("0")
-            self.error_count_label.setStyleSheet("color: #2e7d32; font-weight: 600;")  # Green for no errors
+            self.error_count_label.setStyleSheet("color: #2e7d32;")  # Green for no errors
             self.queue_util_label.setText("0%")
+            self.queue_util_label.setStyleSheet("")  # Clear styling
             self.session_duration_label.setText("0h 0m")
             self.last_reset_label.setText("Never")
 
@@ -1565,14 +1512,11 @@ class SerialRouterMainWindow(QMainWindow):
             connections_status = critical_metrics.get("active_connections", "0/3")
             self.connections_label.setText(connections_status)
             if connections_status.startswith("3/3"):
-                self.connections_label.setProperty("class", "connection-display status-success")
-                self.connections_label.setStyleSheet("color: #2e7d32; font-weight: 600;")  # Green
+                self.connections_label.setStyleSheet("color: #2e7d32;")  # Green
             elif "0/3" in connections_status:
-                self.connections_label.setProperty("class", "connection-display status-error")
-                self.connections_label.setStyleSheet("color: #d32f2f; font-weight: 600;")  # Red
+                self.connections_label.setStyleSheet("color: #d32f2f;")  # Red
             else:
-                self.connections_label.setProperty("class", "connection-display status-warning")
-                self.connections_label.setStyleSheet("color: #f57c00; font-weight: 600;")  # Orange
+                self.connections_label.setStyleSheet("color: #f57c00;")  # Orange
             
             # Current throughput
             throughput_bps = critical_metrics.get("current_throughput_bps", 0)
@@ -1625,14 +1569,11 @@ class SerialRouterMainWindow(QMainWindow):
             queue_util = critical_metrics.get("avg_queue_utilization_percent", 0)
             self.queue_util_label.setText(f"{queue_util:.1f}%")
             if queue_util < 50:
-                self.queue_util_label.setProperty("class", "queue-display status-success")
-                self.queue_util_label.setStyleSheet("color: #2e7d32; font-weight: 600;")  # Green
+                self.queue_util_label.setStyleSheet("color: #2e7d32;")  # Green
             elif queue_util < 80:
-                self.queue_util_label.setProperty("class", "queue-display status-warning")
-                self.queue_util_label.setStyleSheet("color: #f57c00; font-weight: 600;")  # Orange
+                self.queue_util_label.setStyleSheet("color: #f57c00;")  # Orange
             else:
-                self.queue_util_label.setProperty("class", "queue-display status-error")
-                self.queue_util_label.setStyleSheet("color: #d32f2f; font-weight: 600;")  # Red
+                self.queue_util_label.setStyleSheet("color: #d32f2f;")  # Red
             
             # Health status with color coding
             system_health = status.get("system_health", {})
@@ -1640,33 +1581,25 @@ class SerialRouterMainWindow(QMainWindow):
             self.health_status_label.setText(health_status)
 
             if health_status == "EXCELLENT":
-                self.health_status_label.setProperty("class", "health-display status-excellent")
-                self.health_status_label.setStyleSheet("color: #2e7d32; font-weight: 600;")  # Dark green
+                self.health_status_label.setStyleSheet("color: #2e7d32;")  # Dark green
             elif health_status == "GOOD":
-                self.health_status_label.setProperty("class", "health-display status-success")
-                self.health_status_label.setStyleSheet("color: #388e3c; font-weight: 600;")  # Green
+                self.health_status_label.setStyleSheet("color: #388e3c;")  # Green
             elif health_status == "WARNING":
-                self.health_status_label.setProperty("class", "health-display status-warning")
-                self.health_status_label.setStyleSheet("color: #f57c00; font-weight: 600;")  # Orange
+                self.health_status_label.setStyleSheet("color: #f57c00;")  # Orange
             elif health_status == "CRITICAL":
-                self.health_status_label.setProperty("class", "health-display status-error")
-                self.health_status_label.setStyleSheet("color: #d32f2f; font-weight: 600;")  # Red
+                self.health_status_label.setStyleSheet("color: #d32f2f;")  # Red
             else:
-                self.health_status_label.setProperty("class", "health-display status-unknown")
-                self.health_status_label.setStyleSheet("color: #757575; font-weight: 600;")  # Gray
+                self.health_status_label.setStyleSheet("color: #757575;")  # Gray
             
-            # Legacy Thread health display with color coding
+            # Thread health display with color coding
             active_threads = status.get("active_threads", 0)
             self.thread_status_label.setText(f"{active_threads}/3 Active")
             if active_threads == 3:
-                self.thread_status_label.setProperty("class", "thread-status status-success")
-                self.thread_status_label.setStyleSheet("color: #2e7d32; font-weight: 600;")  # Dark green
+                self.thread_status_label.setStyleSheet("color: #2e7d32;")  # Dark green
             elif active_threads > 0:
-                self.thread_status_label.setProperty("class", "thread-status status-warning")
-                self.thread_status_label.setStyleSheet("color: #f57c00; font-weight: 600;")  # Orange
+                self.thread_status_label.setStyleSheet("color: #f57c00;")  # Orange
             else:
-                self.thread_status_label.setProperty("class", "thread-status status-error")
-                self.thread_status_label.setStyleSheet("color: #d32f2f; font-weight: 600;")  # Red
+                self.thread_status_label.setStyleSheet("color: #d32f2f;")  # Red
                 
             # Data flow tracking - Updated for new tree-style UI
             bytes_data = status.get("bytes_transferred", {})
@@ -1679,11 +1612,9 @@ class SerialRouterMainWindow(QMainWindow):
             # Get currently selected outgoing ports
             port1, port2 = self._get_selected_outgoing_ports()
 
-            # Update incoming port header dynamically
-            if hasattr(self, 'incoming_header'):
-                self.incoming_header.setText(f"└─ Port {incoming_port}")
-
-            # Port headers are static "Port 1" and "Port 2" - no dynamic updates needed
+            # Update incoming port title label dynamically
+            if hasattr(self, 'incoming_title_label'):
+                self.incoming_title_label.setText(f"Incoming Port ({incoming_port})")
 
             # Helper function to format bytes
             def format_bytes(count):
@@ -1807,11 +1738,9 @@ class SerialRouterMainWindow(QMainWindow):
             
             self.error_count_label.setText(str(total_errors))
             if total_errors > 0:
-                self.error_count_label.setProperty("class", "error-count status-error")
-                self.error_count_label.setStyleSheet("color: #d32f2f; font-weight: 600;")  # Red for errors
+                self.error_count_label.setStyleSheet("color: #d32f2f;")  # Red for errors
             else:
-                self.error_count_label.setProperty("class", "error-count status-success")
-                self.error_count_label.setStyleSheet("color: #2e7d32; font-weight: 600;")  # Green for no errors
+                self.error_count_label.setStyleSheet("color: #2e7d32;")  # Green for no errors
                 
             # Thread restart counts - Safe sum for mixed data types
             restart_data = status.get("thread_restart_counts", {})
