@@ -1,14 +1,3 @@
-"""
-SerialRouter GUI v2.0 - Production Integration
-PyQt6 GUI wrapper for the production-hardened SerialRouterCore backend.
-
-Features:
-- Direct integration with SerialRouterCore
-- Real-time monitoring and status updates
-- Configuration management with JSON persistence
-- Robust error handling and graceful shutdown
-- Activity logging with custom log handler
-"""
 
 import sys
 import json
@@ -125,9 +114,6 @@ class SerialRouterMainWindow(QMainWindow):
 
         # Load saved configuration if available
         self.load_config()
-
-        # Update monitoring labels with selected ports
-        self._update_port_labels()
 
         # Update port tooltips with paired port detection
         self._update_port_tooltips()
@@ -535,9 +521,6 @@ class SerialRouterMainWindow(QMainWindow):
 
         self.validate_port_configuration()
 
-        # Update monitoring labels with new port selection
-        self._update_port_labels()
-
         # Update tooltips with paired port detection
         self._update_port_tooltips()
 
@@ -558,13 +541,6 @@ class SerialRouterMainWindow(QMainWindow):
                 self.outgoing_port2_combo.currentText()
             )
         return ("COM131", "COM141")  # Safe fallback
-
-    def _update_port_labels(self):
-        """Update monitoring section labels with current port selection."""
-        port1, port2 = self._get_selected_outgoing_ports()
-        # Just show the port number, keep formatting simple
-        self.port1_label.setText(f"{port1.replace('COM', '')} → IN:")
-        self.port2_label.setText(f"{port2.replace('COM', '')} → IN:")
 
     def _update_port_tooltips(self):
         """Update tooltips to show detected paired ports."""
@@ -690,100 +666,413 @@ class SerialRouterMainWindow(QMainWindow):
         pass
         
     def create_monitoring_group(self, parent_layout):
-        """Create the real-time monitoring group with advanced metrics."""
-        monitor_group = QGroupBox("Live Monitoring")
+        """Create the real-time monitoring group with two-column grid layout."""
+        from PyQt6.QtWidgets import QSizePolicy
+
+        monitor_group = QGroupBox("Data Flow Monitor")
         monitor_layout = QGridLayout(monitor_group)
-        
-        # Critical System Status (Row 0)
-        monitor_layout.addWidget(QLabel("System Uptime:"), 0, 0)
-        self.uptime_label = QLabel("0 hours")
-        self.uptime_label.setProperty("class", "uptime-display")
-        monitor_layout.addWidget(self.uptime_label, 0, 1)
-        
-        monitor_layout.addWidget(QLabel("Active Connections:"), 0, 2)
-        self.connections_label = QLabel("0/3")
-        self.connections_label.setProperty("class", "connection-display")
-        monitor_layout.addWidget(self.connections_label, 0, 3)
-        
-        # Throughput Metrics (Row 1)
-        monitor_layout.addWidget(QLabel("Current Throughput:"), 1, 0)
-        self.throughput_label = QLabel("0 bytes/sec")
-        self.throughput_label.setProperty("class", "throughput-display")
-        monitor_layout.addWidget(self.throughput_label, 1, 1)
-        
-        monitor_layout.addWidget(QLabel("Last Activity:"), 1, 2)
-        self.last_activity_label = QLabel("N/A")
-        self.last_activity_label.setProperty("class", "activity-display")
-        monitor_layout.addWidget(self.last_activity_label, 1, 3)
-        
-        # Data Loss and Errors (Row 2)
-        monitor_layout.addWidget(QLabel("Data Loss Events:"), 2, 0)
-        self.data_loss_label = QLabel("0")
-        self.data_loss_label.setProperty("class", "data-loss-display")
-        monitor_layout.addWidget(self.data_loss_label, 2, 1)
-        
-        monitor_layout.addWidget(QLabel("Error Rate:"), 2, 2)
-        self.error_rate_label = QLabel("0.0/hour")
-        self.error_rate_label.setProperty("class", "error-rate-display")
-        monitor_layout.addWidget(self.error_rate_label, 2, 3)
-        
-        # Queue and Performance (Row 3)
-        monitor_layout.addWidget(QLabel("Queue Utilization:"), 3, 0)
-        self.queue_util_label = QLabel("0%")
-        self.queue_util_label.setProperty("class", "queue-display")
-        monitor_layout.addWidget(self.queue_util_label, 3, 1)
-        
-        monitor_layout.addWidget(QLabel("Health Status:"), 3, 2)
-        self.health_status_label = QLabel("Unknown")
-        self.health_status_label.setProperty("class", "health-display")
-        monitor_layout.addWidget(self.health_status_label, 3, 3)
-        
-        # Legacy Data Transfer Section (Rows 4-7)
-        separator = QLabel("─" * 40)
-        separator.setProperty("class", "separator")
-        monitor_layout.addWidget(separator, 4, 0, 1, 4)
-        
-        monitor_layout.addWidget(QLabel("Data Transfer Details:"), 5, 0, 1, 4)
-        
-        # Incoming -> Outgoing
-        monitor_layout.addWidget(QLabel("IN → OUT:"), 6, 0)
-        self.bytes_in_out_label = QLabel("0 bytes")
-        monitor_layout.addWidget(self.bytes_in_out_label, 6, 1)
+        monitor_layout.setSpacing(5)
+        monitor_layout.setHorizontalSpacing(20)  # Fixed gap between columns
+        monitor_layout.setVerticalSpacing(5)  # Slightly more vertical spacing for clarity
+        monitor_layout.setColumnMinimumWidth(0, 200)  # Minimum width for left column
+        monitor_layout.setColumnMinimumWidth(1, 200)  # Minimum width for right column
 
-        # Port1 -> Incoming (dynamic label)
-        self.port1_label = QLabel()
-        monitor_layout.addWidget(self.port1_label, 6, 2)
-        self.bytes_131_in_label = QLabel("0 bytes")
-        monitor_layout.addWidget(self.bytes_131_in_label, 6, 3)
+        # Row 0-2: Two-column channel stats
+        # Left Column (col 0): Outgoing Channels
+        outgoing_header = self._create_section_header('data_outbound', 'Outgoing Channels')
+        monitor_layout.addWidget(outgoing_header, 0, 0)
 
-        # Port2 -> Incoming (dynamic label)
-        self.port2_label = QLabel()
-        monitor_layout.addWidget(self.port2_label, 7, 0)
-        self.bytes_141_in_label = QLabel("0 bytes")
-        monitor_layout.addWidget(self.bytes_141_in_label, 7, 1)
-        
-        # Thread Status
-        monitor_layout.addWidget(QLabel("Thread Health:"), 7, 2)
-        self.thread_status_label = QLabel("0/3 Active")
-        self.thread_status_label.setProperty("class", "thread-status")
-        monitor_layout.addWidget(self.thread_status_label, 7, 3)
-        
-        # Legacy Error and Restart Counts (Row 8)
-        monitor_layout.addWidget(QLabel("Total Errors:"), 8, 0)
-        self.error_count_label = QLabel("0")
-        self.error_count_label.setProperty("class", "error-count")
-        monitor_layout.addWidget(self.error_count_label, 8, 1)
-        
-        monitor_layout.addWidget(QLabel("Thread Restarts:"), 8, 2)
-        self.restart_count_label = QLabel("0")
-        monitor_layout.addWidget(self.restart_count_label, 8, 3)
-        
-        # Add stretch within the monitor_group to expand whitespace below stats
-        monitor_layout.addWidget(QWidget(), 9, 0, 1, 4)  # Empty widget as spacer
-        monitor_layout.setRowStretch(9, 1)  # Make row 9 expandable
-        
+        # Port 1 subsection
+        self.port1_widget = self._create_port_widget("1", "outgoing")
+        self.port1_widget.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
+        monitor_layout.addWidget(self.port1_widget, 1, 0)
+
+        # Port 2 subsection
+        self.port2_widget = self._create_port_widget("2", "outgoing")
+        self.port2_widget.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
+        monitor_layout.addWidget(self.port2_widget, 2, 0)
+
+        # Right Column (col 1): Incoming Channel
+        incoming_header = self._create_section_header('data_inbound', 'Incoming Channel')
+        monitor_layout.addWidget(incoming_header, 0, 1)
+
+        self.incoming_widget = self._create_incoming_widget()
+        self.incoming_widget.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
+        monitor_layout.addWidget(self.incoming_widget, 1, 1, 2, 1)  # Span 2 rows to match left column height
+
+        # Row 3-4: System Health spans full width
+        health_header = self._create_section_header('session_stats', 'System Health')
+        monitor_layout.addWidget(health_header, 3, 0, 1, 2)  # Span both columns
+
+        self.health_widget = self._create_health_widget()
+        self.health_widget.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
+        monitor_layout.addWidget(self.health_widget, 4, 0, 1, 2)  # Span both columns
+
+        # Add horizontal stretch column to absorb extra width
+        monitor_layout.setColumnStretch(0, 0)  # No stretch - fixed width
+        monitor_layout.setColumnStretch(1, 0)  # No stretch - fixed width
+        monitor_layout.setColumnStretch(2, 1)  # Stretch column absorbs extra space
+
+        # Add vertical stretch to push content to top
+        monitor_layout.setRowStretch(5, 1)
+
         parent_layout.addWidget(monitor_group)
-        
+
+    def _create_section_header(self, icon_name: str, text: str) -> QWidget:
+        """Create a section header with icon and text, matching ribbon toolbar style."""
+        container = QWidget()
+        layout = QHBoxLayout(container)
+        layout.setContentsMargins(0, 8, 0, 4)  # More top padding for visual separation
+        layout.setSpacing(6)
+
+        # Add icon using stats icon loader
+        icon = resource_manager.get_stats_icon(icon_name)
+        if not icon.isNull():
+            icon_label = QLabel()
+            icon_label.setPixmap(icon.pixmap(16, 16))  # Match ribbon icon size
+            layout.addWidget(icon_label)
+
+        # Add text label
+        text_label = QLabel(text)
+        text_label.setProperty("class", "section-header")
+        font = text_label.font()
+        font.setBold(True)
+        font.setPointSize(9)  # Slightly larger for section headers
+        text_label.setFont(font)
+        layout.addWidget(text_label)
+
+        layout.addStretch()
+
+        return container
+
+    def _create_port_widget(self, port_num: str, direction: str) -> QWidget:
+        """Create port stat display with tree indent."""
+        container = QWidget()
+        layout = QVBoxLayout(container)
+        layout.setContentsMargins(20, 3, 0, 8)  # Indent for tree effect, bottom padding for spacing
+        layout.setSpacing(3)
+
+        # Simple header: "├─ Port 1" or "├─ Port 2"
+        header_text = f"├─ Port {port_num}"
+
+        header = QLabel(header_text)
+        font = header.font()
+        font.setFamily("Consolas, Courier New, monospace")
+        font.setPointSize(8)
+        header.setFont(font)
+        header.setStyleSheet("color: #555;")  # Subtle color for tree structure
+        layout.addWidget(header)
+
+        # Store reference to header for potential dynamic updates
+        if port_num == "1":
+            self.port1_header = header
+        else:
+            self.port2_header = header
+
+        # Metrics row 1: ↑ To Client
+        to_client_row = QHBoxLayout()
+        to_client_row.setSpacing(8)
+        to_label = QLabel("  │   ↑ To Client:")
+        to_label.setFont(font)
+        to_label.setStyleSheet("color: #555;")
+        to_client_row.addWidget(to_label)
+
+        bytes_out_label = QLabel("0 bytes")
+        bytes_out_label.setProperty("class", "metric-value")
+        metric_font = bytes_out_label.font()
+        metric_font.setFamily("Consolas, Courier New, monospace")
+        metric_font.setPointSize(8)
+        bytes_out_label.setFont(metric_font)
+        to_client_row.addWidget(bytes_out_label)
+
+        rate_sep = QLabel("│")
+        rate_sep.setStyleSheet("color: #ccc;")
+        to_client_row.addWidget(rate_sep)
+
+        rate_label = QLabel("Rate:")
+        rate_label.setFont(font)
+        rate_label.setStyleSheet("color: #555;")
+        to_client_row.addWidget(rate_label)
+
+        rate_out_label = QLabel("0 B/s")
+        rate_out_label.setProperty("class", "metric-value")
+        rate_out_label.setFont(metric_font)
+        to_client_row.addWidget(rate_out_label)
+
+        to_client_row.addStretch()
+        layout.addLayout(to_client_row)
+
+        # Store label references
+        if port_num == "1":
+            self.port1_bytes_out = bytes_out_label
+            self.port1_rate_out = rate_out_label
+        else:
+            self.port2_bytes_out = bytes_out_label
+            self.port2_rate_out = rate_out_label
+
+        # Metrics row 2: ↓ From Client
+        from_client_row = QHBoxLayout()
+        from_client_row.setSpacing(8)
+        from_label = QLabel("  │   ↓ From Client:")
+        from_label.setFont(font)
+        from_label.setStyleSheet("color: #555;")
+        from_client_row.addWidget(from_label)
+
+        bytes_in_label = QLabel("0 bytes")
+        bytes_in_label.setProperty("class", "metric-value")
+        bytes_in_label.setFont(metric_font)
+        from_client_row.addWidget(bytes_in_label)
+
+        rate_sep2 = QLabel("│")
+        rate_sep2.setStyleSheet("color: #ccc;")
+        from_client_row.addWidget(rate_sep2)
+
+        rate_label2 = QLabel("Rate:")
+        rate_label2.setFont(font)
+        rate_label2.setStyleSheet("color: #555;")
+        from_client_row.addWidget(rate_label2)
+
+        rate_in_label = QLabel("0 B/s")
+        rate_in_label.setProperty("class", "metric-value")
+        rate_in_label.setFont(metric_font)
+        from_client_row.addWidget(rate_in_label)
+
+        from_client_row.addStretch()
+        layout.addLayout(from_client_row)
+
+        # Store label references
+        if port_num == "1":
+            self.port1_bytes_in = bytes_in_label
+            self.port1_rate_in = rate_in_label
+        else:
+            self.port2_bytes_in = bytes_in_label
+            self.port2_rate_in = rate_in_label
+
+        return container
+
+    def _create_incoming_widget(self) -> QWidget:
+        """Create incoming port stats."""
+        container = QWidget()
+        layout = QVBoxLayout(container)
+        layout.setContentsMargins(20, 3, 0, 8)
+        layout.setSpacing(3)
+
+        # Header: "└─ Port <dynamic>"
+        incoming_port = self.incoming_port_combo.currentText() if hasattr(self, 'incoming_port_combo') else "COM54"
+        self.incoming_header = QLabel(f"└─ Port {incoming_port}")
+        font = self.incoming_header.font()
+        font.setFamily("Consolas, Courier New, monospace")
+        font.setPointSize(8)
+        self.incoming_header.setFont(font)
+        self.incoming_header.setStyleSheet("color: #555;")
+        layout.addWidget(self.incoming_header)
+
+        # Metrics row
+        metrics_row = QHBoxLayout()
+        metrics_row.setSpacing(8)
+        metrics_label = QLabel("    Total Routed:")
+        metrics_label.setFont(font)
+        metrics_label.setStyleSheet("color: #555;")
+        metrics_row.addWidget(metrics_label)
+
+        self.bytes_routed_label = QLabel("0 bytes")
+        self.bytes_routed_label.setProperty("class", "metric-value")
+        metric_font = self.bytes_routed_label.font()
+        metric_font.setFamily("Consolas, Courier New, monospace")
+        metric_font.setPointSize(8)
+        self.bytes_routed_label.setFont(metric_font)
+        metrics_row.addWidget(self.bytes_routed_label)
+
+        rate_sep = QLabel("│")
+        rate_sep.setStyleSheet("color: #ccc;")
+        metrics_row.addWidget(rate_sep)
+
+        rate_label = QLabel("Rate:")
+        rate_label.setFont(font)
+        rate_label.setStyleSheet("color: #555;")
+        metrics_row.addWidget(rate_label)
+
+        self.rate_routed_label = QLabel("0 B/s")
+        self.rate_routed_label.setProperty("class", "metric-value")
+        self.rate_routed_label.setFont(metric_font)
+        metrics_row.addWidget(self.rate_routed_label)
+
+        metrics_row.addStretch()
+        layout.addLayout(metrics_row)
+
+        return container
+
+    def _create_health_widget(self) -> QWidget:
+        """Create system health display with session info."""
+        container = QWidget()
+        layout = QVBoxLayout(container)
+        layout.setContentsMargins(20, 3, 0, 8)
+        layout.setSpacing(3)
+
+        # Create consistent font for tree structure
+        tree_font = QFont("Consolas, Courier New, monospace", 8)
+        label_font = QFont("Consolas, Courier New, monospace", 8)
+
+        # Row 1: Connections and Threads
+        row1 = QHBoxLayout()
+        row1.setSpacing(8)
+        conn_label = QLabel("├─ Connections:")
+        conn_label.setFont(tree_font)
+        conn_label.setStyleSheet("color: #555;")
+        row1.addWidget(conn_label)
+
+        self.connections_label = QLabel("0/3")
+        self.connections_label.setProperty("class", "metric-value")
+        self.connections_label.setFont(label_font)
+        row1.addWidget(self.connections_label)
+
+        sep1 = QLabel("│")
+        sep1.setStyleSheet("color: #ccc;")
+        row1.addWidget(sep1)
+
+        thread_label = QLabel("Threads:")
+        thread_label.setFont(tree_font)
+        thread_label.setStyleSheet("color: #555;")
+        row1.addWidget(thread_label)
+
+        self.thread_status_label = QLabel("0/3 Active")
+        self.thread_status_label.setProperty("class", "metric-value")
+        self.thread_status_label.setFont(label_font)
+        row1.addWidget(self.thread_status_label)
+        row1.addStretch()
+        layout.addLayout(row1)
+
+        # Row 2: Uptime and Health
+        row2 = QHBoxLayout()
+        row2.setSpacing(8)
+        uptime_label = QLabel("├─ Uptime:")
+        uptime_label.setFont(tree_font)
+        uptime_label.setStyleSheet("color: #555;")
+        row2.addWidget(uptime_label)
+
+        self.uptime_label = QLabel("0 hours")
+        self.uptime_label.setProperty("class", "metric-value")
+        self.uptime_label.setFont(label_font)
+        row2.addWidget(self.uptime_label)
+
+        sep2 = QLabel("│")
+        sep2.setStyleSheet("color: #ccc;")
+        row2.addWidget(sep2)
+
+        health_label = QLabel("Health:")
+        health_label.setFont(tree_font)
+        health_label.setStyleSheet("color: #555;")
+        row2.addWidget(health_label)
+
+        self.health_status_label = QLabel("Offline")
+        self.health_status_label.setProperty("class", "metric-value")
+        self.health_status_label.setFont(label_font)
+        row2.addWidget(self.health_status_label)
+        row2.addStretch()
+        layout.addLayout(row2)
+
+        # Row 3: Errors and Queue
+        row3 = QHBoxLayout()
+        row3.setSpacing(8)
+        error_label = QLabel("├─ Errors:")
+        error_label.setFont(tree_font)
+        error_label.setStyleSheet("color: #555;")
+        row3.addWidget(error_label)
+
+        self.error_count_label = QLabel("0")
+        self.error_count_label.setProperty("class", "metric-value")
+        self.error_count_label.setFont(label_font)
+        row3.addWidget(self.error_count_label)
+
+        sep3 = QLabel("│")
+        sep3.setStyleSheet("color: #ccc;")
+        row3.addWidget(sep3)
+
+        queue_label = QLabel("Queue:")
+        queue_label.setFont(tree_font)
+        queue_label.setStyleSheet("color: #555;")
+        row3.addWidget(queue_label)
+
+        self.queue_util_label = QLabel("0%")
+        self.queue_util_label.setProperty("class", "metric-value")
+        self.queue_util_label.setFont(label_font)
+        row3.addWidget(self.queue_util_label)
+        row3.addStretch()
+        layout.addLayout(row3)
+
+        # Row 4: Session info (moved from footer)
+        row4 = QHBoxLayout()
+        row4.setSpacing(8)
+        session_label = QLabel("└─ Session:")
+        session_label.setFont(tree_font)
+        session_label.setStyleSheet("color: #555;")
+        row4.addWidget(session_label)
+
+        self.session_duration_label = QLabel("0h 0m")
+        self.session_duration_label.setProperty("class", "metric-value")
+        self.session_duration_label.setFont(label_font)
+        row4.addWidget(self.session_duration_label)
+
+        sep4 = QLabel("│")
+        sep4.setStyleSheet("color: #ccc;")
+        row4.addWidget(sep4)
+
+        reset_label = QLabel("Last Reset:")
+        reset_label.setFont(tree_font)
+        reset_label.setStyleSheet("color: #555;")
+        row4.addWidget(reset_label)
+
+        self.last_reset_label = QLabel("Never")
+        self.last_reset_label.setProperty("class", "metric-value")
+        self.last_reset_label.setFont(label_font)
+        row4.addWidget(self.last_reset_label)
+        row4.addStretch()
+        layout.addLayout(row4)
+
+        # Keep legacy labels for backward compatibility
+        self.throughput_label = QLabel("0 bytes/sec")
+        self.last_activity_label = QLabel("N/A")
+        self.data_loss_label = QLabel("0")
+        self.error_rate_label = QLabel("0.0/hour")
+        self.restart_count_label = QLabel("0")
+
+        # Hide them as they're not displayed in new layout
+        for label in [self.throughput_label, self.last_activity_label, self.data_loss_label,
+                      self.error_rate_label, self.restart_count_label]:
+            label.setVisible(False)
+
+        return container
+
+    def _create_session_footer(self) -> QWidget:
+        """Create session info footer."""
+        container = QWidget()
+        layout = QHBoxLayout(container)
+        layout.setContentsMargins(10, 10, 10, 5)
+        layout.setSpacing(6)
+
+        # Add session icon
+        icon = resource_manager.get_stats_icon('session_stats')
+        if not icon.isNull():
+            icon_label = QLabel()
+            icon_label.setPixmap(icon.pixmap(14, 14))  # Slightly smaller for footer
+            layout.addWidget(icon_label)
+
+        layout.addWidget(QLabel("Session:"))
+        self.session_duration_label = QLabel("0h 0m")
+        self.session_duration_label.setProperty("class", "metric-value")
+        layout.addWidget(self.session_duration_label)
+
+        layout.addWidget(QLabel("│"))
+
+        layout.addWidget(QLabel("Last Reset:"))
+        self.last_reset_label = QLabel("Never")
+        self.last_reset_label.setProperty("class", "metric-value")
+        layout.addWidget(self.last_reset_label)
+
+        layout.addStretch()
+
+        return container
+
     def create_activity_log_panel(self, parent_widget):
         """Create the activity log panel for the right pane."""
         layout = QVBoxLayout(parent_widget)
@@ -1222,22 +1511,34 @@ class SerialRouterMainWindow(QMainWindow):
             # Reset displays when not running
             self.uptime_label.setText("0 hours")
             self.connections_label.setText("0/3")
-            self.throughput_label.setText("0 bytes/sec")
-            self.last_activity_label.setText("N/A")
-            self.data_loss_label.setText("0")
-            self.error_rate_label.setText("0.0/hour")
-            self.queue_util_label.setText("0%")
             self.health_status_label.setText("Offline")
-            self.health_status_label.setProperty("class", "health-display status-error")
-            
-            # Legacy displays
+            self.health_status_label.setProperty("class", "metric-value status-error")
+            self.health_status_label.setStyleSheet("color: #757575; font-weight: 600;")  # Gray for offline
             self.thread_status_label.setText("0/3 Active")
-            self.thread_status_label.setProperty("class", "thread-status status-error")
-            self.bytes_in_out_label.setText("0 bytes")
-            self.bytes_131_in_label.setText("0 bytes") 
-            self.bytes_141_in_label.setText("0 bytes")
+            self.thread_status_label.setProperty("class", "metric-value status-error")
+            self.thread_status_label.setStyleSheet("color: #757575; font-weight: 600;")  # Gray for offline
             self.error_count_label.setText("0")
-            self.restart_count_label.setText("0")
+            self.error_count_label.setStyleSheet("color: #2e7d32; font-weight: 600;")  # Green for no errors
+            self.queue_util_label.setText("0%")
+            self.session_duration_label.setText("0h 0m")
+            self.last_reset_label.setText("Never")
+
+            # Reset port widgets
+            if hasattr(self, 'port1_bytes_out'):
+                self.port1_bytes_out.setText("0 bytes")
+                self.port1_rate_out.setText("0 B/s")
+                self.port1_bytes_in.setText("0 bytes")
+                self.port1_rate_in.setText("0 B/s")
+
+            if hasattr(self, 'port2_bytes_out'):
+                self.port2_bytes_out.setText("0 bytes")
+                self.port2_rate_out.setText("0 B/s")
+                self.port2_bytes_in.setText("0 bytes")
+                self.port2_rate_in.setText("0 B/s")
+
+            if hasattr(self, 'bytes_routed_label'):
+                self.bytes_routed_label.setText("0 bytes")
+                self.rate_routed_label.setText("0 B/s")
             return
             
         try:
@@ -1260,15 +1561,18 @@ class SerialRouterMainWindow(QMainWindow):
                 uptime_days = uptime_hours / 24
                 self.uptime_label.setText(f"{uptime_days:.1f} days")
             
-            # Active connections
+            # Active connections with color coding
             connections_status = critical_metrics.get("active_connections", "0/3")
             self.connections_label.setText(connections_status)
             if connections_status.startswith("3/3"):
                 self.connections_label.setProperty("class", "connection-display status-success")
+                self.connections_label.setStyleSheet("color: #2e7d32; font-weight: 600;")  # Green
             elif "0/3" in connections_status:
                 self.connections_label.setProperty("class", "connection-display status-error")
+                self.connections_label.setStyleSheet("color: #d32f2f; font-weight: 600;")  # Red
             else:
                 self.connections_label.setProperty("class", "connection-display status-warning")
+                self.connections_label.setStyleSheet("color: #f57c00; font-weight: 600;")  # Orange
             
             # Current throughput
             throughput_bps = critical_metrics.get("current_throughput_bps", 0)
@@ -1317,44 +1621,57 @@ class SerialRouterMainWindow(QMainWindow):
             else:
                 self.error_rate_label.setProperty("class", "error-rate-display status-error")
             
-            # Queue utilization
+            # Queue utilization with color coding
             queue_util = critical_metrics.get("avg_queue_utilization_percent", 0)
             self.queue_util_label.setText(f"{queue_util:.1f}%")
             if queue_util < 50:
                 self.queue_util_label.setProperty("class", "queue-display status-success")
+                self.queue_util_label.setStyleSheet("color: #2e7d32; font-weight: 600;")  # Green
             elif queue_util < 80:
                 self.queue_util_label.setProperty("class", "queue-display status-warning")
+                self.queue_util_label.setStyleSheet("color: #f57c00; font-weight: 600;")  # Orange
             else:
                 self.queue_util_label.setProperty("class", "queue-display status-error")
+                self.queue_util_label.setStyleSheet("color: #d32f2f; font-weight: 600;")  # Red
             
-            # Health status
+            # Health status with color coding
             system_health = status.get("system_health", {})
             health_status = system_health.get("overall_health_status", "UNKNOWN")
             self.health_status_label.setText(health_status)
-            
+
             if health_status == "EXCELLENT":
                 self.health_status_label.setProperty("class", "health-display status-excellent")
+                self.health_status_label.setStyleSheet("color: #2e7d32; font-weight: 600;")  # Dark green
             elif health_status == "GOOD":
                 self.health_status_label.setProperty("class", "health-display status-success")
+                self.health_status_label.setStyleSheet("color: #388e3c; font-weight: 600;")  # Green
             elif health_status == "WARNING":
                 self.health_status_label.setProperty("class", "health-display status-warning")
+                self.health_status_label.setStyleSheet("color: #f57c00; font-weight: 600;")  # Orange
             elif health_status == "CRITICAL":
                 self.health_status_label.setProperty("class", "health-display status-error")
+                self.health_status_label.setStyleSheet("color: #d32f2f; font-weight: 600;")  # Red
             else:
                 self.health_status_label.setProperty("class", "health-display status-unknown")
+                self.health_status_label.setStyleSheet("color: #757575; font-weight: 600;")  # Gray
             
-            # Legacy Thread health display
+            # Legacy Thread health display with color coding
             active_threads = status.get("active_threads", 0)
             self.thread_status_label.setText(f"{active_threads}/3 Active")
             if active_threads == 3:
                 self.thread_status_label.setProperty("class", "thread-status status-success")
+                self.thread_status_label.setStyleSheet("color: #2e7d32; font-weight: 600;")  # Dark green
             elif active_threads > 0:
                 self.thread_status_label.setProperty("class", "thread-status status-warning")
+                self.thread_status_label.setStyleSheet("color: #f57c00; font-weight: 600;")  # Orange
             else:
                 self.thread_status_label.setProperty("class", "thread-status status-error")
+                self.thread_status_label.setStyleSheet("color: #d32f2f; font-weight: 600;")  # Red
                 
-            # Bytes transferred - Updated for new PortManager architecture
+            # Data flow tracking - Updated for new tree-style UI
             bytes_data = status.get("bytes_transferred", {})
+            session_totals = status.get("session_totals", {})
+            transfer_rates = status.get("transfer_rates", {})
 
             # Get the actual incoming port name from status
             incoming_port = status.get("incoming_port", "COM54")
@@ -1362,19 +1679,100 @@ class SerialRouterMainWindow(QMainWindow):
             # Get currently selected outgoing ports
             port1, port2 = self._get_selected_outgoing_ports()
 
-            # Format byte counts with dynamic port names
-            directions_and_labels = [
-                (f"{incoming_port}->{port1.replace('COM', '')}&{port2.replace('COM', '')}", self.bytes_in_out_label),
-                (f"{port1}->Incoming", self.bytes_131_in_label),
-                (f"{port2}->Incoming", self.bytes_141_in_label)
-            ]
-            
-            for direction, label in directions_and_labels:
-                count = bytes_data.get(direction, 0)
-                if count > 1024:
-                    label.setText(f"{count:,} bytes ({count/1024:.1f} KB)")
+            # Update incoming port header dynamically
+            if hasattr(self, 'incoming_header'):
+                self.incoming_header.setText(f"└─ Port {incoming_port}")
+
+            # Port headers are static "Port 1" and "Port 2" - no dynamic updates needed
+
+            # Helper function to format bytes
+            def format_bytes(count):
+                if count > 1_000_000:
+                    return f"{count/1_000_000:.1f} MB"
+                elif count > 1024:
+                    return f"{count/1024:.1f} KB"
                 else:
-                    label.setText(f"{count} bytes")
+                    return f"{count} bytes"
+
+            # Helper function to format rate
+            def format_rate(rate):
+                if rate > 1024:
+                    return f"{rate/1024:.1f} KB/s"
+                else:
+                    return f"{rate:.0f} B/s"
+
+            # Update Port 1: Router → Port1 (outbound)
+            out1_direction = f"{incoming_port}->{port1.replace('COM', '')}&{port2.replace('COM', '')}"
+            out1_bytes = bytes_data.get(out1_direction, 0)
+            out1_rate = transfer_rates.get(out1_direction, 0)
+            out1_session = session_totals.get(out1_direction, 0)
+
+            if hasattr(self, 'port1_bytes_out'):
+                self.port1_bytes_out.setText(format_bytes(out1_bytes))
+                self.port1_rate_out.setText(format_rate(out1_rate))
+                if out1_session > 0:
+                    self.port1_bytes_out.setToolTip(f"Session Total: {format_bytes(out1_session)}")
+                else:
+                    self.port1_bytes_out.setToolTip("")
+
+            # Update Port 1: Port1 → Router (inbound from client)
+            in1_direction = f"{port1}->Incoming"
+            in1_bytes = bytes_data.get(in1_direction, 0)
+            in1_rate = transfer_rates.get(in1_direction, 0)
+            in1_session = session_totals.get(in1_direction, 0)
+
+            if hasattr(self, 'port1_bytes_in'):
+                self.port1_bytes_in.setText(format_bytes(in1_bytes))
+                self.port1_rate_in.setText(format_rate(in1_rate))
+                if in1_session > 0:
+                    self.port1_bytes_in.setToolTip(f"Session Total: {format_bytes(in1_session)}")
+                else:
+                    self.port1_bytes_in.setToolTip("")
+
+            # Update Port 2: Router → Port2 (outbound) - shares same direction as port1
+            if hasattr(self, 'port2_bytes_out'):
+                self.port2_bytes_out.setText(format_bytes(out1_bytes))
+                self.port2_rate_out.setText(format_rate(out1_rate))
+                if out1_session > 0:
+                    self.port2_bytes_out.setToolTip(f"Session Total: {format_bytes(out1_session)}")
+                else:
+                    self.port2_bytes_out.setToolTip("")
+
+            # Update Port 2: Port2 → Router (inbound from client)
+            in2_direction = f"{port2}->Incoming"
+            in2_bytes = bytes_data.get(in2_direction, 0)
+            in2_rate = transfer_rates.get(in2_direction, 0)
+            in2_session = session_totals.get(in2_direction, 0)
+
+            if hasattr(self, 'port2_bytes_in'):
+                self.port2_bytes_in.setText(format_bytes(in2_bytes))
+                self.port2_rate_in.setText(format_rate(in2_rate))
+                if in2_session > 0:
+                    self.port2_bytes_in.setToolTip(f"Session Total: {format_bytes(in2_session)}")
+                else:
+                    self.port2_bytes_in.setToolTip("")
+
+            # Update Incoming Port: Total routed (same as outbound)
+            if hasattr(self, 'bytes_routed_label'):
+                self.bytes_routed_label.setText(format_bytes(out1_bytes))
+                self.rate_routed_label.setText(format_rate(out1_rate))
+                if out1_session > 0:
+                    self.bytes_routed_label.setToolTip(f"Session Total: {format_bytes(out1_session)}")
+                else:
+                    self.bytes_routed_label.setToolTip("")
+
+            # Update session duration
+            uptime_hours = critical_metrics.get("system_uptime_hours", 0)
+            if uptime_hours < 1:
+                uptime_minutes = int(uptime_hours * 60)
+                self.session_duration_label.setText(f"{uptime_minutes}m")
+            elif uptime_hours < 24:
+                hours = int(uptime_hours)
+                minutes = int((uptime_hours - hours) * 60)
+                self.session_duration_label.setText(f"{hours}h {minutes}m")
+            else:
+                uptime_days = uptime_hours / 24
+                self.session_duration_label.setText(f"{uptime_days:.1f} days")
             
             # Also try to get PortManager specific stats if available
             port_connections = status.get("port_connections", {})
@@ -1410,8 +1808,10 @@ class SerialRouterMainWindow(QMainWindow):
             self.error_count_label.setText(str(total_errors))
             if total_errors > 0:
                 self.error_count_label.setProperty("class", "error-count status-error")
+                self.error_count_label.setStyleSheet("color: #d32f2f; font-weight: 600;")  # Red for errors
             else:
                 self.error_count_label.setProperty("class", "error-count status-success")
+                self.error_count_label.setStyleSheet("color: #2e7d32; font-weight: 600;")  # Green for no errors
                 
             # Thread restart counts - Safe sum for mixed data types
             restart_data = status.get("thread_restart_counts", {})
@@ -1614,7 +2014,7 @@ def main():
     window.show()
     
     # Add startup message
-    window.add_log_message("SerialRouter GUI v2.0 initialized")
+    window.add_log_message("SerialRouter initialized")
     window.add_log_message("Ready to configure and start serial routing")
     
     # Start application event loop

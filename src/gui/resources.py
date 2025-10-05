@@ -104,7 +104,12 @@ class ResourceManager:
         """Get toolbar icon by action name."""
         icon_name = f"{action_name}.svg"
         return self.load_icon(icon_name, "toolbar")
-    
+
+    def get_stats_icon(self, icon_name: str) -> QIcon:
+        """Get stats monitoring icon by name."""
+        icon_file = f"{icon_name}.svg"
+        return self.load_icon(icon_file, "stats")
+
     @property
     def assets_path(self) -> Path:
         """Get assets directory path."""

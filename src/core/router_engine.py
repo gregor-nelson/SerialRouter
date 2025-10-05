@@ -595,7 +595,15 @@ class SerialRouterCore:
         self.bytes_transferred: Dict[str, int] = {}
         self.error_counts: Dict[str, int] = {}
         self.last_counter_reset = datetime.now()
-        
+
+        # Session totals (never reset - safe for long-term operation)
+        self.session_totals: Dict[str, int] = {}
+        self.last_milestone_logged: Dict[str, int] = {}
+
+        # Transfer rate calculation (5-second rolling window)
+        self.rate_samples: Dict[str, deque] = {}
+        self.rate_window_seconds = 5
+
         # Thread restart tracking
         self.thread_restart_counts: Dict[str, int] = {}
         self.thread_restart_window_start = datetime.now()
@@ -703,12 +711,29 @@ class SerialRouterCore:
                     if success_out1 and success_out2:
                         # Update statistics
                         self.bytes_transferred[direction] = self.bytes_transferred.get(direction, 0) + len(data)
-                        
+
+                        # Update session totals (never reset - safe for long-term operation)
+                        self.session_totals[direction] = self.session_totals.get(direction, 0) + len(data)
+
+                        # Update rate samples for transfer rate calculation
+                        timestamp = datetime.now()
+                        if direction not in self.rate_samples:
+                            self.rate_samples[direction] = deque(maxlen=10)
+                        self.rate_samples[direction].append((timestamp, len(data)))
+
+                        # Log milestones every 100MB
+                        current_total = self.session_totals[direction]
+                        last_milestone = self.last_milestone_logged.get(direction, 0)
+                        if current_total // 100_000_000 > last_milestone // 100_000_000:
+                            milestone_mb = current_total // 1_000_000
+                            self.logger.info(f"{direction}: Session milestone - {milestone_mb} MB transferred")
+                            self.last_milestone_logged[direction] = current_total
+
                         # Reset counter if needed (prevent overflow)
                         if self.bytes_transferred[direction] > 1000000:  # 1M bytes
                             self.logger.info(f"{direction}: Resetting byte counter at {self.bytes_transferred[direction]} bytes")
                             self.bytes_transferred[direction] = 0
-                        
+
                         self.logger.debug(f"{direction}: {len(data)} bytes distributed")
                         consecutive_errors = 0
                     else:
@@ -764,12 +789,29 @@ class SerialRouterCore:
                     if self.port_manager.queue_data_for_port(self.incoming_port, data, thread_name):
                         # Update statistics
                         self.bytes_transferred[direction] = self.bytes_transferred.get(direction, 0) + len(data)
-                        
+
+                        # Update session totals (never reset - safe for long-term operation)
+                        self.session_totals[direction] = self.session_totals.get(direction, 0) + len(data)
+
+                        # Update rate samples for transfer rate calculation
+                        timestamp = datetime.now()
+                        if direction not in self.rate_samples:
+                            self.rate_samples[direction] = deque(maxlen=10)
+                        self.rate_samples[direction].append((timestamp, len(data)))
+
+                        # Log milestones every 100MB
+                        current_total = self.session_totals[direction]
+                        last_milestone = self.last_milestone_logged.get(direction, 0)
+                        if current_total // 100_000_000 > last_milestone // 100_000_000:
+                            milestone_mb = current_total // 1_000_000
+                            self.logger.info(f"{direction}: Session milestone - {milestone_mb} MB transferred")
+                            self.last_milestone_logged[direction] = current_total
+
                         # Reset counter if needed (prevent overflow)
                         if self.bytes_transferred[direction] > 1000000:  # 1M bytes
                             self.logger.info(f"{direction}: Resetting byte counter at {self.bytes_transferred[direction]} bytes")
                             self.bytes_transferred[direction] = 0
-                        
+
                         self.logger.debug(f"{direction}: {len(data)} bytes queued")
                         consecutive_errors = 0
                     else:
@@ -964,7 +1006,21 @@ class SerialRouterCore:
         
         self.logger.info("SerialRouter started successfully")
         return True
-    
+
+    def _calculate_transfer_rate(self, direction: str) -> float:
+        """Calculate bytes/sec transfer rate over the last 5 seconds."""
+        if direction not in self.rate_samples:
+            return 0.0
+
+        samples = self.rate_samples[direction]
+        if len(samples) < 2:
+            return 0.0
+
+        # Sum bytes in window, divide by time span
+        total_bytes = sum(s[1] for s in samples)
+        time_span = (samples[-1][0] - samples[0][0]).total_seconds()
+        return total_bytes / time_span if time_span > 0 else 0.0
+
     def stop(self):
         """Stop the serial router gracefully with proper PortManager cleanup."""
         if not self.running:
@@ -1088,9 +1144,14 @@ class SerialRouterCore:
             "outgoing_ports": self.outgoing_ports,
             "active_threads": active_threads,
             "bytes_transferred": combined_bytes_transferred,
+            "session_totals": self.session_totals.copy(),
+            "transfer_rates": {
+                direction: self._calculate_transfer_rate(direction)
+                for direction in self.rate_samples.keys()
+            },
             "error_counts": self.error_counts.copy(),
             "thread_restart_counts": self.thread_restart_counts.copy(),
-            
+
             # Critical monitoring dashboard metrics
             "critical_metrics": {
                 "system_uptime_hours": round(uptime_seconds / 3600, 2),
