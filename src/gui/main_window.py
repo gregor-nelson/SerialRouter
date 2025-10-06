@@ -245,16 +245,15 @@ class SerialRouterMainWindow(QMainWindow):
         # Connect port selection changes to diagram updates
         self.incoming_port_combo.currentTextChanged.connect(self.on_incoming_port_changed)
         config_layout.addWidget(self.incoming_port_combo, 0, 1)
-        
-        
-        # Incoming Port Baud Rate
-        config_layout.addWidget(QLabel("Incoming Baud:"), 1, 0)
-        self.incoming_baud_spin = QSpinBox()
-        self.incoming_baud_spin.setRange(1200, 921600)
-        self.incoming_baud_spin.setValue(115200)
-        self.incoming_baud_spin.setSingleStep(1200)
-        config_layout.addWidget(self.incoming_baud_spin, 1, 1)
-        
+
+        # Baud Rate (applies to both incoming and outgoing)
+        config_layout.addWidget(QLabel("Baud Rate:"), 1, 0)
+        self.baud_spin = QComboBox()
+        self.baud_spin.addItems(['1200', '2400', '4800', '9600', '19200', '38400', '57600', '115200', '230400', '460800', '921600'])
+        self.baud_spin.setCurrentText('115200')
+        self.baud_spin.setMinimumWidth(120)
+        config_layout.addWidget(self.baud_spin, 1, 1)
+
         # Outgoing Port 1
         config_layout.addWidget(QLabel("Outgoing Port 1:"), 2, 0)
         self.outgoing_port1_combo = QComboBox()
@@ -268,14 +267,6 @@ class SerialRouterMainWindow(QMainWindow):
         self.outgoing_port2_combo.setMinimumWidth(120)
         self.outgoing_port2_combo.currentTextChanged.connect(self.on_outgoing_port_changed)
         config_layout.addWidget(self.outgoing_port2_combo, 3, 1)
-
-        # Outgoing Port Baud Rate
-        config_layout.addWidget(QLabel("Outgoing Baud:"), 4, 0)
-        self.outgoing_baud_spin = QSpinBox()
-        self.outgoing_baud_spin.setRange(1200, 921600) 
-        self.outgoing_baud_spin.setValue(115200)
-        self.outgoing_baud_spin.setSingleStep(1200)
-        config_layout.addWidget(self.outgoing_baud_spin, 4, 1)
         
         # Add control buttons at bottom of configuration panel
         control_frame = QFrame()
@@ -1065,6 +1056,9 @@ class SerialRouterMainWindow(QMainWindow):
         
     def refresh_available_ports(self):
         """Refresh the list of available COM ports using enhanced port enumerator."""
+        # Suppress validation warnings while repopulating combo boxes
+        self._initializing = True
+
         current_port = self.incoming_port_combo.currentText()
         current_out1 = self.outgoing_port1_combo.currentText() if hasattr(self, 'outgoing_port1_combo') else ""
         current_out2 = self.outgoing_port2_combo.currentText() if hasattr(self, 'outgoing_port2_combo') else ""
@@ -1190,7 +1184,10 @@ class SerialRouterMainWindow(QMainWindow):
             # Safe fallback
             self.incoming_port_combo.addItem("COM54")
             self.add_log_message("Using COM54 fallback due to scan error")
-            
+        finally:
+            # Re-enable validation warnings after refresh is complete
+            self._initializing = False
+
     def validate_selected_port(self) -> bool:
         """Enhanced port validation using port enumerator with exclusion checks."""
         port = self.incoming_port_combo.currentText()
@@ -1785,8 +1782,8 @@ class SerialRouterMainWindow(QMainWindow):
 
         return {
             "incoming_port": self.incoming_port_combo.currentText(),
-            "incoming_baud": self.incoming_baud_spin.value(),
-            "outgoing_baud": self.outgoing_baud_spin.value(),
+            "incoming_baud": int(self.baud_spin.currentText()),
+            "outgoing_baud": int(self.baud_spin.currentText()),
             "outgoing_ports": outgoing_ports,
             "timeout": 0.1,
             "retry_delay_max": 30,

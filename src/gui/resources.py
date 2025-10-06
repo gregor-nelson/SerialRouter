@@ -37,14 +37,14 @@ class ResourceManager:
             # Running as script - go up from src/gui/resources.py to project root
             return Path(__file__).parent.parent.parent
     
-    def get_theme_path(self, theme_name: str = "windows_theme.qss") -> Optional[Path]:
+    def get_theme_path(self, theme_name: str = "theme.qss") -> Optional[Path]:
         """Get path to theme file."""
         theme_path = self._themes_path / theme_name
         if theme_path.exists():
             return theme_path
         return None
     
-    def load_theme(self, theme_name: str = "windows_theme.qss") -> str:
+    def load_theme(self, theme_name: str = "theme.qss") -> str:
         """Load theme stylesheet content."""
         theme_path = self.get_theme_path(theme_name)
         if theme_path and theme_path.exists():
