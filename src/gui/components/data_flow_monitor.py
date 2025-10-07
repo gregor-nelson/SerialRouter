@@ -286,6 +286,117 @@ class TransferTableRow(QWidget):
         self.port_label.setText(port_name)
 
 
+class HealthTableRow(QWidget):
+    """
+    Single row in the system health/status table.
+    Combines metric label (icon + text), value display, and optional visual indicator.
+    Matches the clean design of TransferTableRow.
+    """
+
+    def __init__(self, metric_name: str, metric_icon: str, icon_subfolder: str = "toolbar",
+                 show_indicator: bool = False, show_meter: bool = False, parent=None):
+        super().__init__(parent)
+
+        # Get monospace font for numeric displays
+        self._mono_font = QFontDatabase.systemFont(QFontDatabase.SystemFont.FixedFont)
+
+        # Store configuration
+        self._metric_icon = metric_icon
+        self._icon_subfolder = icon_subfolder
+        self._show_indicator = show_indicator
+        self._show_meter = show_meter
+
+        # Create widgets
+        # Column 1: Metric name (icon + text)
+        self.metric_container = QWidget()
+        self.metric_layout = QHBoxLayout(self.metric_container)
+        self.metric_layout.setContentsMargins(0, 0, 0, 0)
+        self.metric_layout.setSpacing(4)
+
+        # Load metric icon
+        icon = resource_manager.load_icon(f"{metric_icon}.svg", icon_subfolder)
+        if not icon.isNull():
+            self.metric_icon_label = QLabel()
+            self.metric_icon_label.setPixmap(icon.pixmap(16, 16))
+            self.metric_icon_label.setAlignment(Qt.AlignmentFlag.AlignVCenter)
+            self.metric_layout.addWidget(self.metric_icon_label)
+
+        self.metric_label = QLabel(metric_name)
+        self.metric_label.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
+        self.metric_layout.addWidget(self.metric_label)
+        self.metric_layout.addStretch()
+        self.metric_container.setFixedWidth(150)
+
+        # Column 2: Value display
+        self.value_label = QLabel("—")
+        self.value_label.setFont(self._mono_font)
+        self.value_label.setMinimumWidth(120)
+        self.value_label.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
+
+        # Column 3: Visual indicator (optional)
+        self.indicator_container = QWidget()
+        indicator_layout = QHBoxLayout(self.indicator_container)
+        indicator_layout.setContentsMargins(0, 0, 0, 0)
+        indicator_layout.setSpacing(8)
+
+        if show_indicator:
+            # Color dot indicator for health status
+            self.indicator_label = QLabel("●")
+            self.indicator_label.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
+            indicator_layout.addWidget(self.indicator_label)
+
+        if show_meter:
+            # Horizontal meter for queue utilization
+            self.indicator_meter = HorizontalActivityMeter()
+            indicator_layout.addWidget(self.indicator_meter)
+
+        indicator_layout.addStretch()
+        self.indicator_container.setFixedWidth(140)
+
+        self._init_ui()
+
+    def _init_ui(self):
+        """Build row layout."""
+        layout = QHBoxLayout(self)
+        layout.setContentsMargins(5, 2, 5, 2)
+        layout.setSpacing(10)
+
+        layout.addWidget(self.metric_container)
+        layout.addWidget(self.value_label)
+        layout.addWidget(self.indicator_container)
+        layout.addStretch()
+
+    def update_value(self, value: str):
+        """Update the value display."""
+        self.value_label.setText(value)
+
+    def update_indicator(self, status: str):
+        """
+        Update the health status indicator color.
+
+        Args:
+            status: One of HEALTHY, DEGRADED, CRITICAL, OFFLINE, UNKNOWN
+        """
+        if not self._show_indicator:
+            return
+
+        color_map = {
+            "HEALTHY": "#28A745",    # Green
+            "DEGRADED": "#FFC107",   # Yellow
+            "CRITICAL": "#DC3545",   # Red
+            "OFFLINE": "#6C757D",    # Gray
+            "UNKNOWN": "#6C757D"     # Gray
+        }
+
+        color = color_map.get(status, "#6C757D")
+        self.indicator_label.setStyleSheet(f"color: {color}; font-size: 20px;")
+
+    def update_meter(self, percentage: int):
+        """Update the meter display (for queue utilization)."""
+        if self._show_meter:
+            self.indicator_meter.setValue(percentage)
+
+
 class DataFlowMonitorWidget(QWidget):
     """
     Self-contained data flow monitoring widget.
@@ -306,25 +417,28 @@ class DataFlowMonitorWidget(QWidget):
         self._current_port1 = "COM131"
         self._current_port2 = "COM141"
 
-        # Table row references
+        # Table row references - Data Transfer
         self.incoming_row = None
         self.port1_row = None
         self.port2_row = None
 
-        # System status references
-        self.connections_label = None
-        self.thread_status_label = None
-        self.error_count_label = None
-        self.health_status_label = None
-        self.queue_util_label = None
-        self.uptime_label = None
-        self.session_duration_label = None
-        self.last_reset_label = None
+        # Table row references - System Status
+        self.health_row = None
+        self.uptime_row = None
+        self.connections_row = None
+        self.queue_row = None
+        self.errors_row = None
+        self.error_rate_row = None
+
+        # Error rate tracking
+        self._error_history = []  # List of (timestamp, error_count) tuples
+        self._last_error_count = 0
 
         # Dynamic scaling trackers (simplified to 3)
         self.meter_tracker_incoming = MetricMeter()
         self.meter_tracker_port1 = MetricMeter()
         self.meter_tracker_port2 = MetricMeter()
+        self.meter_tracker_queue = MetricMeter(min_scale=1, max_scale=100)  # For queue percentage
 
         # Build UI
         self._init_ui()
@@ -435,8 +549,60 @@ class DataFlowMonitorWidget(QWidget):
 
         return header
 
+    def _create_health_header_row(self) -> QWidget:
+        """Create table column headers for system status section."""
+        header = QWidget()
+        layout = QHBoxLayout(header)
+        layout.setContentsMargins(5, 0, 5, 5)
+        layout.setSpacing(10)
+
+        # Helper function to create icon+text header
+        def create_header_with_icon(icon_name: str, text: str, width: int, subfolder: str = "stats"):
+            container = QWidget()
+            container_layout = QHBoxLayout(container)
+            container_layout.setContentsMargins(0, 0, 0, 0)
+            container_layout.setSpacing(4)
+
+            # Load icon preserving original colors
+            icon = resource_manager.load_icon(f"{icon_name}.svg", subfolder)
+
+            if not icon.isNull():
+                icon_label = QLabel()
+                icon_label.setPixmap(icon.pixmap(16, 16))
+                icon_label.setAlignment(Qt.AlignmentFlag.AlignVCenter)
+                container_layout.addWidget(icon_label)
+
+            # Add text label
+            text_label = QLabel(text)
+            text_label.setStyleSheet("font-weight: bold;")
+            container_layout.addWidget(text_label)
+            container_layout.addStretch()
+
+            if width > 0:
+                container.setFixedWidth(width)
+            else:
+                container.setMinimumWidth(abs(width))
+
+            return container
+
+        # Metric header
+        metric_header = create_header_with_icon("session_stats", "Metric", 150, subfolder="stats")
+        layout.addWidget(metric_header)
+
+        # Value header
+        value_header = create_header_with_icon("data_outbound", "Value", 120, subfolder="stats")
+        layout.addWidget(value_header)
+
+        # Status/Indicator header
+        status_header = create_header_with_icon("transfer_rate", "Status", 140, subfolder="stats")
+        layout.addWidget(status_header)
+
+        layout.addStretch()
+
+        return header
+
     def _create_health_group(self) -> QWidget:
-        """Create system health display with compact multi-column grid layout."""
+        """Create system status display with clean table layout (no headers, self-evident design)."""
         # Use QWidget with title label (no border)
         group = QWidget()
         outer_layout = QVBoxLayout(group)
@@ -448,64 +614,28 @@ class DataFlowMonitorWidget(QWidget):
         title_label.setStyleSheet("font-weight: bold;")
         outer_layout.addWidget(title_label)
 
-        # Create grid for metrics
-        metrics_widget = QWidget()
-        main_layout = QGridLayout(metrics_widget)
-        main_layout.setContentsMargins(0, 0, 0, 0)
-        main_layout.setSpacing(5)
+        # Create container for table content
+        health_content = QWidget()
+        health_layout = QVBoxLayout(health_content)
+        health_layout.setSpacing(4)
+        health_layout.setContentsMargins(0, 0, 0, 0)
 
-        # Get system monospace font for numeric values
-        mono_font = self._get_monospace_font()
+        # Data rows (no header - icons and labels are self-evident)
+        self.health_row = HealthTableRow("Health", "enable", "toolbar", show_indicator=True)
+        self.uptime_row = HealthTableRow("Uptime", "session_stats", "stats")
+        self.connections_row = HealthTableRow("Connections", "port_pair_icon", "")
+        self.queue_row = HealthTableRow("Queue Util", "transfer_rate", "stats", show_meter=True)
+        self.errors_row = HealthTableRow("Total Errors", "disable", "toolbar")
+        self.error_rate_row = HealthTableRow("Error Rate", "disable", "toolbar")
 
-        # Helper function to create metric row
-        def create_metric(label_text: str, value_text: str):
-            label = QLabel(label_text)
-            label.setMinimumWidth(80)
-            label.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
+        health_layout.addWidget(self.health_row)
+        health_layout.addWidget(self.uptime_row)
+        health_layout.addWidget(self.connections_row)
+        health_layout.addWidget(self.queue_row)
+        health_layout.addWidget(self.errors_row)
+        health_layout.addWidget(self.error_rate_row)
 
-            value = QLabel(value_text)
-            value.setFont(mono_font)
-            value.setMinimumWidth(120)
-            value.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
-
-            return label, value
-
-        # Column 1: Connection metrics
-        conn_label, self.connections_label = create_metric("Connections:", "0/3")
-        main_layout.addWidget(conn_label, 0, 0)
-        main_layout.addWidget(self.connections_label, 0, 1)
-
-        thread_label, self.thread_status_label = create_metric("Threads:", "0/3 Active")
-        main_layout.addWidget(thread_label, 1, 0)
-        main_layout.addWidget(self.thread_status_label, 1, 1)
-
-        error_label, self.error_count_label = create_metric("Errors:", "0")
-        main_layout.addWidget(error_label, 2, 0)
-        main_layout.addWidget(self.error_count_label, 2, 1)
-
-        # Column 2: Health metrics
-        health_label, self.health_status_label = create_metric("Health:", "Offline")
-        main_layout.addWidget(health_label, 0, 2)
-        main_layout.addWidget(self.health_status_label, 0, 3)
-
-        queue_label, self.queue_util_label = create_metric("Queue:", "0%")
-        main_layout.addWidget(queue_label, 1, 2)
-        main_layout.addWidget(self.queue_util_label, 1, 3)
-
-        uptime_label, self.uptime_label = create_metric("Uptime:", "0 hours")
-        main_layout.addWidget(uptime_label, 2, 2)
-        main_layout.addWidget(self.uptime_label, 2, 3)
-
-        # Column 3: Session metrics
-        session_label, self.session_duration_label = create_metric("Session:", "0h 0m")
-        main_layout.addWidget(session_label, 0, 4)
-        main_layout.addWidget(self.session_duration_label, 0, 5)
-
-        reset_label, self.last_reset_label = create_metric("Last Reset:", "Never")
-        main_layout.addWidget(reset_label, 1, 4)
-        main_layout.addWidget(self.last_reset_label, 1, 5)
-
-        outer_layout.addWidget(metrics_widget)
+        outer_layout.addWidget(health_content)
         return group
 
     def update_display(self, status: Dict[str, Any],
@@ -590,50 +720,46 @@ class DataFlowMonitorWidget(QWidget):
                 self._last_status_error_time = time.time()
 
     def _update_system_status(self, status: Dict[str, Any]):
-        """Update system status section (extracted from update_display)."""
+        """Update system status section with new table row structure."""
         critical_metrics = status.get("critical_metrics", {})
-
-        # System uptime
-        uptime_hours = critical_metrics.get("system_uptime_hours", 0)
-        if uptime_hours < 1:
-            uptime_minutes = uptime_hours * 60
-            self.uptime_label.setText(f"{uptime_minutes:.1f} min")
-        elif uptime_hours < 24:
-            self.uptime_label.setText(f"{uptime_hours:.1f} hours")
-        else:
-            uptime_days = uptime_hours / 24
-            self.uptime_label.setText(f"{uptime_days:.1f} days")
-
-        # Active connections
-        connections_status = critical_metrics.get("active_connections", "0/3")
-        self.connections_label.setText(connections_status)
-
-        # Queue utilization
-        queue_util = critical_metrics.get("avg_queue_utilization_percent", 0)
-        self.queue_util_label.setText(f"{queue_util:.1f}%")
-
-        # Health status
         system_health = status.get("system_health", {})
+
+        # 1. HEALTH STATUS - with color indicator
         health_status = system_health.get("overall_health_status", "UNKNOWN")
-        self.health_status_label.setText(health_status)
+        self.health_row.update_value(health_status)
+        self.health_row.update_indicator(health_status)
 
-        # Thread health display
+        # 2. UPTIME - formatted time display
+        uptime_hours = critical_metrics.get("system_uptime_hours", 0)
+        uptime_text = self._format_uptime(uptime_hours)
+        self.uptime_row.update_value(uptime_text)
+
+        # 3. ACTIVE CONNECTIONS - combined ports/threads metric
         active_threads = status.get("active_threads", 0)
-        self.thread_status_label.setText(f"{active_threads}/3 Active")
+        port_connections = status.get("port_connections", {})
+        connected_ports = 0
+        total_ports = 0
 
-        # Update session duration
-        if uptime_hours < 1:
-            uptime_minutes = int(uptime_hours * 60)
-            self.session_duration_label.setText(f"{uptime_minutes}m")
-        elif uptime_hours < 24:
-            hours = int(uptime_hours)
-            minutes = int((uptime_hours - hours) * 60)
-            self.session_duration_label.setText(f"{hours}h {minutes}m")
-        else:
-            uptime_days = uptime_hours / 24
-            self.session_duration_label.setText(f"{uptime_days:.1f} days")
+        if port_connections:
+            connected_ports = sum(1 for p in port_connections.values() if p.get("connected", False))
+            total_ports = len(port_connections)
 
-        # Error counts
+        # Format: "3/3 Active (3 ports)"
+        connections_text = f"{active_threads}/3 Active"
+        if total_ports > 0:
+            connections_text += f" ({connected_ports}/{total_ports} ports)"
+
+        self.connections_row.update_value(connections_text)
+
+        # 4. QUEUE UTILIZATION - percentage with meter
+        queue_util = critical_metrics.get("avg_queue_utilization_percent", 0)
+        self.queue_row.update_value(f"{queue_util:.1f}%")
+
+        # Calculate meter percentage (0-100 scale)
+        queue_percentage = self.meter_tracker_queue.update(queue_util)
+        self.queue_row.update_meter(queue_percentage)
+
+        # 5. TOTAL ERRORS - combined error count
         error_data = status.get("error_counts", {})
         router_errors = 0
         for key, value in error_data.items():
@@ -642,23 +768,68 @@ class DataFlowMonitorWidget(QWidget):
 
         port_errors = system_health.get("total_port_errors", 0)
         total_errors = router_errors + port_errors
-        self.error_count_label.setText(str(total_errors))
+        self.errors_row.update_value(str(total_errors))
 
-        # Port connection status
-        port_connections = status.get("port_connections", {})
-        if port_connections:
-            connected_ports = sum(1 for p in port_connections.values() if p.get("connected", False))
-            total_ports = len(port_connections)
+        # 6. ERROR RATE - errors per minute
+        error_rate = self._calculate_error_rate(total_errors)
+        self.error_rate_row.update_value(f"{error_rate:.1f}/min")
 
-            if total_ports > 0:
-                connection_status = f" ({connected_ports}/{total_ports} ports)"
-                current_text = self.thread_status_label.text()
-                if "ports)" not in current_text:
-                    self.thread_status_label.setText(current_text + connection_status)
+    def _format_uptime(self, uptime_hours: float) -> str:
+        """
+        Format uptime hours into human-readable string.
+
+        Args:
+            uptime_hours: Uptime in hours
+
+        Returns:
+            Formatted string (e.g., "34m", "2h 34m", "1.2 days")
+        """
+        if uptime_hours < 1:
+            uptime_minutes = int(uptime_hours * 60)
+            return f"{uptime_minutes}m"
+        elif uptime_hours < 24:
+            hours = int(uptime_hours)
+            minutes = int((uptime_hours - hours) * 60)
+            return f"{hours}h {minutes}m"
+        else:
+            uptime_days = uptime_hours / 24
+            return f"{uptime_days:.1f} days"
+
+    def _calculate_error_rate(self, current_error_count: int) -> float:
+        """
+        Calculate error rate (errors per minute) using rolling window.
+
+        Args:
+            current_error_count: Current total error count
+
+        Returns:
+            Errors per minute (float)
+        """
+        import time
+        current_time = time.time()
+
+        # If error count increased, record the change
+        if current_error_count > self._last_error_count:
+            errors_added = current_error_count - self._last_error_count
+            self._error_history.append((current_time, errors_added))
+            self._last_error_count = current_error_count
+
+        # Clean up old entries (keep only last 60 seconds)
+        self._error_history = [
+            (t, count) for t, count in self._error_history
+            if current_time - t <= 60
+        ]
+
+        # Calculate errors per minute
+        if not self._error_history:
+            return 0.0
+
+        total_errors_in_window = sum(count for _, count in self._error_history)
+        return total_errors_in_window  # Already per minute since window is 60s
 
     def reset_display(self):
         """Reset all displays to zero/offline state."""
-        # Reset table rows
+        # Reset data transfer table rows
         if self.incoming_row:
             self.incoming_row.update_data(0, 0, 0)
         if self.port1_row:
@@ -666,17 +837,28 @@ class DataFlowMonitorWidget(QWidget):
         if self.port2_row:
             self.port2_row.update_data(0, 0, 0)
 
-        # Reset system status
-        self.uptime_label.setText("0 hours")
-        self.connections_label.setText("0/3")
-        self.health_status_label.setText("Offline")
-        self.thread_status_label.setText("0/3 Active")
-        self.error_count_label.setText("0")
-        self.queue_util_label.setText("0%")
-        self.session_duration_label.setText("0h 0m")
-        self.last_reset_label.setText("Never")
+        # Reset system status table rows
+        if self.health_row:
+            self.health_row.update_value("OFFLINE")
+            self.health_row.update_indicator("OFFLINE")
+        if self.uptime_row:
+            self.uptime_row.update_value("0m")
+        if self.connections_row:
+            self.connections_row.update_value("0/3 Active")
+        if self.queue_row:
+            self.queue_row.update_value("0.0%")
+            self.queue_row.update_meter(0)
+        if self.errors_row:
+            self.errors_row.update_value("0")
+        if self.error_rate_row:
+            self.error_rate_row.update_value("0.0/min")
 
         # Reset metric trackers
         self.meter_tracker_incoming = MetricMeter()
         self.meter_tracker_port1 = MetricMeter()
         self.meter_tracker_port2 = MetricMeter()
+        self.meter_tracker_queue = MetricMeter(min_scale=1, max_scale=100)
+
+        # Reset error tracking
+        self._error_history = []
+        self._last_error_count = 0
