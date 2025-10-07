@@ -9,7 +9,7 @@ from PyQt6.QtWidgets import (
     QWidget, QLabel, QGroupBox, QGridLayout, QVBoxLayout,
     QHBoxLayout, QFormLayout, QProgressBar, QApplication, QFrame
 )
-from PyQt6.QtCore import Qt, QPropertyAnimation, pyqtProperty, QRectF, QTimer, QEvent
+from PyQt6.QtCore import Qt, QRectF, QTimer
 from PyQt6.QtGui import QFont, QPalette, QColor, QPainter, QPen, QBrush, QFontDatabase
 from src.gui.resources import resource_manager
 
@@ -286,12 +286,118 @@ class TransferTableRow(QWidget):
         self.port_label.setText(port_name)
 
 
+class AnimatedHealthIndicator(QWidget):
+    """
+    Animated colored dot for health status visualization.
+    Pulses for warning/critical states, static for normal states.
+    Uses simple QTimer + manual painting (proven reliable approach).
+    """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+
+        # Fixed size for the indicator dot
+        self.setFixedSize(20, 20)
+
+        # Current state
+        self._color = QColor("#6C757D")  # Default grey
+        self._opacity = 1.0
+        self._opacity_direction = -1  # -1 = fading out, 1 = fading in
+
+        # Animation timer (like ConnectionLine flow animation)
+        self._animation_timer = QTimer()
+        self._animation_timer.timeout.connect(self._update_animation)
+        self._animation_timer.setInterval(50)  # 50ms = 20 FPS
+
+    def set_status(self, status: str):
+        """Update color and animation based on health status."""
+        # Map actual router status values to colors
+        color_map = {
+            "Good": QColor("#28A745"),       # Green - pulse (active, healthy)
+            "Ok": QColor("#28A745"),         # Green - pulse (idle, healthy)
+            "Warning": QColor("#FFC107"),    # Yellow - pulse (degraded)
+            "Critical": QColor("#DC3545"),   # Red - pulse (critical)
+            "OFFLINE": QColor("#6C757D"),    # Gray - static (stopped)
+            "UNKNOWN": QColor("#6C757D")     # Gray - static (unknown)
+        }
+
+        self._color = color_map.get(status, QColor("#6C757D"))
+
+        # Enable animation for all active states (only OFFLINE/UNKNOWN are static)
+        should_animate = status in ["Good", "Ok", "Warning", "Critical"]
+
+        if should_animate:
+            # Start pulsing animation
+            if not self._animation_timer.isActive():
+                self._opacity = 1.0
+                self._opacity_direction = -1
+                self._animation_timer.start()
+        else:
+            # Stop animation and reset to full opacity
+            if self._animation_timer.isActive():
+                self._animation_timer.stop()
+            self._opacity = 1.0
+
+        # Force repaint
+        self.update()
+
+    def _update_animation(self):
+        """Update opacity for pulsing effect (1.0 → 0.4 → 1.0)."""
+        self._opacity += self._opacity_direction * 0.02
+
+        # Reverse direction at boundaries
+        if self._opacity <= 0.4:
+            self._opacity = 0.4
+            self._opacity_direction = 1
+        elif self._opacity >= 1.0:
+            self._opacity = 1.0
+            self._opacity_direction = -1
+
+        # Trigger repaint
+        self.update()
+
+    def paintEvent(self, event):
+        """Draw the colored indicator dot with current opacity."""
+        painter = QPainter(self)
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
+
+        # Apply opacity to color
+        color = QColor(self._color)
+        color.setAlphaF(self._opacity)
+
+        # Draw filled circle
+        painter.setBrush(QBrush(color))
+        painter.setPen(QPen(color.darker(120), 1))
+
+        # Center the dot in the widget
+        dot_size = 12
+        x = (self.width() - dot_size) // 2
+        y = (self.height() - dot_size) // 2
+
+        painter.drawEllipse(x, y, dot_size, dot_size)
+
+
 class HealthTableRow(QWidget):
     """
     Single row in the system health/status table.
     Combines metric label (icon + text), value display, and optional visual indicator.
     Matches the clean design of TransferTableRow.
     """
+
+    @staticmethod
+    def format_status(status: str) -> str:
+        """
+        Format status text for display (proper case instead of all caps).
+
+        Args:
+            status: Raw status string (e.g., "HEALTHY", "DEGRADED")
+
+        Returns:
+            Formatted status string (e.g., "Healthy", "Degraded")
+        """
+        if not status:
+            return "—"
+        return status.capitalize()
 
     def __init__(self, metric_name: str, metric_icon: str, icon_subfolder: str = "toolbar",
                  show_indicator: bool = False, show_meter: bool = False, parent=None):
@@ -340,9 +446,8 @@ class HealthTableRow(QWidget):
         indicator_layout.setSpacing(8)
 
         if show_indicator:
-            # Color dot indicator for health status
-            self.indicator_label = QLabel("●")
-            self.indicator_label.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
+            # Animated color dot indicator for health status
+            self.indicator_label = AnimatedHealthIndicator()
             indicator_layout.addWidget(self.indicator_label)
 
         if show_meter:
@@ -372,7 +477,7 @@ class HealthTableRow(QWidget):
 
     def update_indicator(self, status: str):
         """
-        Update the health status indicator color.
+        Update the health status indicator color and animation.
 
         Args:
             status: One of HEALTHY, DEGRADED, CRITICAL, OFFLINE, UNKNOWN
@@ -380,16 +485,7 @@ class HealthTableRow(QWidget):
         if not self._show_indicator:
             return
 
-        color_map = {
-            "HEALTHY": "#28A745",    # Green
-            "DEGRADED": "#FFC107",   # Yellow
-            "CRITICAL": "#DC3545",   # Red
-            "OFFLINE": "#6C757D",    # Gray
-            "UNKNOWN": "#6C757D"     # Gray
-        }
-
-        color = color_map.get(status, "#6C757D")
-        self.indicator_label.setStyleSheet(f"color: {color}; font-size: 20px;")
+        self.indicator_label.set_status(status)
 
     def update_meter(self, percentage: int):
         """Update the meter display (for queue utilization)."""
@@ -726,7 +822,7 @@ class DataFlowMonitorWidget(QWidget):
 
         # 1. HEALTH STATUS - with color indicator
         health_status = system_health.get("overall_health_status", "UNKNOWN")
-        self.health_row.update_value(health_status)
+        self.health_row.update_value(HealthTableRow.format_status(health_status))
         self.health_row.update_indicator(health_status)
 
         # 2. UPTIME - formatted time display
@@ -839,7 +935,7 @@ class DataFlowMonitorWidget(QWidget):
 
         # Reset system status table rows
         if self.health_row:
-            self.health_row.update_value("OFFLINE")
+            self.health_row.update_value(HealthTableRow.format_status("OFFLINE"))
             self.health_row.update_indicator("OFFLINE")
         if self.uptime_row:
             self.uptime_row.update_value("0m")
