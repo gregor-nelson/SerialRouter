@@ -7,8 +7,10 @@ import os
 import sys
 from pathlib import Path
 from typing import Optional
-from PyQt6.QtGui import QIcon, QPixmap
-from PyQt6.QtCore import QDir
+from PyQt6.QtGui import QIcon, QPixmap, QPalette, QColor
+from PyQt6.QtCore import QDir, Qt
+from PyQt6.QtSvg import QSvgRenderer
+from PyQt6.QtWidgets import QApplication
 
 
 class ResourceManager:
@@ -106,9 +108,54 @@ class ResourceManager:
         return self.load_icon(icon_name, "toolbar")
 
     def get_stats_icon(self, icon_name: str) -> QIcon:
-        """Get stats monitoring icon by name."""
+        """Get stats monitoring icon by name, recolored to match text color."""
         icon_file = f"{icon_name}.svg"
-        return self.load_icon(icon_file, "stats")
+        icon_path = self.get_icon_path(icon_file, "stats")
+
+        if not icon_path:
+            print(f"Warning: Stats icon not found: {icon_file}")
+            return QIcon()
+
+        # Read SVG content
+        try:
+            with open(icon_path, 'r', encoding='utf-8') as f:
+                svg_content = f.read()
+
+            # Get current palette text color for muted appearance
+            app = QApplication.instance()
+            if app:
+                palette = app.palette()
+                text_color = palette.color(QPalette.ColorRole.WindowText)
+                # Use a slightly lighter/muted version
+                muted_color = text_color.lighter(120) if text_color.lightness() < 128 else text_color.darker(120)
+                color_hex = muted_color.name()
+            else:
+                # Fallback to medium gray
+                color_hex = "#808080"
+
+            # Replace all stroke colors with the muted text color
+            import re
+            svg_content = re.sub(r'stroke="#[0-9A-Fa-f]{6}"', f'stroke="{color_hex}"', svg_content)
+            svg_content = re.sub(r'fill="#[0-9A-Fa-f]{6}"', f'fill="{color_hex}"', svg_content)
+
+            # Create QIcon from modified SVG
+            from PyQt6.QtCore import QByteArray
+            svg_bytes = QByteArray(svg_content.encode('utf-8'))
+            renderer = QSvgRenderer(svg_bytes)
+
+            pixmap = QPixmap(16, 16)
+            pixmap.fill(Qt.GlobalColor.transparent)
+
+            from PyQt6.QtGui import QPainter
+            painter = QPainter(pixmap)
+            renderer.render(painter)
+            painter.end()
+
+            return QIcon(pixmap)
+
+        except Exception as e:
+            print(f"Warning: Failed to recolor stats icon {icon_file}: {e}")
+            return self.load_icon(icon_file, "stats")
 
     @property
     def assets_path(self) -> Path:
