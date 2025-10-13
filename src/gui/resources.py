@@ -107,13 +107,13 @@ class ResourceManager:
         icon_name = f"{action_name}.svg"
         return self.load_icon(icon_name, "toolbar")
 
-    def get_stats_icon(self, icon_name: str) -> QIcon:
-        """Get stats monitoring icon by name, recolored to match text color."""
+    def get_stats_icon(self, icon_name: str, subfolder: str = "stats") -> QIcon:
+        """Get stats monitoring icon by name, recolored to match exact text color."""
         icon_file = f"{icon_name}.svg"
-        icon_path = self.get_icon_path(icon_file, "stats")
+        icon_path = self.get_icon_path(icon_file, subfolder)
 
         if not icon_path:
-            print(f"Warning: Stats icon not found: {icon_file}")
+            print(f"Warning: Stats icon not found: {icon_file} in {subfolder}")
             return QIcon()
 
         # Read SVG content
@@ -121,22 +121,18 @@ class ResourceManager:
             with open(icon_path, 'r', encoding='utf-8') as f:
                 svg_content = f.read()
 
-            # Get current palette text color for muted appearance
+            # Get exact palette text color (no modification)
             app = QApplication.instance()
             if app:
                 palette = app.palette()
                 text_color = palette.color(QPalette.ColorRole.WindowText)
-                # Use a slightly lighter/muted version
-                muted_color = text_color.lighter(120) if text_color.lightness() < 128 else text_color.darker(120)
-                color_hex = muted_color.name()
+                color_hex = text_color.name()
             else:
-                # Fallback to medium gray
-                color_hex = "#808080"
+                # Fallback to white for dark themes
+                color_hex = "#FFFFFF"
 
-            # Replace all stroke colors with the muted text color
-            import re
-            svg_content = re.sub(r'stroke="#[0-9A-Fa-f]{6}"', f'stroke="{color_hex}"', svg_content)
-            svg_content = re.sub(r'fill="#[0-9A-Fa-f]{6}"', f'fill="{color_hex}"', svg_content)
+            # Replace currentColor with exact text color
+            svg_content = svg_content.replace('currentColor', color_hex)
 
             # Create QIcon from modified SVG
             from PyQt6.QtCore import QByteArray

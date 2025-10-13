@@ -1,4 +1,4 @@
-# SERIALROUTER OPERATION GUIDE
+# SERIAL SPLITTER OPERATION GUIDE
 
 **Document Reference:** SR-OG-001 | **Revision:** D1 | **Date:** 30 July 2025
 
@@ -16,7 +16,7 @@
 
 ## 1. INTRODUCTION
 
-SerialRouter is a production-hardened serial port routing application for offshore environments. It routes data between one incoming port and two fixed outgoing ports (COM131, COM141) with automatic recovery.
+Serial Splitter is a production-hardened serial port routing application for offshore environments. It routes data between one incoming port and two fixed outgoing ports (COM131, COM141) with automatic recovery.
 
 ## 2. SYSTEM OVERVIEW
 
@@ -34,7 +34,7 @@ SerialRouter is a production-hardened serial port routing application for offsho
 
 ## 3. COM0COM VIRTUAL PORT SETUP
 
-SerialRouter requires virtual port pairs created by com0com for proper operation.
+Serial Splitter requires virtual port pairs created by com0com for proper operation.
 
 ### Required Port Pairs
 - **Pair 1:** COM131 ↔ COM132
@@ -68,7 +68,7 @@ command> install PortName=COM141,EmuBR=yes,EmuOverrun=yes,ExclusiveMode=no,AllDa
 
 1. Install com0com virtual serial port driver
 2. Configure virtual port pairs (see Section 3)
-3. Extract SerialRouter files to installation directory
+3. Extract Serial Splitter files to installation directory
 4. Install dependencies: `pip install PyQt6 pyserial`
 5. Verify installation: `python main.py`
 

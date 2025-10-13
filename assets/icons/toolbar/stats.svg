@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+  <!-- STATS/STATISTICS - Gauge/Meter - Rich Two-Tone Design -->
+
+  <!-- Layer 1: White gauge frame -->
+  <!-- Semicircular gauge arc -->
+  <path d="M 6 22 A 10 10 0 0 1 26 22" fill="none" stroke="#e2e1e1" stroke-width="2" stroke-linecap="round"/>
+  <!-- Base platform -->
+  <rect x="9" y="22" width="14" height="3" rx="1" fill="none" stroke="#e2e1e1" stroke-width="1.2"/>
+
+  <!-- Tick marks on gauge -->
+  <line x1="7.5" y1="21" x2="8.5" y2="19.5" stroke="#e2e1e1" stroke-width="1"/>
+  <line x1="11" y1="13.5" x2="12" y2="12" stroke="#e2e1e1" stroke-width="1"/>
+  <line x1="16" y1="10" x2="16" y2="8.5" stroke="#e2e1e1" stroke-width="1"/>
+  <line x1="21" y1="12" x2="20" y2="13.5" stroke="#e2e1e1" stroke-width="1"/>
+  <line x1="24.5" y1="19.5" x2="23.5" y2="21" stroke="#e2e1e1" stroke-width="1"/>
+
+  <!-- Numbers -->
+  <text x="7" y="25" font-size="4" fill="#e2e1e1" font-family="sans-serif">0</text>
+  <text x="14.5" y="7" font-size="4" fill="#e2e1e1" font-family="sans-serif">100</text>
+  <text x="24" y="25" font-size="4" fill="#e2e1e1" font-family="sans-serif">50</text>
+
+  <!-- Layer 2: Blue meter needle and active arc -->
+  <!-- Active arc fill (0 to 75% position) -->
+  <path d="M 6 22 A 10 10 0 0 1 22 14" fill="none" stroke="#4f90cd" stroke-width="2.5" stroke-linecap="round"/>
+
+  <!-- Needle pivot point -->
+  <circle cx="16" cy="22" r="2" fill="#4f90cd"/>
+
+  <!-- Needle pointing to 75% -->
+  <line x1="16" y1="22" x2="21" y2="15" stroke="#4f90cd" stroke-width="2" stroke-linecap="round"/>
+  <!-- Needle tip -->
+  <circle cx="21" cy="15" r="1.5" fill="#4f90cd"/>
+
+  <!-- Layer 3: Details -->
+  <!-- Inner arc (depth) -->
+  <path d="M 9 21 A 7 7 0 0 1 23 21" fill="none" stroke="#e2e1e1" stroke-width="0.8" opacity="0.4"/>
+
+  <!-- Warning zone (90-100%) -->
+  <path d="M 23 21 A 10 10 0 0 1 26 22" fill="none" stroke="#DC3545" stroke-width="1.5" opacity="0.6"/>
+
+  <!-- Mini indicator lights at base -->
+  <circle cx="13" cy="26" r="1" fill="none" stroke="#e2e1e1" stroke-width="0.8"/>
+  <circle cx="16" cy="26" r="1" fill="#4f90cd"/>
+  <circle cx="19" cy="26" r="1" fill="none" stroke="#e2e1e1" stroke-width="0.8"/>
+
+  <!-- Glass reflection effect -->
+  <path d="M 21 16 Q 23 18 23 21" fill="none" stroke="#e2e1e1" stroke-width="1" opacity="0.2"/>
+
+  <!-- Center rivet -->
+  <circle cx="16" cy="22" r="1" fill="none" stroke="#e2e1e1" stroke-width="0.8"/>
+</svg>

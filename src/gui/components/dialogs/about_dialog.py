@@ -1,4 +1,4 @@
-"""About dialog for SerialRouter."""
+"""About dialog for Serial Splitter."""
 
 from PyQt6.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QLabel, 
                             QPushButton, QWidget, QFrame, QGroupBox)
@@ -9,11 +9,11 @@ from src.gui.resources import resource_manager
 
 
 class AboutDialog(QDialog):
-    """Custom about dialog for SerialRouter with GitHub source link."""
-    
+    """Custom about dialog for Serial Splitter with GitHub source link."""
+
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setWindowTitle("About SerialRouter")
+        self.setWindowTitle("About Serial Splitter")
         self.setModal(True)
         self.setFixedSize(420, 300)
         
@@ -44,7 +44,7 @@ class AboutDialog(QDialog):
         layout.setContentsMargins(10, 10, 10, 10)  # Match main window margins
         
         # Single About Group (matches main window QGroupBox style)
-        about_group = QGroupBox("About SerialRouter")
+        about_group = QGroupBox("About Serial Splitter")
         about_layout = QVBoxLayout(about_group)
         about_layout.setSpacing(12)
         
@@ -63,7 +63,7 @@ class AboutDialog(QDialog):
         title_info_layout = QVBoxLayout()
         title_info_layout.setSpacing(2)
         
-        title_label = QLabel("SerialRouter")
+        title_label = QLabel("Serial Splitter")
         title_label.setProperty("class", "title")  # Use theme's title class
         
         version_label = QLabel("Version 2.0")
@@ -205,8 +205,8 @@ class AboutDialog(QDialog):
     
     def open_github_repository(self):
         """Open the GitHub repository in the default browser."""
-        # SerialRouter GitHub repository URL
-        github_url = "https://github.com/gregor-nelson/SerialRouter"
+        # Serial Splitter GitHub repository URL
+        github_url = "https://github.com/gregor-nelson/SerialSplitter"
         QDesktopServices.openUrl(QUrl(github_url))
     
     @staticmethod

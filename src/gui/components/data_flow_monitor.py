@@ -56,10 +56,10 @@ class HorizontalActivityMeter(QWidget):
     """
     Horizontal segmented bar for real-time rate visualization.
     Displays current transfer rate as a left-to-right filling meter.
-    Compact design for table row layout.
+    Compact design for table row layout with professional VU meter appearance.
     """
 
-    def __init__(self, parent=None, num_segments: int = 10):
+    def __init__(self, parent=None, num_segments: int = 20):
         super().__init__(parent)
 
         # Configuration
@@ -91,8 +91,8 @@ class HorizontalActivityMeter(QWidget):
         """Update cached colors from application palette."""
         palette = QApplication.palette()
 
-        # Use green accent color for activity indication
-        self._accent_color = QColor("#28A745")  # Green from enable.svg
+        # Use brand blue accent color for activity indication
+        self._accent_color = QColor("#4f90cd")  # Blue accent - brand color
         self._border_color = palette.color(QPalette.ColorRole.Mid)
 
     def setValue(self, value: int):
@@ -196,8 +196,8 @@ class TransferTableRow(QWidget):
         self.direction_layout.setContentsMargins(0, 0, 0, 0)
         self.direction_layout.setSpacing(4)  # Match toolbar spacing
 
-        # Load direction icon (preserve original colors)
-        icon = resource_manager.load_icon(f"{direction_icon}.svg", "stats")
+        # Load direction indicator icon (broadcast or response)
+        icon = resource_manager.get_stats_icon(direction_icon)
         if not icon.isNull():
             self.direction_icon_label = QLabel()
             self.direction_icon_label.setPixmap(icon.pixmap(16, 16))
@@ -420,7 +420,10 @@ class HealthTableRow(QWidget):
         self.metric_layout.setSpacing(4)
 
         # Load metric icon
-        icon = resource_manager.load_icon(f"{metric_icon}.svg", icon_subfolder)
+        if icon_subfolder == "stats" or icon_subfolder == "":
+            icon = resource_manager.get_stats_icon(metric_icon, icon_subfolder)
+        else:
+            icon = resource_manager.load_icon(f"{metric_icon}.svg", icon_subfolder)
         if not icon.isNull():
             self.metric_icon_label = QLabel()
             self.metric_icon_label.setPixmap(icon.pixmap(16, 16))
@@ -572,9 +575,9 @@ class DataFlowMonitorWidget(QWidget):
         transfer_layout.addWidget(header_row)
 
         # Data rows
-        self.incoming_row = TransferTableRow(self._current_incoming_port, "Broadcast", "to_client")
-        self.port1_row = TransferTableRow(self._current_port1, "Response", "from_client")
-        self.port2_row = TransferTableRow(self._current_port2, "Response", "from_client")
+        self.incoming_row = TransferTableRow(self._current_incoming_port, "Broadcast", "broadcast_icon")
+        self.port1_row = TransferTableRow(self._current_port1, "Response", "response_icon")
+        self.port2_row = TransferTableRow(self._current_port2, "Response", "response_icon")
 
         transfer_layout.addWidget(self.incoming_row)
         transfer_layout.addWidget(self.port1_row)
@@ -603,8 +606,11 @@ class DataFlowMonitorWidget(QWidget):
             container_layout.setContentsMargins(0, 0, 0, 0)
             container_layout.setSpacing(4)  # Match toolbar spacing
 
-            # Load icon preserving original colors
-            icon = resource_manager.load_icon(f"{icon_name}.svg", subfolder)
+            # Load icon with proper coloring
+            if subfolder == "stats" or subfolder == "":
+                icon = resource_manager.get_stats_icon(icon_name, subfolder)
+            else:
+                icon = resource_manager.load_icon(f"{icon_name}.svg", subfolder)
 
             if not icon.isNull():
                 icon_label = QLabel()
@@ -629,16 +635,16 @@ class DataFlowMonitorWidget(QWidget):
         port_header = create_header_with_icon("port_icon", "Port", 80, subfolder="")
         layout.addWidget(port_header)
 
-        # Direction header (using data_outbound as generic direction indicator)
-        direction_header = create_header_with_icon("data_outbound", "Direction", 100, subfolder="stats")
+        # Direction header (using bidirectional arrow icon)
+        direction_header = create_header_with_icon("direction_icon", "Direction", 100, subfolder="stats")
         layout.addWidget(direction_header)
 
         # Rate header
-        rate_header = create_header_with_icon("transfer_rate", "Current Rate", 200, subfolder="stats")
+        rate_header = create_header_with_icon("current_rate", "Current Rate", 200, subfolder="stats")
         layout.addWidget(rate_header)
 
         # Total header
-        volume_header = create_header_with_icon("session_stats", "Total", 100, subfolder="stats")
+        volume_header = create_header_with_icon("session_total", "Total", 100, subfolder="stats")
         layout.addWidget(volume_header)
 
         layout.addStretch()
@@ -659,8 +665,11 @@ class DataFlowMonitorWidget(QWidget):
             container_layout.setContentsMargins(0, 0, 0, 0)
             container_layout.setSpacing(4)
 
-            # Load icon preserving original colors
-            icon = resource_manager.load_icon(f"{icon_name}.svg", subfolder)
+            # Load icon with proper coloring
+            if subfolder == "stats" or subfolder == "":
+                icon = resource_manager.get_stats_icon(icon_name, subfolder)
+            else:
+                icon = resource_manager.load_icon(f"{icon_name}.svg", subfolder)
 
             if not icon.isNull():
                 icon_label = QLabel()
@@ -717,12 +726,12 @@ class DataFlowMonitorWidget(QWidget):
         health_layout.setContentsMargins(0, 0, 0, 0)
 
         # Data rows (no header - icons and labels are self-evident)
-        self.health_row = HealthTableRow("Health", "enable", "toolbar", show_indicator=True)
-        self.uptime_row = HealthTableRow("Uptime", "session_stats", "stats")
-        self.connections_row = HealthTableRow("Connections", "port_pair_icon", "")
-        self.queue_row = HealthTableRow("Queue Util", "transfer_rate", "stats", show_meter=True)
-        self.errors_row = HealthTableRow("Total Errors", "disable", "toolbar")
-        self.error_rate_row = HealthTableRow("Error Rate", "disable", "toolbar")
+        self.health_row = HealthTableRow("Health", "health_icon", "stats", show_indicator=True)
+        self.uptime_row = HealthTableRow("Uptime", "uptime_icon", "stats")
+        self.connections_row = HealthTableRow("Connections", "connections_icon", "")
+        self.queue_row = HealthTableRow("Queue Util", "queue_icon", "stats", show_meter=True)
+        self.errors_row = HealthTableRow("Total Errors", "total_errors_icon", "stats")
+        self.error_rate_row = HealthTableRow("Error Rate", "error_rate_icon", "stats")
 
         health_layout.addWidget(self.health_row)
         health_layout.addWidget(self.uptime_row)

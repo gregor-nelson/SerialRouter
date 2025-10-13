@@ -4,8 +4,9 @@ Provides a clean, visual status indicator following Windows design principles.
 """
 
 from PyQt6.QtWidgets import QWidget, QHBoxLayout, QLabel
-from PyQt6.QtCore import Qt, QTimer, QPropertyAnimation, QEasingCurve, pyqtProperty, QEvent
-from PyQt6.QtGui import QPainter, QPen, QBrush, QFont, QColor, QPalette
+from PyQt6.QtCore import Qt, QPropertyAnimation, QEasingCurve, pyqtProperty, QEvent
+from PyQt6.QtGui import QColor, QPalette
+from src.gui.resources import resource_manager
 
 
 class EnhancedStatusWidget(QWidget):
@@ -24,15 +25,46 @@ class EnhancedStatusWidget(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setFixedHeight(40)
-        
+
         # Current state
         self._current_state = self.STATE_OFFLINE
         self._pulse_opacity = 1.0
-        
+
+        # Create UI layout
+        layout = QHBoxLayout(self)
+        layout.setContentsMargins(8, 0, 0, 0)
+        layout.setSpacing(8)
+
+        # Status icon label
+        self.icon_label = QLabel()
+        self.icon_label.setFixedSize(20, 20)
+        layout.addWidget(self.icon_label)
+
+        # Status text label
+        self.text_label = QLabel()
+        layout.addWidget(self.text_label)
+        layout.addStretch()
+
         # Initialize colors using Qt palette roles
         self._init_colors()
-        
-        # Font properties will be set dynamically in paint method
+
+        # Animation for pulsing states
+        self.pulse_animation = QPropertyAnimation(self, b"pulse_opacity")
+        self.pulse_animation.setDuration(1000)
+        self.pulse_animation.setLoopCount(-1)  # Infinite loop
+        self.pulse_animation.setEasingCurve(QEasingCurve.Type.InOutSine)
+
+        # State text mapping with connection info
+        self.state_texts = {
+            self.STATE_OFFLINE: "Offline",
+            self.STATE_STARTING: "Starting Service...",
+            self.STATE_ACTIVE: "Routing Active",
+            self.STATE_STOPPING: "Stopping Service...",
+            self.STATE_ERROR: "Service Error"
+        }
+
+        # Update initial display
+        self.update_display()
         
     def _init_colors(self):
         """Initialize colors using proper Qt palette roles for theme compatibility."""
@@ -76,23 +108,8 @@ class EnhancedStatusWidget(QWidget):
         """Handle palette changes to update colors when theme changes."""
         if event.type() == QEvent.Type.PaletteChange:
             self._init_colors()
-            self.update()
+            self.update_display()
         super().changeEvent(event)
-        
-        # Animation for pulsing states
-        self.pulse_animation = QPropertyAnimation(self, b"pulse_opacity")
-        self.pulse_animation.setDuration(1000)
-        self.pulse_animation.setLoopCount(-1)  # Infinite loop
-        self.pulse_animation.setEasingCurve(QEasingCurve.Type.InOutSine)
-        
-        # State text mapping with connection info
-        self.state_texts = {
-            self.STATE_OFFLINE: "Offline",
-            self.STATE_STARTING: "Starting Service...",
-            self.STATE_ACTIVE: "Routing Active", 
-            self.STATE_STOPPING: "Stopping Service...",
-            self.STATE_ERROR: "Service Error"
-        }
         
         
     @pyqtProperty(float)
@@ -108,16 +125,17 @@ class EnhancedStatusWidget(QWidget):
         """Set the current application state and update visuals."""
         if state not in self.state_texts:
             return
-            
+
         self._current_state = state
-        
+
         # Handle animations based on state
         if state in [self.STATE_STARTING, self.STATE_STOPPING]:
             self.start_pulse_animation()
         else:
             self.stop_pulse_animation()
-            
-        self.update()
+
+        # Update display with new state
+        self.update_display()
         
         
     def start_pulse_animation(self):
@@ -143,80 +161,28 @@ class EnhancedStatusWidget(QWidget):
         
         return base_color
         
-    def paintEvent(self, event):
-        """Custom paint method with Windows styling."""
-        painter = QPainter(self)
-        painter.setRenderHint(QPainter.RenderHint.Antialiasing, True)
-        
-        rect = self.rect()
-        
-        # Draw status content
-        self.draw_status_indicator(painter, rect)
-        
-    def draw_status_indicator(self, painter, rect):
-        """Draw the main status indicator with clean Windows styling."""
-        # Status indicator circle position (LED-style) - moved higher
-        indicator_x = rect.left() + 8
-        indicator_y = rect.top() + 8
-        indicator_size = 20
-        
-        # Get state color
-        state_color = self.get_state_color()
-        
-        # Draw simple LED-style indicator using theme-aware colors
-        painter.setBrush(QBrush(state_color))
-        # Use Qt's darker() method for theme-compatible borders
-        border_color = state_color.darker(150) if state_color.lightness() > 128 else state_color.lighter(150)
-        painter.setPen(QPen(border_color, 2))
-        painter.drawEllipse(indicator_x, indicator_y, indicator_size, indicator_size)
-        
-        # Primary status text - clean, minimal styling to match app design
-        painter.setPen(QPen(self.colors['text']))
-        # Use standard app font without bold or size increase for clean look
-        primary_font = self.font()
-        # Optional: slight size adjustment for better readability while maintaining clean look
-        if self._current_state in [self.STATE_ERROR, self.STATE_ACTIVE]:
-            # Subtle emphasis for important states without being heavy
-            primary_font.setWeight(QFont.Weight.Medium)
-        painter.setFont(primary_font)
-        
-        text_x = indicator_x + indicator_size + 8
-        # Align text with indicator center
-        text_y = indicator_y + (indicator_size // 2)
-        primary_text_rect = rect.adjusted(text_x, text_y - rect.center().y(), -10, 0)
+    def update_display(self):
+        """Update the icon and text display based on current state."""
+        # Map states to icon filenames
+        icon_map = {
+            self.STATE_OFFLINE: "status_offline.svg",
+            self.STATE_STARTING: "status_starting.svg",
+            self.STATE_ACTIVE: "status_active.svg",
+            self.STATE_STOPPING: "status_stopping.svg",
+            self.STATE_ERROR: "status_error.svg"
+        }
+
+        # Load and display the SVG icon
+        icon_filename = icon_map.get(self._current_state, "status_offline.svg")
+        icon = resource_manager.load_icon(icon_filename, "toolbar")
+
+        if not icon.isNull():
+            self.icon_label.setPixmap(icon.pixmap(20, 20))
+
+        # Update text with optional emphasis for important states
         status_text = self.state_texts[self._current_state]
-        painter.drawText(primary_text_rect, Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignLeft, status_text)
-        
-        
-        # Add state-specific visual elements
-        if self._current_state == self.STATE_ACTIVE:
-            self.draw_active_indicator(painter, indicator_x, indicator_y, indicator_size)
-        elif self._current_state == self.STATE_ERROR:
-            self.draw_error_indicator(painter, indicator_x, indicator_y, indicator_size)
-            
-    def draw_active_indicator(self, painter, x, y, size):
-        """Draw subtle checkmark for active state using theme colors."""
-        # Use contrasting color that works in both light and dark themes
-        palette = self.palette()
-        contrast_color = palette.color(QPalette.ColorRole.Window)
-        painter.setPen(QPen(contrast_color, 2))
-        
-        # Smaller, cleaner checkmark
-        check_size = size // 4
-        check_x = x + size // 2 - check_size // 2
-        check_y = y + size // 2 - check_size // 4
-        
-        painter.drawLine(check_x, check_y + 1, check_x + check_size//2, check_y + check_size//2 + 1)
-        painter.drawLine(check_x + check_size//2, check_y + check_size//2 + 1, check_x + check_size, check_y - check_size//4 + 1)
-        
-    def draw_error_indicator(self, painter, x, y, size):
-        """Draw subtle X for error state using theme colors."""
-        # Use contrasting color that works in both light and dark themes
-        palette = self.palette()
-        contrast_color = palette.color(QPalette.ColorRole.Window)
-        painter.setPen(QPen(contrast_color, 2))
-        
-        # Smaller, cleaner X
-        margin = size // 3
-        painter.drawLine(x + margin, y + margin, x + size - margin, y + size - margin)
-        painter.drawLine(x + size - margin, y + margin, x + margin, y + size - margin)
+        if self._current_state in [self.STATE_ERROR, self.STATE_ACTIVE]:
+            # Subtle emphasis for important states
+            self.text_label.setText(f"<span style='font-weight: 500;'>{status_text}</span>")
+        else:
+            self.text_label.setText(status_text)

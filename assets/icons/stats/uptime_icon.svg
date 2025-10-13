@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+  <!-- Uptime/Stopwatch Chronometer icon -->
+  <!-- Clock face circle -->
+  <circle cx="16" cy="17" r="10" fill="none" stroke="currentColor" stroke-width="2.5"/>
+
+  <!-- Top button/crown -->
+  <path d="M16 5 L16 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+  <circle cx="16" cy="5" r="1.5" fill="currentColor"/>
+
+  <!-- Time markers (12, 3, 6, 9 positions) -->
+  <path d="M16 9 L16 10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+  <path d="M24 17 L23 17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+  <path d="M16 25 L16 24" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+  <path d="M8 17 L9 17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+
+  <!-- Clock hands (showing elapsed time) -->
+  <!-- Hour hand (short) -->
+  <path d="M16 17 L18 14" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- Minute hand (long) -->
+  <path d="M16 17 L21 17" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+
+  <!-- Center pivot -->
+  <circle cx="16" cy="17" r="1.5" fill="currentColor"/>
+</svg>

@@ -1,1 +1,1 @@
-"""SerialRouter - Production serial port routing application."""
+"""Serial Splitter - Production serial port routing application."""

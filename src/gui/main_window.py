@@ -9,11 +9,11 @@ from datetime import datetime
 from typing import Dict, Any, Optional
 
 from PyQt6.QtWidgets import (
-    QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, 
-    QLabel, QComboBox, QPushButton, QTextEdit, QFrame, QGroupBox, 
-    QGridLayout, QSpinBox, QProgressBar, QSplitter, QSystemTrayIcon, QMenu
+    QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
+    QLabel, QComboBox, QPushButton, QTextEdit, QFrame, QGroupBox,
+    QGridLayout, QSpinBox, QProgressBar, QSplitter, QSystemTrayIcon, QMenu, QMessageBox
 )
-from PyQt6.QtCore import QThread, pyqtSignal, QTimer, Qt
+from PyQt6.QtCore import QThread, pyqtSignal, QTimer, Qt, QSharedMemory
 from PyQt6.QtGui import QFont, QPalette, QIcon, QAction
 
 import serial.tools.list_ports
@@ -159,7 +159,7 @@ class SerialRouterMainWindow(QMainWindow):
         self.tray_icon.activated.connect(self.tray_icon_activated)
         
         # Set tooltip
-        self.tray_icon.setToolTip("SerialRouter v2.0")
+        self.tray_icon.setToolTip("Serial Splitter v2.0")
         
         # Show tray icon
         self.tray_icon.show()
@@ -184,7 +184,7 @@ class SerialRouterMainWindow(QMainWindow):
         
     def init_ui(self):
         """Initialize the user interface."""
-        self.setWindowTitle("Serial Router")
+        self.setWindowTitle("Serial Splitter")
         self.setMinimumSize(880, 600)
         # Don't set maximum size to preserve maximize functionality
         self.resize(880, 600)
@@ -231,13 +231,51 @@ class SerialRouterMainWindow(QMainWindow):
         
     def create_configuration_group(self, parent_layout):
         """Create the port configuration group."""
-        config_group = QGroupBox("Port Configuration")
-        config_layout = QGridLayout(config_group)
+        # Use QWidget with title label (no border)
+        config_group = QWidget()
+        outer_layout = QVBoxLayout(config_group)
+        outer_layout.setContentsMargins(0, 0, 0, 0)
+        outer_layout.setSpacing(5)
+
+        # Add title label
+        title_label = QLabel("Port Configuration")
+        title_label.setStyleSheet("font-weight: bold;")
+        outer_layout.addWidget(title_label)
+
+        # Create container for configuration content
+        config_content = QWidget()
+        config_layout = QGridLayout(config_content)
+        config_layout.setContentsMargins(0, 0, 0, 0)
         
+        # Minimal combobox stylesheet - transparent background blending with UI
+        minimal_combo_style = """
+            QComboBox {
+                background-color: transparent;
+                border: 1px solid palette(mid);
+                border-radius: 3px;
+                padding: 3px 8px;
+            }
+            QComboBox:hover {
+                border: 1px solid palette(highlight);
+            }
+            QComboBox::drop-down {
+                border: none;
+                width: 20px;
+            }
+            QComboBox::down-arrow {
+                image: none;
+                border-left: 2px solid transparent;
+                border-right: 2px solid transparent;
+                border-top: 2px solid palette(text);
+                margin-right: 4px;
+            }
+        """
+
         # Incoming Port Selection
         config_layout.addWidget(QLabel("Incoming Port:"), 0, 0)
         self.incoming_port_combo = QComboBox()
         self.incoming_port_combo.setMinimumWidth(120)
+        self.incoming_port_combo.setStyleSheet(minimal_combo_style)
         # Connect port selection changes to diagram updates
         self.incoming_port_combo.currentTextChanged.connect(self.on_incoming_port_changed)
         config_layout.addWidget(self.incoming_port_combo, 0, 1)
@@ -248,12 +286,14 @@ class SerialRouterMainWindow(QMainWindow):
         self.baud_spin.addItems(['1200', '2400', '4800', '9600', '19200', '38400', '57600', '115200', '230400', '460800', '921600'])
         self.baud_spin.setCurrentText('115200')
         self.baud_spin.setMinimumWidth(120)
+        self.baud_spin.setStyleSheet(minimal_combo_style)
         config_layout.addWidget(self.baud_spin, 1, 1)
 
         # Outgoing Port 1
         config_layout.addWidget(QLabel("Outgoing Port 1:"), 2, 0)
         self.outgoing_port1_combo = QComboBox()
         self.outgoing_port1_combo.setMinimumWidth(120)
+        self.outgoing_port1_combo.setStyleSheet(minimal_combo_style)
         self.outgoing_port1_combo.currentTextChanged.connect(self.on_outgoing_port_changed)
         config_layout.addWidget(self.outgoing_port1_combo, 2, 1)
 
@@ -261,30 +301,59 @@ class SerialRouterMainWindow(QMainWindow):
         config_layout.addWidget(QLabel("Outgoing Port 2:"), 3, 0)
         self.outgoing_port2_combo = QComboBox()
         self.outgoing_port2_combo.setMinimumWidth(120)
+        self.outgoing_port2_combo.setStyleSheet(minimal_combo_style)
         self.outgoing_port2_combo.currentTextChanged.connect(self.on_outgoing_port_changed)
         config_layout.addWidget(self.outgoing_port2_combo, 3, 1)
-        
+
+        # Add config content to outer layout
+        outer_layout.addWidget(config_content)
+
         # Add control buttons at bottom of configuration panel
         control_frame = QFrame()
         control_layout = QVBoxLayout(control_frame)
         control_layout.setSpacing(15)
         control_layout.setContentsMargins(0, 0, 0, 0)
-        
-        # Enhanced Status display
-        status_group = QGroupBox("Router Status")
-        status_layout = QVBoxLayout(status_group)
+
+        # Enhanced Status display (borderless)
+        status_group = QWidget()
+        status_outer_layout = QVBoxLayout(status_group)
+        status_outer_layout.setContentsMargins(0, 0, 0, 0)
+        status_outer_layout.setSpacing(5)
+
+        # Add title label
+        status_title = QLabel("Router Status")
+        status_title.setStyleSheet("font-weight: bold;")
+        status_outer_layout.addWidget(status_title)
+
+        # Create container for status content
+        status_content = QWidget()
+        status_layout = QVBoxLayout(status_content)
         status_layout.setContentsMargins(5, 5, 5, 0)  # Remove bottom margin
-        
+
         # Enhanced status widget
         self.enhanced_status = EnhancedStatusWidget()
         status_layout.addWidget(self.enhanced_status)
-        
+
+        # Add status content to outer layout
+        status_outer_layout.addWidget(status_content)
+
         control_layout.addWidget(status_group)
-        
-        # Connection diagram
-        diagram_group = QGroupBox("Port Connections")
-        diagram_layout = QVBoxLayout(diagram_group)
-        
+
+        # Connection diagram (borderless)
+        diagram_group = QWidget()
+        diagram_outer_layout = QVBoxLayout(diagram_group)
+        diagram_outer_layout.setContentsMargins(0, 0, 0, 0)
+        diagram_outer_layout.setSpacing(5)
+
+        # Add title label
+        diagram_title = QLabel("Port Connections")
+        diagram_title.setStyleSheet("font-weight: bold;")
+        diagram_outer_layout.addWidget(diagram_title)
+
+        # Create container for diagram content
+        diagram_content = QWidget()
+        diagram_layout = QVBoxLayout(diagram_content)
+
         # Connection diagram widget
         try:
             self.connection_diagram = ConnectionDiagramWidget()
@@ -307,7 +376,10 @@ class SerialRouterMainWindow(QMainWindow):
             """)
             diagram_layout.addWidget(placeholder)
             self.connection_diagram = None
-        
+
+        # Add diagram content to outer layout
+        diagram_outer_layout.addWidget(diagram_content)
+
         control_layout.addWidget(diagram_group)
         
         
@@ -361,6 +433,7 @@ class SerialRouterMainWindow(QMainWindow):
         self.ribbon.start_routing.connect(self.start_routing)
         self.ribbon.stop_routing.connect(self.stop_routing)
         self.ribbon.configure_ports.connect(self.show_port_configuration)
+        self.ribbon.launch_terminal.connect(self.launch_terminal)
         self.ribbon.refresh_ports.connect(self.refresh_available_ports)
         self.ribbon.view_stats.connect(self.show_routing_stats)
         self.ribbon.clear_log.connect(self.clear_activity_log)
@@ -370,14 +443,23 @@ class SerialRouterMainWindow(QMainWindow):
         """Show detailed port information and launch com0com setup utility."""
         # Show detailed port analysis first
         self.show_detailed_port_analysis()
-        
+
         # Then launch setup utility
         try:
-            subprocess.Popen([r"C:\Program Files (x86)\com0com\VirtualPortManager\VirtualPortManager.exe"], 
+            subprocess.Popen([r"C:\Program Files (x86)\com0com\VirtualPortManager\VirtualPortManager.exe"],
                             creationflags=subprocess.DETACHED_PROCESS)
             self.add_log_message("Launched com0com setup utility")
         except Exception as e:
             self.add_log_message(f"Could not launch setup utility: {str(e)}")
+
+    def launch_terminal(self):
+        """Launch serial terminal application."""
+        try:
+            subprocess.Popen([r"C:\Program Files (x86)\com0com\SerialTerminal\Serial Terminal.exe"],
+                            creationflags=subprocess.DETACHED_PROCESS)
+            self.add_log_message("Launched serial terminal")
+        except Exception as e:
+            self.add_log_message(f"Could not launch serial terminal: {str(e)}")
     
     def show_detailed_port_analysis(self):
         """Show detailed analysis of available ports."""
@@ -488,7 +570,7 @@ class SerialRouterMainWindow(QMainWindow):
         # Add stylized console log information
         port1, port2 = self._get_selected_outgoing_ports()
         self.add_log_message(" ╔══════════════════════════════════════════════════════════════════╗")
-        self.add_log_message(" ║                   SerialRouter v2.0 - Operation Guide            ║")
+        self.add_log_message(" ║                 Serial Splitter v2.0 - Operation Guide           ║")
         self.add_log_message(" ╠══════════════════════════════════════════════════════════════════╣")
         self.add_log_message(" ║ • Routes incoming port to COM131 & COM41 (Default port pairs)    ║")
         self.add_log_message(" ║ • Connect applications to paired endpoints (COM132 & COM142)     ║")
@@ -659,23 +741,45 @@ class SerialRouterMainWindow(QMainWindow):
         layout = QVBoxLayout(parent_widget)
         layout.setSpacing(10)
         layout.setContentsMargins(10, 10, 10, 10)
-        
-        log_group = QGroupBox("Activity Log")
-        log_layout = QVBoxLayout(log_group)
-        
-        
+
+        # Activity Log (borderless)
+        log_group = QWidget()
+        log_outer_layout = QVBoxLayout(log_group)
+        log_outer_layout.setContentsMargins(0, 0, 0, 0)
+        log_outer_layout.setSpacing(5)
+
+        # Add title label
+        log_title = QLabel("Activity Log")
+        log_title.setStyleSheet("font-weight: bold;")
+        log_outer_layout.addWidget(log_title)
+
+        # Create container for log content
+        log_content = QWidget()
+        log_layout = QVBoxLayout(log_content)
+
         # Log display
         self.activity_log = QTextEdit()
         self.activity_log.setReadOnly(True)
-        
+
         # Set monospace font for proper Unicode box-drawing character alignment
         # Windows-optimized font stack for clean, modern appearance
         monospace_font = QFont("Cascadia Code, Cascadia Mono, Consolas, 'Courier New', monospace")
         monospace_font.setStyleHint(QFont.StyleHint.TypeWriter)
         self.activity_log.setFont(monospace_font)
-        
+
+        # Ultra clean minimal design - match main window background, no border
+        self.activity_log.setStyleSheet("""
+            QTextEdit {
+                background-color: palette(window);
+                border: none;
+            }
+        """)
+
         log_layout.addWidget(self.activity_log)
-        
+
+        # Add log content to outer layout
+        log_outer_layout.addWidget(log_content)
+
         layout.addWidget(log_group)
         
     def setup_logging(self):
@@ -1196,19 +1300,56 @@ class SerialRouterMainWindow(QMainWindow):
         self.add_log_message("Activity log cleared")
         
     def closeEvent(self, event):
-        """Handle application close event - minimize to tray if available."""
-        if self.tray_icon and self.tray_icon.isVisible():
-            # Minimize to tray
-            self.hide()
-            self.tray_icon.showMessage(
-                "SerialRouter",
-                "Application minimized to tray",
-                QSystemTrayIcon.MessageIcon.Information,
-                2000
-            )
-            event.ignore()
+        """Handle application close event - minimize to tray or quit based on user choice."""
+        # CRITICAL FIX: Add confirmation dialog to allow proper closing
+        # Holding Shift while closing will quit directly without prompting
+        if event.spontaneous() and self.tray_icon and self.tray_icon.isVisible():
+            # Check if Shift key is held - if so, quit directly
+            modifiers = QApplication.keyboardModifiers()
+            if modifiers & Qt.KeyboardModifier.ShiftModifier:
+                # Shift held - quit directly
+                self.perform_shutdown()
+                event.accept()
+                QApplication.quit()
+                return
+
+            # Ask user what they want to do with custom button labels
+            msg_box = QMessageBox(self)
+            msg_box.setWindowTitle("Close Serial Splitter")
+            msg_box.setText("What would you like to do?")
+            msg_box.setInformativeText("Tip: Hold Shift while closing to quit directly without this prompt.")
+            msg_box.setIcon(QMessageBox.Icon.Question)
+
+            # Add custom buttons with clear labels
+            minimize_button = msg_box.addButton("Minimize to Tray", QMessageBox.ButtonRole.YesRole)
+            quit_button = msg_box.addButton("Quit Completely", QMessageBox.ButtonRole.NoRole)
+            cancel_button = msg_box.addButton("Cancel", QMessageBox.ButtonRole.RejectRole)
+
+            msg_box.setDefaultButton(minimize_button)
+            msg_box.exec()
+
+            clicked_button = msg_box.clickedButton()
+
+            if clicked_button == minimize_button:
+                # Minimize to tray
+                self.hide()
+                self.tray_icon.showMessage(
+                    "Serial Splitter",
+                    "Application minimized to tray. Use tray menu to quit.",
+                    QSystemTrayIcon.MessageIcon.Information,
+                    2000
+                )
+                event.ignore()
+            elif clicked_button == quit_button:
+                # Quit completely
+                self.perform_shutdown()
+                event.accept()
+                QApplication.quit()
+            else:
+                # Cancel - Do nothing
+                event.ignore()
         else:
-            # No tray available, perform full shutdown
+            # No tray available or programmatic close, perform full shutdown
             self.perform_shutdown()
             event.accept()
             
@@ -1265,31 +1406,51 @@ class SerialRouterMainWindow(QMainWindow):
 def main():
     """Main application entry point."""
     app = QApplication(sys.argv)
-    
+
+    # CRITICAL FIX: Singleton check - prevent multiple instances
+    shared_memory = QSharedMemory("SerialSplitterSingleton_v2_0")
+
+    # Try to create shared memory segment
+    if not shared_memory.create(1):
+        # Shared memory already exists - another instance is running
+        QMessageBox.warning(
+            None,
+            "Serial Splitter Already Running",
+            "Serial Splitter is already running.\n\n"
+            "Please check your system tray or minimize the existing window.",
+            QMessageBox.StandardButton.Ok
+        )
+        return 1
+
     # Set Fusion style for consistent cross-platform appearance
     app.setStyle('Fusion')
-    
+
     # Set application properties
-    app.setApplicationName("SerialRouter")
+    app.setApplicationName("Serial Splitter")
     app.setApplicationVersion("2.0")
-    app.setOrganizationName("SerialRouter")
-    
+    app.setOrganizationName("Serial Splitter")
+
     # Set application icon globally
     from src.gui.resources import resource_manager
     app_icon = resource_manager.get_app_icon()
     if not app_icon.isNull():
         app.setWindowIcon(app_icon)
-    
+
     # Create and show main window
     window = SerialRouterMainWindow()
     window.show()
-    
+
     # Add startup message
-    window.add_log_message("SerialRouter initialized")
+    window.add_log_message("Serial Splitter initialized")
     window.add_log_message("Ready to configure and start serial routing")
-    
+
     # Start application event loop
-    return app.exec()
+    exit_code = app.exec()
+
+    # Cleanup shared memory on exit
+    shared_memory.detach()
+
+    return exit_code
 
 
 if __name__ == "__main__":

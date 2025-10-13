@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+  <!-- Queue Utilization/FIFO Buffer Stack icon -->
+  <!-- Container outline -->
+  <rect x="9" y="7" width="14" height="20" rx="1" fill="none" stroke="currentColor" stroke-width="2.5"/>
+
+  <!-- Buffer segments (filled) -->
+  <rect x="11" y="21" width="10" height="2.5" rx="0.5" fill="currentColor"/>
+  <rect x="11" y="17.5" width="10" height="2.5" rx="0.5" fill="currentColor"/>
+  <rect x="11" y="14" width="10" height="2.5" rx="0.5" fill="currentColor"/>
+
+  <!-- Empty segments (top) -->
+  <rect x="11" y="10.5" width="10" height="2.5" rx="0.5" fill="none" stroke="currentColor" stroke-width="1.5"/>
+
+  <!-- Input arrow (top) -->
+  <path d="M16 4 L16 7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+  <path d="M14 5 L16 4 L18 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+
+  <!-- Output arrow (bottom) -->
+  <path d="M16 27 L16 29" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+  <path d="M14 28 L16 29 L18 28" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+</svg>

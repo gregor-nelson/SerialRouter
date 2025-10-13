@@ -1,1 +1,1 @@
-"""Core routing engine for SerialRouter."""
+"""Core routing engine for Serial Splitter."""

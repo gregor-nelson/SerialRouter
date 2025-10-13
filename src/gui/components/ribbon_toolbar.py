@@ -71,6 +71,7 @@ class RibbonToolbar(QToolBar):
     start_routing = pyqtSignal()
     stop_routing = pyqtSignal()
     configure_ports = pyqtSignal()
+    launch_terminal = pyqtSignal()
     refresh_ports = pyqtSignal()
     view_stats = pyqtSignal()
     clear_log = pyqtSignal()
@@ -111,16 +112,20 @@ class RibbonToolbar(QToolBar):
         
         # Configuration group
         self.config_group = RibbonGroup("Configuration")
-        
+
         self.configure_button = RibbonButton("Setup", "configure")
         self.configure_button.setToolTip("Configure port settings")
-        
+
+        self.terminal_button = RibbonButton("Terminal", "terminal")
+        self.terminal_button.setToolTip("Launch serial terminal")
+
         self.config_group.add_button(self.configure_button)
+        self.config_group.add_button(self.terminal_button)
         
         # Monitoring group
         self.monitoring_group = RibbonGroup("Monitoring")
         
-        self.stats_button = RibbonButton("Stats", "update")
+        self.stats_button = RibbonButton("Stats", "stats")
         self.stats_button.setToolTip("View routing statistics")
         
         self.refresh_button = RibbonButton("Refresh", "refresh")
@@ -135,7 +140,7 @@ class RibbonToolbar(QToolBar):
         self.clear_button = RibbonButton("Clear", "remove")
         self.clear_button.setToolTip("Clear activity log")
         
-        self.help_button = RibbonButton("Help", "preinstall")  # Using preinstall as help icon
+        self.help_button = RibbonButton("Help", "help")
         self.help_button.setToolTip("Show help information")
         
         self.system_group.add_button(self.clear_button)
@@ -156,6 +161,7 @@ class RibbonToolbar(QToolBar):
         self.start_button.clicked.connect(self.start_routing.emit)
         self.stop_button.clicked.connect(self.stop_routing.emit)
         self.configure_button.clicked.connect(self.configure_ports.emit)
+        self.terminal_button.clicked.connect(self.launch_terminal.emit)
         self.refresh_button.clicked.connect(self.refresh_ports.emit)
         self.stats_button.clicked.connect(self.view_stats.emit)
         self.clear_button.clicked.connect(self.clear_log.emit)
