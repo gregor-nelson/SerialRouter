@@ -13,8 +13,8 @@ from PyQt6.QtWidgets import (
     QLabel, QComboBox, QPushButton, QTextEdit, QFrame, QGroupBox,
     QGridLayout, QSpinBox, QProgressBar, QSplitter, QSystemTrayIcon, QMenu, QMessageBox
 )
-from PyQt6.QtCore import QThread, pyqtSignal, QTimer, Qt, QSharedMemory
-from PyQt6.QtGui import QFont, QPalette, QIcon, QAction
+from PyQt6.QtCore import QThread, pyqtSignal, QTimer, Qt, QSharedMemory, QUrl
+from PyQt6.QtGui import QFont, QPalette, QIcon, QAction, QDesktopServices
 
 import serial.tools.list_ports
 from src.core.router_engine import SerialRouterCore
@@ -159,7 +159,7 @@ class SerialRouterMainWindow(QMainWindow):
         self.tray_icon.activated.connect(self.tray_icon_activated)
         
         # Set tooltip
-        self.tray_icon.setToolTip("Serial Splitter v2.0")
+        self.tray_icon.setToolTip("Serial Router v1.0.2")
         
         # Show tray icon
         self.tray_icon.show()
@@ -184,7 +184,7 @@ class SerialRouterMainWindow(QMainWindow):
         
     def init_ui(self):
         """Initialize the user interface."""
-        self.setWindowTitle("Serial Splitter")
+        self.setWindowTitle("Serial Router")
         self.setMinimumSize(880, 600)
         # Don't set maximum size to preserve maximize functionality
         self.resize(880, 600)
@@ -398,7 +398,6 @@ class SerialRouterMainWindow(QMainWindow):
         layout.addStretch()
     
     def create_monitoring_panel(self, parent_widget):
-        """Create the right monitoring panel with nested vertical splitter."""
         layout = QVBoxLayout(parent_widget)
         layout.setSpacing(0)
         layout.setContentsMargins(0, 0, 0, 0)
@@ -438,6 +437,7 @@ class SerialRouterMainWindow(QMainWindow):
         self.ribbon.view_stats.connect(self.show_routing_stats)
         self.ribbon.clear_log.connect(self.clear_activity_log)
         self.ribbon.show_help.connect(self.show_help_information)
+        self.ribbon.show_about.connect(self.show_about_dialog)
     
     def show_port_configuration(self):
         """Show detailed port information and launch com0com setup utility."""
@@ -563,21 +563,58 @@ class SerialRouterMainWindow(QMainWindow):
             self.add_log_message(f"Could not retrieve statistics: {str(e)}")
     
     def show_help_information(self):
-        """Show about dialog and add helpful console information."""
-        # Show about dialog
-        AboutDialog.show_about(self)
-        
-        # Add stylized console log information
+        """Show help dialog with user choice."""
+        # Show dialog
+        msg_box = QMessageBox(self)
+        msg_box.setWindowTitle("Choose Help Type")
+        msg_box.setText("How would you like to view help information?")
+        msg_box.setIcon(QMessageBox.Icon.Question)
+
+        pdf_button = msg_box.addButton("Open PDF Guide", QMessageBox.ButtonRole.YesRole)
+        console_button = msg_box.addButton("Console Help", QMessageBox.ButtonRole.NoRole)
+        cancel_button = msg_box.addButton("Cancel", QMessageBox.ButtonRole.RejectRole)
+
+        msg_box.setDefaultButton(pdf_button)
+        msg_box.exec()
+
+        clicked_button = msg_box.clickedButton()
+
+        if clicked_button == pdf_button:
+            self.open_pdf_guide()
+        elif clicked_button == console_button:
+            self.show_console_help()
+        # Cancel - do nothing
+
+    def open_pdf_guide(self):
+        """Open the PDF guide with system default viewer."""
+        guide_path = resource_manager.get_guide_path("guide.pdf")
+
+        if guide_path and guide_path.exists():
+            QDesktopServices.openUrl(QUrl.fromLocalFile(str(guide_path)))
+        else:
+            QMessageBox.warning(
+                self,
+                "Guide Not Found",
+                "The operation guide PDF could not be found.\n\n"
+                "Expected location: guide/guide.pdf"
+            )
+
+    def show_console_help(self):
+        """Show help information in console (current behavior)."""
         port1, port2 = self._get_selected_outgoing_ports()
         self.add_log_message(" ╔══════════════════════════════════════════════════════════════════╗")
-        self.add_log_message(" ║                 Serial Splitter v2.0 - Operation Guide           ║")
+        self.add_log_message(" ║                 Serial Router - Operational Guide                ║")
         self.add_log_message(" ╠══════════════════════════════════════════════════════════════════╣")
         self.add_log_message(" ║ • Routes incoming port to COM131 & COM41 (Default port pairs)    ║")
         self.add_log_message(" ║ • Connect applications to paired endpoints (COM132 & COM142)     ║")
         self.add_log_message(" ║ • Select START ROUTING to begin, STOP ROUTING to end             ║")
         self.add_log_message(" ║ • Configure incoming port before starting operations             ║")
         self.add_log_message(" ╚══════════════════════════════════════════════════════════════════╝")
-    
+
+    def show_about_dialog(self):
+        """Show the About dialog."""
+        AboutDialog.show_about(self)
+
     def on_incoming_port_changed(self, port_name: str):
         """Handle incoming port selection changes."""
         if hasattr(self, 'connection_diagram') and port_name:
@@ -819,11 +856,11 @@ class SerialRouterMainWindow(QMainWindow):
         try:
             # Use our robust port enumerator
             all_ports = self.port_enumerator.enumerate_ports()
-            
+
             if not all_ports:
-                # Fallback to COM54 if no ports detected
-                self.incoming_port_combo.addItem("COM54")
-                self.add_log_message("No ports detected - using COM54 fallback")
+                # No ports available - show placeholder and inform user
+                self.incoming_port_combo.addItem("(No COM ports detected)")
+                self.add_log_message("No COM ports found - connect device and click Refresh Ports")
                 return
             
             # Separate ports by type for better user experience
@@ -865,22 +902,16 @@ class SerialRouterMainWindow(QMainWindow):
             # Populate the dropdown
             if port_items:
                 self.incoming_port_combo.addItems(port_items)
-                
-                # Smart default selection priority:
-                # 1. Previous selection if still available
-                # 2. COM54 if it's a Moxa port (current system default)
-                # 3. First physical port
-                # 4. First available port
+
+                # Smart selection: previous selection > first port
                 if current_port and current_port in port_items:
                     self.incoming_port_combo.setCurrentText(current_port)
-                elif "COM54" in port_items:
-                    self.incoming_port_combo.setCurrentText("COM54")
-                elif physical_ports:
-                    self.incoming_port_combo.setCurrentText(physical_ports[0].port_name)
                 else:
+                    # Auto-select first available port
                     self.incoming_port_combo.setCurrentIndex(0)
             else:
-                self.incoming_port_combo.addItem("COM54")
+                # No ports found - show placeholder
+                self.incoming_port_combo.addItem("(No COM ports detected)")
             
             # Populate outgoing port dropdowns with com0com ports only
             if hasattr(self, 'outgoing_port1_combo') and hasattr(self, 'outgoing_port2_combo'):
@@ -928,9 +959,9 @@ class SerialRouterMainWindow(QMainWindow):
             
         except Exception as e:
             self.add_log_message(f"Error scanning ports: {str(e)}")
-            # Safe fallback
-            self.incoming_port_combo.addItem("COM54")
-            self.add_log_message("Using COM54 fallback due to scan error")
+            # Show error state - user must fix and refresh
+            self.incoming_port_combo.addItem("(Port scan failed)")
+            self.add_log_message("Port scan failed - click Refresh Ports to retry")
         finally:
             # Re-enable validation warnings after refresh is complete
             self._initializing = False
@@ -938,7 +969,8 @@ class SerialRouterMainWindow(QMainWindow):
     def validate_selected_port(self) -> bool:
         """Enhanced port validation using port enumerator with exclusion checks."""
         port = self.incoming_port_combo.currentText()
-        if not port or port in ["No COM ports available", "Error reading ports"]:
+        # Check for empty, placeholder, or error states
+        if not port or port.startswith("("):
             return False
 
         # Critical safety check: prevent using reserved outgoing ports as incoming
@@ -1004,6 +1036,12 @@ class SerialRouterMainWindow(QMainWindow):
         
     def start_routing(self):
         """Start the serial routing process."""
+        # Check if incoming port is selected
+        incoming_port = self.incoming_port_combo.currentText()
+        if not incoming_port or incoming_port.startswith("("):
+            self.add_log_message("Cannot start: Please select an incoming COM port")
+            return
+
         if not self.validate_selected_port():
             self.add_log_message("Cannot start: Selected port is not available")
             return
@@ -1243,15 +1281,15 @@ class SerialRouterMainWindow(QMainWindow):
         """Load configuration from file with validation."""
         try:
             with open('serial_router_config.json', 'r') as f:
-                config = json.load(f)
+                self.config = json.load(f)  # Store as instance variable
 
             # Get list of available com0com ports for validation
             com0com_ports = self.port_enumerator.get_com0com_ports()
             available_port_names = [p.port_name for p in com0com_ports]
 
             # Apply saved outgoing port 1 with validation
-            if 'outgoing_port1' in config and hasattr(self, 'outgoing_port1_combo'):
-                port1 = config['outgoing_port1']
+            if 'outgoing_port1' in self.config and hasattr(self, 'outgoing_port1_combo'):
+                port1 = self.config['outgoing_port1']
                 index = self.outgoing_port1_combo.findText(port1)
                 if index >= 0:
                     # Port exists in dropdown, apply it
@@ -1261,8 +1299,8 @@ class SerialRouterMainWindow(QMainWindow):
                     self.add_log_message(f"Warning: Saved port {port1} no longer available, using default")
 
             # Apply saved outgoing port 2 with validation
-            if 'outgoing_port2' in config and hasattr(self, 'outgoing_port2_combo'):
-                port2 = config['outgoing_port2']
+            if 'outgoing_port2' in self.config and hasattr(self, 'outgoing_port2_combo'):
+                port2 = self.config['outgoing_port2']
                 index = self.outgoing_port2_combo.findText(port2)
                 if index >= 0:
                     # Port exists in dropdown, apply it
@@ -1274,21 +1312,25 @@ class SerialRouterMainWindow(QMainWindow):
             self.add_log_message("Configuration loaded from file")
 
         except FileNotFoundError:
-            pass  # No config file yet, use defaults
+            self.config = {}  # Initialize empty config
         except Exception as e:
             self.add_log_message(f"Error loading configuration: {e}")
+            self.config = {}  # Initialize empty config on error
 
     def save_config(self):
         """Save current configuration to file."""
         try:
-            config = {}
+            if not hasattr(self, 'config'):
+                self.config = {}
+
+            # Update port configs
             if hasattr(self, 'outgoing_port1_combo'):
-                config['outgoing_port1'] = self.outgoing_port1_combo.currentText()
+                self.config['outgoing_port1'] = self.outgoing_port1_combo.currentText()
             if hasattr(self, 'outgoing_port2_combo'):
-                config['outgoing_port2'] = self.outgoing_port2_combo.currentText()
+                self.config['outgoing_port2'] = self.outgoing_port2_combo.currentText()
 
             with open('serial_router_config.json', 'w') as f:
-                json.dump(config, f, indent=2)
+                json.dump(self.config, f, indent=2)
 
         except Exception as e:
             self.add_log_message(f"Error saving configuration: {e}")
@@ -1315,7 +1357,7 @@ class SerialRouterMainWindow(QMainWindow):
 
             # Ask user what they want to do with custom button labels
             msg_box = QMessageBox(self)
-            msg_box.setWindowTitle("Close Serial Splitter")
+            msg_box.setWindowTitle("Close Serial Router")
             msg_box.setText("What would you like to do?")
             msg_box.setInformativeText("Tip: Hold Shift while closing to quit directly without this prompt.")
             msg_box.setIcon(QMessageBox.Icon.Question)
@@ -1334,7 +1376,7 @@ class SerialRouterMainWindow(QMainWindow):
                 # Minimize to tray
                 self.hide()
                 self.tray_icon.showMessage(
-                    "Serial Splitter",
+                    "Serial Router",
                     "Application minimized to tray. Use tray menu to quit.",
                     QSystemTrayIcon.MessageIcon.Information,
                     2000
@@ -1408,15 +1450,15 @@ def main():
     app = QApplication(sys.argv)
 
     # CRITICAL FIX: Singleton check - prevent multiple instances
-    shared_memory = QSharedMemory("SerialSplitterSingleton_v2_0")
+    shared_memory = QSharedMemory("SerialRouterSingleton_v1_0_2")
 
     # Try to create shared memory segment
     if not shared_memory.create(1):
         # Shared memory already exists - another instance is running
         QMessageBox.warning(
             None,
-            "Serial Splitter Already Running",
-            "Serial Splitter is already running.\n\n"
+            "Serial Router Already Running",
+            "Serial Router is already running.\n\n"
             "Please check your system tray or minimize the existing window.",
             QMessageBox.StandardButton.Ok
         )
@@ -1426,9 +1468,9 @@ def main():
     app.setStyle('Fusion')
 
     # Set application properties
-    app.setApplicationName("Serial Splitter")
-    app.setApplicationVersion("2.0")
-    app.setOrganizationName("Serial Splitter")
+    app.setApplicationName("Serial Router")
+    app.setApplicationVersion("1.0.2")
+    app.setOrganizationName("Serial Router")
 
     # Set application icon globally
     from src.gui.resources import resource_manager
@@ -1441,7 +1483,7 @@ def main():
     window.show()
 
     # Add startup message
-    window.add_log_message("Serial Splitter initialized")
+    window.add_log_message("Serial Router initialized")
     window.add_log_message("Ready to configure and start serial routing")
 
     # Start application event loop

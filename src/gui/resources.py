@@ -95,12 +95,19 @@ class ResourceManager:
         ico_icon = self.load_icon("app_icon.ico")
         if not ico_icon.isNull():
             return ico_icon
-        
+
         svg_icon = self.load_icon("app_icon.svg")
         if not svg_icon.isNull():
             return svg_icon
-            
+
         return QIcon()  # Empty icon if neither found
+
+    def get_guide_path(self, guide_name: str = "guide.pdf") -> Optional[Path]:
+        """Get path to documentation guide file."""
+        guide_path = self._base_path / "guide" / guide_name
+        if guide_path.exists():
+            return guide_path
+        return None
     
     def get_toolbar_icon(self, action_name: str) -> QIcon:
         """Get toolbar icon by action name."""

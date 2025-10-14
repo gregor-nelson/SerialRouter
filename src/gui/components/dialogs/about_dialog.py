@@ -1,7 +1,6 @@
-"""About dialog for Serial Splitter."""
 
-from PyQt6.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QLabel, 
-                            QPushButton, QWidget, QFrame, QGroupBox)
+from PyQt6.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QLabel,
+                            QPushButton, QWidget, QFrame, QGroupBox, QMessageBox)
 from PyQt6.QtCore import Qt, QUrl
 from PyQt6.QtGui import QIcon, QPixmap, QFont, QDesktopServices, QPainter, QKeySequence, QShortcut
 from PyQt6.QtSvg import QSvgRenderer
@@ -9,11 +8,11 @@ from src.gui.resources import resource_manager
 
 
 class AboutDialog(QDialog):
-    """Custom about dialog for Serial Splitter with GitHub source link."""
+    """Custom about dialog for Serial Router with GitHub source link."""
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setWindowTitle("About Serial Splitter")
+        self.setWindowTitle("About")
         self.setModal(True)
         self.setFixedSize(420, 300)
         
@@ -44,7 +43,7 @@ class AboutDialog(QDialog):
         layout.setContentsMargins(10, 10, 10, 10)  # Match main window margins
         
         # Single About Group (matches main window QGroupBox style)
-        about_group = QGroupBox("About Serial Splitter")
+        about_group = QGroupBox("")
         about_layout = QVBoxLayout(about_group)
         about_layout.setSpacing(12)
         
@@ -63,10 +62,10 @@ class AboutDialog(QDialog):
         title_info_layout = QVBoxLayout()
         title_info_layout.setSpacing(2)
         
-        title_label = QLabel("Serial Splitter")
+        title_label = QLabel("Serial Router")
         title_label.setProperty("class", "title")  # Use theme's title class
         
-        version_label = QLabel("Version 2.0")
+        version_label = QLabel("Version 1.0.2")
         version_label.setProperty("class", "description")  # Use theme's description class
         
         title_info_layout.addWidget(title_label)
@@ -79,20 +78,52 @@ class AboutDialog(QDialog):
         
         about_layout.addLayout(header_layout)
         
-        # Description text
         description_label = QLabel(
-            "A robust serial port routing application for continuous operation environments.\n\n"
-            "Routes data between a configurable incoming port and two fixed outgoing ports "
-            "(COM131, COM141) with bidirectional communication and automatic fault recovery."
+            "A Python application for routing serial port communications.\n\n"
+            "Routes data between an incoming port and two default outgoing ports (COM131, COM141) "
+            "with bidirectional communication and automatic recovery capabilities."
         )
+
         description_label.setWordWrap(True)
         # Let the theme handle the font styling
         about_layout.addWidget(description_label)
-        
-        # GitHub icon only (bottom right)
-        github_layout = QHBoxLayout()
-        github_layout.addStretch()
-        
+
+        # Help button (bottom left) - Book/Guide icon
+        self.help_button = QPushButton()
+        self.help_button.setFixedSize(24, 24)
+        self.help_button.setToolTip("Open detailed operation guide (PDF)")
+
+        # Remove border and background, add hover effect
+        self.help_button.setStyleSheet("""
+            QPushButton {
+                border: none;
+                background: transparent;
+                padding: 0px;
+            }
+            QPushButton:hover {
+                background: transparent;
+            }
+        """)
+
+        # Create Book/Documentation SVG icon using QPalette colors
+        palette = self.palette()
+        disabled_color = palette.color(palette.ColorGroup.Disabled, palette.ColorRole.WindowText)
+
+        help_svg = f'''
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="{disabled_color.name()}">
+            <path d="M21 5c-1.11-.35-2.33-.5-3.5-.5-1.95 0-4.05.4-5.5 1.5-1.45-1.1-3.55-1.5-5.5-1.5S2.45 4.9 1 6v14.65c0 .25.25.5.5.5.1 0 .15-.05.25-.05C3.1 20.45 5.05 20 6.5 20c1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.3 4.75 1.05.1.05.15.05.25.05.25 0 .5-.25.5-.5V6c-.6-.45-1.25-.75-2-1zm0 13.5c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V8c1.35-.85 3.8-1.5 5.5-1.5 1.2 0 2.4.15 3.5.5v11.5z"/>
+        </svg>
+        '''
+
+        # Convert SVG to QIcon
+        help_icon = self.create_icon_from_svg(help_svg)
+        self.help_button.setIcon(help_icon)
+        self.help_button.setIconSize(self.help_button.size())
+
+        # Set cursor to pointer on hover
+        self.help_button.setCursor(Qt.CursorShape.PointingHandCursor)
+
+        # GitHub button (bottom right)
         self.github_button = QPushButton()
         self.github_button.setFixedSize(24, 24)
         self.github_button.setToolTip("View source code on GitHub")
@@ -121,16 +152,20 @@ class AboutDialog(QDialog):
         '''
         
         # Convert SVG to QIcon
-        github_icon = self.create_github_icon(github_svg)
+        github_icon = self.create_icon_from_svg(github_svg)
         self.github_button.setIcon(github_icon)
         self.github_button.setIconSize(self.github_button.size())
         
         # Set cursor to pointer on hover
         self.github_button.setCursor(Qt.CursorShape.PointingHandCursor)
-        
-        github_layout.addWidget(self.github_button)
-        
-        about_layout.addLayout(github_layout)
+
+        # Icon buttons layout - Help (left) and GitHub (right) in opposite corners
+        icon_buttons_layout = QHBoxLayout()
+        icon_buttons_layout.addWidget(self.help_button)  # Left corner
+        icon_buttons_layout.addStretch()  # Space between
+        icon_buttons_layout.addWidget(self.github_button)  # Right corner
+
+        about_layout.addLayout(icon_buttons_layout)
         
         layout.addWidget(about_group)
         
@@ -157,7 +192,7 @@ class AboutDialog(QDialog):
         return_shortcut = QShortcut(QKeySequence(Qt.Key.Key_Return), self)
         return_shortcut.activated.connect(self.close_button.click)
     
-    def create_github_icon(self, svg_content):
+    def create_icon_from_svg(self, svg_content):
         """Create a QIcon from SVG content with hover states."""
         try:
             # Try to use SVG renderer
@@ -201,14 +236,29 @@ class AboutDialog(QDialog):
     
     def setup_connections(self):
         """Set up signal connections."""
+        self.help_button.clicked.connect(self.open_help_guide)
         self.github_button.clicked.connect(self.open_github_repository)
     
     def open_github_repository(self):
         """Open the GitHub repository in the default browser."""
-        # Serial Splitter GitHub repository URL
-        github_url = "https://github.com/gregor-nelson/SerialSplitter"
+        github_url = "https://github.com/gregor-nelson/SerialRouter"
         QDesktopServices.openUrl(QUrl(github_url))
-    
+
+    def open_help_guide(self):
+        """Open the operation guide PDF in the default PDF viewer."""
+        guide_path = resource_manager.get_guide_path("guide.pdf")
+
+        if guide_path and guide_path.exists():
+            QDesktopServices.openUrl(QUrl.fromLocalFile(str(guide_path)))
+        else:
+            # Show error message if PDF not found
+            QMessageBox.warning(
+                self,
+                "Guide Not Found",
+                "The operation guide PDF could not be found.\n\n"
+                "Expected location: guide/guide.pdf"
+            )
+
     @staticmethod
     def show_about(parent=None):
         """Static method to show the about dialog."""

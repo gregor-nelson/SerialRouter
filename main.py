@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Serial Splitter GUI Entry Point
-Launch the PyQt6 GUI interface for Serial Splitter.
+Serial Router GUI Entry Point
+Launch the PyQt6 GUI interface for Serial Router.
 """
 
 import sys

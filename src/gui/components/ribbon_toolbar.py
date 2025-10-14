@@ -76,6 +76,7 @@ class RibbonToolbar(QToolBar):
     view_stats = pyqtSignal()
     clear_log = pyqtSignal()
     show_help = pyqtSignal()
+    show_about = pyqtSignal()
     
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -136,15 +137,19 @@ class RibbonToolbar(QToolBar):
         
         # System group
         self.system_group = RibbonGroup("System")
-        
+
         self.clear_button = RibbonButton("Clear", "remove")
         self.clear_button.setToolTip("Clear activity log")
-        
+
         self.help_button = RibbonButton("Help", "help")
         self.help_button.setToolTip("Show help information")
-        
+
+        self.about_button = RibbonButton("About", "info")
+        self.about_button.setToolTip("About Serial Router")
+
         self.system_group.add_button(self.clear_button)
         self.system_group.add_button(self.help_button)
+        self.system_group.add_button(self.about_button)
         
         # Add groups to main layout
         main_layout.addWidget(self.control_group)
@@ -166,6 +171,7 @@ class RibbonToolbar(QToolBar):
         self.stats_button.clicked.connect(self.view_stats.emit)
         self.clear_button.clicked.connect(self.clear_log.emit)
         self.help_button.clicked.connect(self.show_help.emit)
+        self.about_button.clicked.connect(self.show_about.emit)
     
     def set_routing_state(self, is_routing: bool):
         """Update button states based on routing status."""
@@ -179,11 +185,11 @@ class RibbonToolbar(QToolBar):
         """Enable/disable buttons based on busy state."""
         buttons = [
             self.start_button, self.stop_button, self.configure_button,
-            self.stats_button, self.clear_button, self.help_button
+            self.stats_button, self.clear_button, self.help_button, self.about_button
         ]
-        
+
         for button in buttons:
             button.setEnabled(not busy)
-        
+
         # Refresh button should always be available unless specifically busy
         self.refresh_button.setEnabled(not busy)

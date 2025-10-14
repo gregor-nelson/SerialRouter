@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Build script for Serial Splitter using PyInstaller
+Build script for Serial Router using PyInstaller
 """
 
 import subprocess
@@ -10,10 +10,10 @@ import time
 import shutil
 
 def build(clean=False):
-    """Build the Serial Splitter executable using PyInstaller"""
+    """Build the Serial Router executable using PyInstaller"""
     # Try to remove existing build directory
-    dist_dir = r".\dist\Serial Splitter"
-    exe_path = os.path.join(dist_dir, "Serial Splitter.exe")
+    dist_dir = r".\dist\Serial Router"
+    exe_path = os.path.join(dist_dir, "Serial Router.exe")
     
     if os.path.exists(dist_dir):
         try:
@@ -48,6 +48,7 @@ def build(clean=False):
         # Include all necessary data files (Windows uses semicolon separator)
         "--add-data", r"src;src",
         "--add-data", r"assets;assets",
+        "--add-data", r"guide;guide",
         
         # Essential hidden imports for standard library modules
         "--hidden-import", "json",
@@ -78,7 +79,7 @@ def build(clean=False):
         "--exclude-module", "PyQt6.QtNetwork",
         "--exclude-module", "PyQt6.QtOpenGL",
         
-        "--name", "Serial Splitter",
+        "--name", "Serial Router",
         r".\main.py"
     ])
     
@@ -89,7 +90,7 @@ def build(clean=False):
     else:
         print("MinGW strip not found - skipping --strip (install MinGW for smaller binaries)")
     
-    print("Building Serial Splitter executable...")
+    print("Building Serial Router executable...")
     print(f"Command: {' '.join(cmd)}")
     
     try:
@@ -111,7 +112,7 @@ def build(clean=False):
 
 if __name__ == "__main__":
     import argparse
-    parser = argparse.ArgumentParser(description='Build Serial Splitter executable')
+    parser = argparse.ArgumentParser(description='Build Serial Router executable')
     parser.add_argument('--clean', action='store_true', help='Force clean build (slower)')
     args = parser.parse_args()
     

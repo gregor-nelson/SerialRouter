@@ -1,15 +1,3 @@
-"""
-SerialRouter - Production Hardened Version
-Robust serial port routing for offshore environments with minimal complexity.
-
-Architecture:
-- One incoming port (configurable) → Two fixed outgoing ports (COM131, COM141)
-- Two return paths: COM131 → incoming, COM141 → incoming
-- Auto-reconnection with exponential backoff
-- Thread health monitoring and auto-restart
-- Basic file logging with rotation
-- Memory leak prevention for long-term operation
-"""
 
 import serial
 import threading
@@ -85,13 +73,13 @@ class PortManager:
     
     def acquire_port(self, port_name: str, baud_rate: int, owner_thread: str, timeout: float = 30.0) -> bool:
         """Thread-safe port acquisition with ownership tracking.
-        
+
         Args:
-            port_name: Serial port name (e.g., 'COM54')
+            port_name: Serial port name (e.g., 'COM1', 'COM3', '/dev/ttyUSB0')
             baud_rate: Baud rate for the connection
             owner_thread: Name of the thread requesting ownership
             timeout: Maximum time to wait for port availability
-            
+
         Returns:
             True if port was successfully acquired, False otherwise
         """
@@ -569,11 +557,15 @@ class PortManager:
 class SerialRouterCore:
     """Production-hardened serial router core with auto-recovery capabilities."""
     
-    def __init__(self, incoming_port: str = "COM54", incoming_baud: int = 115200, outgoing_baud: int = 115200, outgoing_ports: list = None):
+    def __init__(self, incoming_port: str, incoming_baud: int = 115200, outgoing_baud: int = 115200, outgoing_ports: list = None):
         # Hardcoded static configuration
         self.timeout: float = 0.1
         self.retry_delay_max: int = 30
         self.log_level: str = "INFO"
+
+        # Validate incoming port is provided (critical requirement)
+        if not incoming_port:
+            raise ValueError("incoming_port is required and cannot be empty")
 
         # Dynamic configuration from GUI
         self.incoming_port: str = incoming_port

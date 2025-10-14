@@ -1,8 +1,3 @@
-"""
-Serial Port Enumerator for SerialRouter
-Minimal, robust port detection focusing on Moxa virtual ports and physical serial ports.
-Designed for offshore marine environments - maximum reliability, minimal complexity.
-"""
 
 import logging
 from typing import List, Dict, Optional, Tuple
@@ -180,7 +175,7 @@ class PortEnumerator:
         fallback_ports = [
             # Current default incoming port
             SerialPortInfo(
-                port_name="COM54",
+                port_name="",
                 device_name="Fallback",
                 port_type=PortType.UNKNOWN,
                 registry_key="fallback",
@@ -234,11 +229,11 @@ class PortEnumerator:
     def validate_router_ports(self, incoming_port: str, outgoing_ports: List[str]) -> Dict[str, bool]:
         """
         Validate that the required ports exist for SerialRouter operation.
-        
+
         Args:
-            incoming_port: The incoming port name (e.g., "COM54")
+            incoming_port: The incoming port name (e.g., "COM1", "COM3")
             outgoing_ports: List of outgoing port names (e.g., ["COM131", "COM141"])
-        
+
         Returns:
             Dictionary with port names as keys and availability as boolean values
         """
@@ -308,9 +303,11 @@ def main():
         for port in moxa_ports:
             print(f"  {port.port_name} - {port.description}")
         
-        # Test current SerialRouter configuration
-        print(f"\nValidating current SerialRouter ports:")
-        validation = enumerator.validate_router_ports("COM54", ["COM131", "COM141"])
+        # Test example SerialRouter configuration
+        print(f"\nValidating example SerialRouter ports:")
+        # Use first available port as example incoming port
+        example_incoming = all_ports[0].port_name if all_ports else "COM1"
+        validation = enumerator.validate_router_ports(example_incoming, ["COM131", "COM141"])
         for port_name, is_available in validation.items():
             status = "[OK] Available" if is_available else "[!] Not found"
             print(f"  {port_name}: {status}")

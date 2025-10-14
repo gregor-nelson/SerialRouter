@@ -311,9 +311,9 @@ class ConnectionDiagramWidget(QGraphicsView):
 
         # Remove frame border for ultra clean design
         self.setFrameShape(QGraphicsView.Shape.NoFrame)
-        
-        # Port configuration
-        self.incoming_port = "COM54"
+
+        # Port configuration - will be set by main window
+        self.incoming_port = ""
         self.internal_ports = ["COM131", "COM141"]
         self.external_ports = ["COM132", "COM142"]
 

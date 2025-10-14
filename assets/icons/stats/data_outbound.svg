@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
-  <!-- Outbound/Upload icon -->
-  <!-- Upload arrow -->
-  <path d="M16 23 L16 9" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
-  <path d="M22 15 L16 9 L10 15" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-  <!-- Base line (from storage) -->
-  <path d="M10 24 L22 24" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
-</svg>

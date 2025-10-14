@@ -511,8 +511,8 @@ class DataFlowMonitorWidget(QWidget):
         self._last_status_error = None
         self._last_status_error_time = None
 
-        # Current port configuration
-        self._current_incoming_port = "COM54"
+        # Current port configuration - will be set by main window
+        self._current_incoming_port = ""
         self._current_port1 = "COM131"
         self._current_port2 = "COM141"
 
@@ -640,7 +640,7 @@ class DataFlowMonitorWidget(QWidget):
         layout.addWidget(direction_header)
 
         # Rate header
-        rate_header = create_header_with_icon("current_rate", "Current Rate", 200, subfolder="stats")
+        rate_header = create_header_with_icon("transfer_rate", "Current Rate", 200, subfolder="stats")
         layout.addWidget(rate_header)
 
         # Total header
@@ -695,7 +695,7 @@ class DataFlowMonitorWidget(QWidget):
         layout.addWidget(metric_header)
 
         # Value header
-        value_header = create_header_with_icon("data_outbound", "Value", 120, subfolder="stats")
+        value_header = create_header_with_icon("session_total", "Value", 120, subfolder="stats")
         layout.addWidget(value_header)
 
         # Status/Indicator header
@@ -752,7 +752,7 @@ class DataFlowMonitorWidget(QWidget):
 
         Args:
             status: Router status dictionary from router_core.get_status()
-            incoming_port: Currently selected incoming port (e.g., "COM54")
+            incoming_port: Currently selected incoming port (e.g., "COM1", "COM3")
             outgoing_port1: First outgoing port (e.g., "COM131")
             outgoing_port2: Second outgoing port (e.g., "COM141")
         """
