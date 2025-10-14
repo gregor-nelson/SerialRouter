@@ -21,7 +21,7 @@ A serial port routing application designed for reliable operation in offshore en
 </div>
 ## Overview
 
-SerialRouter was developed for offshore applications requiring uninterrupted serial communication routing. The system features a production-ready core engine with automatic failover, comprehensive monitoring, and a modern Qt6 GUI interface for configuration and real-time system oversight.
+SerialRouter was developed for offshore applications requiring uninterrupted serial communication routing. The system features a core engine with automatic failover, comprehensive monitoring, and a modern Qt6 GUI interface for configuration and real-time system oversight.
 
 ## Architecture
 
