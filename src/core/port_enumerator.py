@@ -1,8 +1,3 @@
-"""
-Serial Port Enumerator for SerialRouter
-Minimal, robust port detection focusing on Moxa virtual ports and physical serial ports.
-Designed for offshore marine environments - maximum reliability, minimal complexity.
-"""
 
 import logging
 from typing import List, Dict, Optional, Tuple
@@ -21,6 +16,7 @@ class PortType(Enum):
     """Port type classification"""
     PHYSICAL = "Physical"
     MOXA_VIRTUAL = "Moxa Virtual"
+    COM0COM_VIRTUAL = "com0com Virtual"
     OTHER_VIRTUAL = "Other Virtual"
     UNKNOWN = "Unknown"
 
@@ -118,7 +114,7 @@ class PortEnumerator:
         Classify a port based on its registry device name.
         Conservative classification focusing on Moxa detection.
         """
-        
+
         # Check for Moxa devices (critical for marine operations)
         if device_name.startswith("Npdrv"):
             return SerialPortInfo(
@@ -129,10 +125,20 @@ class PortEnumerator:
                 description="Moxa RealCOM virtual port",
                 is_moxa=True
             )
-        
+
+        # Check for com0com virtual ports (used for outgoing routing)
+        if device_name.startswith(r"\Device\com0com"):
+            return SerialPortInfo(
+                port_name=port_name,
+                device_name=device_name,
+                port_type=PortType.COM0COM_VIRTUAL,
+                registry_key=device_name,
+                description="com0com virtual port pair"
+            )
+
         # Check for other virtual port patterns
         device_lower = device_name.lower()
-        if any(pattern in device_lower for pattern in ["com0com", "virtual", "vspd", "cncb", "cnca"]):
+        if any(pattern in device_lower for pattern in ["virtual", "vspd", "cncb", "cnca"]):
             return SerialPortInfo(
                 port_name=port_name,
                 device_name=device_name,
@@ -140,7 +146,7 @@ class PortEnumerator:
                 registry_key=device_name,
                 description="Virtual serial port"
             )
-        
+
         # Default to physical port
         return SerialPortInfo(
             port_name=port_name,
@@ -169,7 +175,7 @@ class PortEnumerator:
         fallback_ports = [
             # Current default incoming port
             SerialPortInfo(
-                port_name="COM54",
+                port_name="",
                 device_name="Fallback",
                 port_type=PortType.UNKNOWN,
                 registry_key="fallback",
@@ -201,6 +207,11 @@ class PortEnumerator:
         """Get only Moxa virtual ports"""
         all_ports = self.enumerate_ports()
         return [port for port in all_ports if port.is_moxa]
+
+    def get_com0com_ports(self) -> List[SerialPortInfo]:
+        """Get only com0com virtual ports"""
+        all_ports = self.enumerate_ports()
+        return [port for port in all_ports if port.port_type == PortType.COM0COM_VIRTUAL]
     
     def get_physical_ports(self) -> List[SerialPortInfo]:
         """Get only physical serial ports"""
@@ -218,11 +229,11 @@ class PortEnumerator:
     def validate_router_ports(self, incoming_port: str, outgoing_ports: List[str]) -> Dict[str, bool]:
         """
         Validate that the required ports exist for SerialRouter operation.
-        
+
         Args:
-            incoming_port: The incoming port name (e.g., "COM54")
+            incoming_port: The incoming port name (e.g., "COM1", "COM3")
             outgoing_ports: List of outgoing port names (e.g., ["COM131", "COM141"])
-        
+
         Returns:
             Dictionary with port names as keys and availability as boolean values
         """
@@ -292,9 +303,11 @@ def main():
         for port in moxa_ports:
             print(f"  {port.port_name} - {port.description}")
         
-        # Test current SerialRouter configuration
-        print(f"\nValidating current SerialRouter ports:")
-        validation = enumerator.validate_router_ports("COM54", ["COM131", "COM141"])
+        # Test example SerialRouter configuration
+        print(f"\nValidating example SerialRouter ports:")
+        # Use first available port as example incoming port
+        example_incoming = all_ports[0].port_name if all_ports else "COM1"
+        validation = enumerator.validate_router_ports(example_incoming, ["COM131", "COM141"])
         for port_name, is_available in validation.items():
             status = "[OK] Available" if is_available else "[!] Not found"
             print(f"  {port_name}: {status}")

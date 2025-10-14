@@ -1,19 +1,19 @@
-# SerialRouter
+# Serial Router
 
-A serial port routing application designed for reliable operation in offshore environments. SerialRouter provides robust bidirectional communication between one configurable incoming port and two virtual outgoing ports with comprehensive monitoring and automatic recovery capabilities.
+A serial port routing application designed for reliable operation in offshore environments. Serial Router provides robust bidirectional communication between one configurable incoming port and two virtual outgoing ports with comprehensive monitoring and automatic recovery capabilities.
 
 
-![SerialRouter v2.0](https://img.shields.io/badge/SerialRouter-v2.0-blue)
+![Serial Router v1.0.2](https://img.shields.io/badge/Serial_Router-v1.0.2-blue)
 ![Python](https://img.shields.io/badge/Python-3.7+-green)
 <div align="center">
   <table>
     <tr>
       <td align="center" width="50%">
-        <img width="420" alt="SerialRouter real-time monitoring dashboard displaying thread health, data transfer metrics, and operational status" src="https://github.com/user-attachments/assets/e929fbd7-9db0-49be-b433-8128fc68626e" />
+        <img width="420" alt="Serial Router real-time monitoring dashboard displaying thread health, data transfer metrics, and operational status" src="https://github.com/user-attachments/assets/e929fbd7-9db0-49be-b433-8128fc68626e" />
         <br/>
       </td>
       <td align="center" width="50%">
-        <img width="420" alt="SerialRouter configuration panel featuring port auto-detection and persistent settings management" src="https://github.com/user-attachments/assets/64c110e6-c20a-4967-859c-b328bc7592d2" />
+        <img width="420" alt="Serial Router configuration panel featuring port auto-detection and persistent settings management" src="https://github.com/user-attachments/assets/64c110e6-c20a-4967-859c-b328bc7592d2" />
         <br/>
       </td>
     </tr>
@@ -21,7 +21,7 @@ A serial port routing application designed for reliable operation in offshore en
 </div>
 ## Overview
 
-SerialRouter was developed for offshore applications requiring uninterrupted serial communication routing. The system features a core engine with automatic failover, comprehensive monitoring, and a modern Qt6 GUI interface for configuration and real-time system oversight.
+Serial Router was developed for offshore applications requiring uninterrupted serial communication routing. The system features a production-ready core engine with automatic failover, comprehensive monitoring, and a modern Qt6 GUI interface for configuration and real-time system oversight.
 
 ## Architecture
 
@@ -45,7 +45,7 @@ SerialRouter was developed for offshore applications requiring uninterrupted ser
 
 ```
 ┌─────────────┐    ┌──────────────────┐    ┌─────────────┐
-│ Incoming    │◄──►│   SerialRouter   │◄──►│   COM131    │
+│ Incoming    │◄──►│ Serial Router  │◄──►│   COM131    │
 │ Port (Conf) │    │   Core Engine    │    │   (Fixed)   │
 └─────────────┘    │                  │    └─────────────┘
                    │                  │    ┌─────────────┐
@@ -147,4 +147,4 @@ Monitor `serial_router.log` for detailed operation information:
 
 
 
-*SerialRouter v2.0 - Production-ready serial communication routing for offshore environments*
+*Serial Router v1.0.2 - Production-ready serial communication routing for offshore environments*

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-SerialRouter GUI Entry Point
-Launch the PyQt6 GUI interface for SerialRouter.
+Serial Router GUI Entry Point
+Launch the PyQt6 GUI interface for Serial Router.
 """
 
 import sys

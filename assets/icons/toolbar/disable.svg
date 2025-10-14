@@ -1,8 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
-  <!-- Disable/Power Off icon -->
-  <circle cx="16" cy="16" r="14" fill="#6C757D" stroke="#5A6268" stroke-width="1"/>
-  <circle cx="16" cy="16" r="6" fill="none" stroke="#FFFFFF" stroke-width="2.5"/>
-  <path d="M16 6 L16 12" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round"/>
-  <path d="M6 6 L26 26" stroke="#DC3545" stroke-width="3" stroke-linecap="round"/>
+  <!-- STOP/DISABLE - Power Toggle OFF - Rich Two-Tone Design -->
+
+  <!-- Layer 1: White frame and structure -->
+  <rect x="2" y="2" width="28" height="28" rx="6" fill="none" stroke="#e2e1e1" stroke-width="1.5"/>
+  <!-- Power indicator socket -->
+  <circle cx="25" cy="7" r="2" fill="none" stroke="#e2e1e1" stroke-width="1"/>
+
+  <!-- Layer 2: Blue toggle mechanism (OFF position) -->
+  <!-- Toggle track -->
+  <rect x="7" y="13" width="18" height="8" rx="4" fill="none" stroke="#4f90cd" stroke-width="2"/>
+  <!-- Toggle knob (LEFT position = OFF) - hollow -->
+  <circle cx="11" cy="17" r="3.5" fill="none" stroke="#4f90cd" stroke-width="2"/>
+
+  <!-- Layer 3: Details -->
+  <!-- Power OFF symbol -->
+  <circle cx="16" cy="7.5" r="2.5" fill="none" stroke="#e2e1e1" stroke-width="1.5"/>
+
+  <!-- Status indicator dots (all inactive) -->
+  <circle cx="10" cy="25" r="1.2" fill="none" stroke="#e2e1e1" stroke-width="1"/>
+  <circle cx="16" cy="25" r="1.2" fill="none" stroke="#e2e1e1" stroke-width="1"/>
+  <circle cx="22" cy="25" r="1.2" fill="none" stroke="#e2e1e1" stroke-width="1"/>
+
+  <!-- Power indicator light (inactive) -->
+  <circle cx="25" cy="7" r="1.2" fill="none" stroke="#e2e1e1" stroke-width="0.8"/>
+
+  <!-- Subtle disabled pattern (diagonal lines) -->
+  <line x1="8" y1="14" x2="12" y2="20" stroke="#e2e1e1" stroke-width="0.5" opacity="0.3"/>
+  <line x1="20" y1="14" x2="24" y2="20" stroke="#e2e1e1" stroke-width="0.5" opacity="0.3"/>
 </svg>

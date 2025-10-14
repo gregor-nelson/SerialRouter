@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+  <!-- HEALTH - Phosphor-inspired Activity Monitor -->
+
+  <!-- Monitor frame (clean rectangle) -->
+  <rect x="4" y="8" width="24" height="16" rx="2"
+        fill="none" stroke="currentColor" stroke-width="2"/>
+
+  <!-- Activity pulse line (clean, geometric) -->
+  <polyline points="6,16 10,16 12,12 14,20 16,16 26,16"
+            fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Status indicator dot -->
+  <circle cx="26" cy="10" r="1.5" fill="currentColor"/>
+</svg>

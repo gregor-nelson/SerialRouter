@@ -1,6 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
-  <!-- Remove/Delete icon -->
-  <circle cx="16" cy="16" r="14" fill="#DC3545" stroke="#C82333" stroke-width="1"/>
-  <path d="M10 16 L22 16" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round"/>
+  <!-- CLEAR/REMOVE - Eraser on Documents - Rich Two-Tone Design -->
+
+  <!-- Layer 1: White document stack -->
+  <!-- Back document -->
+  <path d="M 8 12 L 8 26 L 20 26 L 20 12 L 17 12 L 17 9 L 8 9 Z" fill="none" stroke="#e2e1e1" stroke-width="1" opacity="0.4"/>
+  <!-- Middle document -->
+  <path d="M 10 10 L 10 28 L 22 28 L 22 10 L 19 10 L 19 7 L 10 7 Z" fill="none" stroke="#e2e1e1" stroke-width="1.2" opacity="0.6"/>
+
+  <!-- Front document with folded corner -->
+  <path d="M 6 8 L 6 30 L 24 30 L 24 14 L 21 8 Z" fill="none" stroke="#e2e1e1" stroke-width="1.5"/>
+  <!-- Folded corner detail -->
+  <path d="M 21 8 L 21 14 L 24 14" fill="none" stroke="#e2e1e1" stroke-width="1.5"/>
+  <path d="M 21 8 L 21 14 L 24 14 Z" fill="#4f90cd" opacity="0.1"/>
+
+  <!-- Text lines on front document -->
+  <line x1="9" y1="13" x2="18" y2="13" stroke="#e2e1e1" stroke-width="1" opacity="0.7"/>
+  <line x1="9" y1="16" x2="17" y2="16" stroke="#e2e1e1" stroke-width="1" opacity="0.5"/>
+  <line x1="9" y1="19" x2="16" y2="19" stroke="#e2e1e1" stroke-width="1" opacity="0.3"/>
+  <line x1="9" y1="22" x2="14" y2="22" stroke="#e2e1e1" stroke-width="1" opacity="0.2"/>
+
+  <!-- Layer 2: Blue eraser (angled, active) -->
+  <!-- Eraser body -->
+  <rect x="16" y="18" width="12" height="6" rx="1" fill="#4f90cd" transform="rotate(-30 22 21)"/>
+  <!-- Eraser tip highlight (lighter zone) -->
+  <rect x="16" y="18" width="3" height="6" rx="1" fill="#4f90cd" opacity="0.8" transform="rotate(-30 22 21)"/>
+
+  <!-- Layer 3: Details -->
+  <!-- Erasing action - particles/debris -->
+  <circle cx="14" cy="20" r="0.8" fill="#4f90cd" opacity="0.5"/>
+  <circle cx="12" cy="22" r="0.6" fill="#4f90cd" opacity="0.4"/>
+  <circle cx="15" cy="23" r="0.7" fill="#4f90cd" opacity="0.3"/>
+  <circle cx="11" cy="21" r="0.5" fill="#4f90cd" opacity="0.3"/>
+
+  <!-- Motion swoosh behind eraser -->
+  <path d="M 14 24 Q 12 22 10 23" fill="none" stroke="#e2e1e1" stroke-width="1" opacity="0.3" stroke-linecap="round"/>
+
+  <!-- Eraser texture detail (horizontal lines) -->
+  <line x1="18" y1="20" x2="26" y2="18" stroke="#e2e1e1" stroke-width="0.5" opacity="0.4" transform="rotate(-30 22 21)"/>
+  <line x1="18" y1="22" x2="26" y2="20" stroke="#e2e1e1" stroke-width="0.5" opacity="0.4" transform="rotate(-30 22 21)"/>
 </svg>

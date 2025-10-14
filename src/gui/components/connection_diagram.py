@@ -57,41 +57,39 @@ class PortNode(QGraphicsRectItem):
             palette = self.scene().views()[0].palette()
         else:
             palette = QApplication.instance().palette()
-        
+
         # Use Qt6 Fusion palette colors for consistency
-        base_color = palette.color(palette.ColorRole.Base)
-        window_color = palette.color(palette.ColorRole.Window)  # Lighter than Base in Fusion
         button_color = palette.color(palette.ColorRole.Button)
-        highlight_color = palette.color(palette.ColorRole.Highlight)
         mid_color = palette.color(palette.ColorRole.Mid)
-        
-        # Keep light background for boxes to stand out in dark mode
-        # Use a light grey that works well against dark Fusion theme
-        bg_color = QColor(240, 240, 240)  # Light grey background
-        
+        text_color = palette.color(palette.ColorRole.ButtonText)
+
+        # Brand blue accent for active states
+        blue_accent = QColor("#4f90cd")
+
+        # Use dark button background (theme-appropriate)
+        bg_color = button_color
+
         if self.node_type == "configurable":
-            border_color = highlight_color if self.is_connected else mid_color
+            border_color = blue_accent if self.is_connected else mid_color
         elif self.node_type == "router":
             # Router node stays the same regardless of connection state
             border_color = mid_color
         else:  # application
-            border_color = highlight_color.darker(120) if self.is_connected else mid_color
-        
-        # Apply gradient background
+            border_color = blue_accent if self.is_connected else mid_color
+
+        # Apply gradient background for subtle depth
         gradient = QLinearGradient(0, 0, 0, self.node_height)
-        gradient.setColorAt(0, bg_color.lighter(102))
-        gradient.setColorAt(1, bg_color.darker(102))
+        gradient.setColorAt(0, bg_color.lighter(105))
+        gradient.setColorAt(1, bg_color.darker(105))
         self.setBrush(QBrush(gradient))
-        
+
         # Set border
         pen = QPen(border_color, 2 if self.is_connected and self.node_type != "router" else 1)
         self.setPen(pen)
-        
-        # Update status indicator using palette colors
-        status_color = highlight_color if self.is_connected else mid_color
-        # Use dark grey text for contrast against light box background
-        text_color = QColor(60, 60, 60)  # Dark grey text
-            
+
+        # Update status indicator - blue when connected
+        status_color = blue_accent if self.is_connected else mid_color
+
         self.status_indicator.setBrush(QBrush(status_color))
         self.status_indicator.setPen(QPen(status_color.darker(150), 1))
         self.text_item.setDefaultTextColor(text_color)
@@ -192,16 +190,11 @@ class ConnectionLine(QGraphicsPathItem):
     
     def update_style(self):
         """Update line styling based on active state."""
-        # Use Qt6 palette color for consistent styling with Fusion theme
-        from PyQt6.QtWidgets import QApplication
-        if self.scene() and self.scene().views():
-            palette = self.scene().views()[0].palette()
-        else:
-            palette = QApplication.instance().palette()
-        color = palette.color(palette.ColorRole.Highlight)
+        # Use brand blue accent for all connection lines
+        blue_accent = QColor("#4f90cd")
         width = 3
-        
-        pen = QPen(color, width)
+
+        pen = QPen(blue_accent, width)
         pen.setCapStyle(Qt.PenCapStyle.RoundCap)
         self.setPen(pen)
     
@@ -225,30 +218,27 @@ class ConnectionLine(QGraphicsPathItem):
         path_length = self.path().length()
         if path_length <= 0:
             return
-        
+
         # Draw multiple flow dots
         dot_spacing = 20
         dot_size = 2  # Reduced from 4 to 2
-        
+
+        # Brand blue accent for flow dots
+        blue_accent = QColor("#4f90cd")
+
         for i in range(0, int(path_length), dot_spacing):
             percent = (i + self.flow_offset) / path_length
             if percent > 1.0:
                 percent -= 1.0
-            
+
             point = self.path().pointAtPercent(percent)
-            
-            # Draw glowing dot using palette colors
-            from PyQt6.QtWidgets import QApplication
-            if self.scene() and self.scene().views():
-                palette = self.scene().views()[0].palette()
-            else:
-                palette = QApplication.instance().palette()
-            
-            dot_color = palette.color(palette.ColorRole.BrightText)
+
+            # Draw glowing dot using blue accent
+            dot_color = QColor(blue_accent)
             dot_color.setAlpha(200)
-                
+
             painter.setBrush(QBrush(dot_color))
-            painter.setPen(QPen(self.pen().color(), 1))
+            painter.setPen(QPen(blue_accent, 1))
             painter.drawEllipse(point, dot_size, dot_size)
     
     def draw_arrow(self, painter):
@@ -306,11 +296,11 @@ class ConnectionDiagramWidget(QGraphicsView):
     
     def __init__(self, parent=None):
         super().__init__(parent)
-        
+
         # Create graphics scene
         self.scene = QGraphicsScene(self)
         self.setScene(self.scene)
-        
+
         # Configure view
         self.setMinimumHeight(200)
         self.setMaximumHeight(220)
@@ -318,23 +308,69 @@ class ConnectionDiagramWidget(QGraphicsView):
         self.setDragMode(QGraphicsView.DragMode.NoDrag)
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         self.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
-        
-        # Port configuration
-        self.incoming_port = "COM54"
+
+        # Remove frame border for ultra clean design
+        self.setFrameShape(QGraphicsView.Shape.NoFrame)
+
+        # Port configuration - will be set by main window
+        self.incoming_port = ""
         self.internal_ports = ["COM131", "COM141"]
         self.external_ports = ["COM132", "COM142"]
-        
+
         # Graphics items
         self.nodes = {}
         self.connections = {}
-        
+
         # Connection state tracking
         self.connection_states = {
             "COM131": False,
             "COM141": False
         }
-        
+
         self.setup_diagram()
+
+    def set_outgoing_ports(self, port1: str, port2: str, all_com0com_ports: list = None):
+        """Update diagram with new outgoing port configuration."""
+        self.internal_ports = [port1, port2]
+        self.all_com0com_ports = all_com0com_ports or []
+
+        # Calculate paired ports using proximity algorithm
+        self.external_ports = [
+            self._calculate_paired_port(port1, 1),
+            self._calculate_paired_port(port2, 2)
+        ]
+        # Update connection state tracking
+        self.connection_states = {
+            port1: self.connection_states.get(port1, False),
+            port2: self.connection_states.get(port2, False)
+        }
+        self.setup_diagram()
+
+    def _calculate_paired_port(self, port: str, port_index: int) -> str:
+        """
+        Calculate the paired com0com port using proximity algorithm.
+        Checks +1 and -1 neighbors. Falls back to generic label if detection fails.
+        """
+        try:
+            num = int(port.replace("COM", ""))
+
+            # Check both +1 and -1 neighbors
+            candidates = [
+                f"COM{num + 1}",  # Check next port
+                f"COM{num - 1}"   # Check previous port
+            ]
+
+            # Find which candidate exists in com0com port list
+            for candidate in candidates:
+                if candidate in self.all_com0com_ports:
+                    return candidate
+
+            # Fallback: proximity detection failed
+            return f"com0com Port {port_index}"
+
+        except:
+            # Parsing failed, use generic fallback
+            return f"com0com Port {port_index}"
     
     def setup_diagram(self):
         """Initialize the graphics scene with nodes and connections."""
@@ -403,17 +439,17 @@ class ConnectionDiagramWidget(QGraphicsView):
         any_connected = any(self.connection_states.values())
         if "router" in self.nodes:
             self.nodes["router"].set_connected(any_connected)
-        
+
         # Update main connection (active if any output is active)
         if "main" in self.connections:
             self.connections["main"].set_active(any_connected)
-        
-        # Update individual connections
-        app1_connected = self.connection_states.get("COM131", False)
+
+        # Update individual connections using dynamic port names
+        app1_connected = self.connection_states.get(self.internal_ports[0], False)
         if "app1" in self.connections:
             self.connections["app1"].set_active(app1_connected)
-        
-        app2_connected = self.connection_states.get("COM141", False)
+
+        app2_connected = self.connection_states.get(self.internal_ports[1], False)
         if "app2" in self.connections:
             self.connections["app2"].set_active(app2_connected)
     
@@ -442,16 +478,12 @@ class ConnectionDiagramWidget(QGraphicsView):
         # Draw custom background
         painter = QPainter(self.viewport())
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)
-        
-        # Use same background as console log (QTextEdit default background)
-        # This matches the Fusion theme's QTextEdit background color
-        background_color = self.palette().color(self.palette().ColorRole.Base)
+
+        # Use main app background color for ultra clean minimal design
+        background_color = self.palette().color(self.palette().ColorRole.Window)
         painter.fillRect(self.viewport().rect(), QBrush(background_color))
-        
-        # Draw border
-        border_pen = QPen(self.palette().mid().color(), 1)
-        painter.setPen(border_pen)
-        painter.drawRect(self.viewport().rect().adjusted(0, 0, -1, -1))
-        
+
+        # No border for minimal design
+
         # Call parent paint event to draw the scene
         super().paintEvent(event)

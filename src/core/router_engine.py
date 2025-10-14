@@ -1,15 +1,3 @@
-"""
-SerialRouter - Production Hardened Version
-Robust serial port routing for offshore environments with minimal complexity.
-
-Architecture:
-- One incoming port (configurable) → Two fixed outgoing ports (COM131, COM141)
-- Two return paths: COM131 → incoming, COM141 → incoming
-- Auto-reconnection with exponential backoff
-- Thread health monitoring and auto-restart
-- Basic file logging with rotation
-- Memory leak prevention for long-term operation
-"""
 
 import serial
 import threading
@@ -85,13 +73,13 @@ class PortManager:
     
     def acquire_port(self, port_name: str, baud_rate: int, owner_thread: str, timeout: float = 30.0) -> bool:
         """Thread-safe port acquisition with ownership tracking.
-        
+
         Args:
-            port_name: Serial port name (e.g., 'COM54')
+            port_name: Serial port name (e.g., 'COM1', 'COM3', '/dev/ttyUSB0')
             baud_rate: Baud rate for the connection
             owner_thread: Name of the thread requesting ownership
             timeout: Maximum time to wait for port availability
-            
+
         Returns:
             True if port was successfully acquired, False otherwise
         """
@@ -569,19 +557,23 @@ class PortManager:
 class SerialRouterCore:
     """Production-hardened serial router core with auto-recovery capabilities."""
     
-    def __init__(self, incoming_port: str = "COM54", incoming_baud: int = 115200, outgoing_baud: int = 115200):
+    def __init__(self, incoming_port: str, incoming_baud: int = 115200, outgoing_baud: int = 115200, outgoing_ports: list = None):
         # Hardcoded static configuration
         self.timeout: float = 0.1
         self.retry_delay_max: int = 30
         self.log_level: str = "INFO"
-        
+
+        # Validate incoming port is provided (critical requirement)
+        if not incoming_port:
+            raise ValueError("incoming_port is required and cannot be empty")
+
         # Dynamic configuration from GUI
         self.incoming_port: str = incoming_port
         self.incoming_baud: int = incoming_baud
         self.outgoing_baud: int = outgoing_baud
-        
-        # Fixed outgoing ports
-        self.outgoing_ports = ["COM131", "COM141"]
+
+        # Configurable outgoing ports (default to COM131, COM141 for backward compatibility)
+        self.outgoing_ports = outgoing_ports if outgoing_ports else ["COM131", "COM141"]
         
         # Runtime state
         self.running = False
@@ -595,7 +587,15 @@ class SerialRouterCore:
         self.bytes_transferred: Dict[str, int] = {}
         self.error_counts: Dict[str, int] = {}
         self.last_counter_reset = datetime.now()
-        
+
+        # Session totals (never reset - safe for long-term operation)
+        self.session_totals: Dict[str, int] = {}
+        self.last_milestone_logged: Dict[str, int] = {}
+
+        # Transfer rate calculation (5-second rolling window)
+        self.rate_samples: Dict[str, deque] = {}
+        self.rate_window_seconds = 5
+
         # Thread restart tracking
         self.thread_restart_counts: Dict[str, int] = {}
         self.thread_restart_window_start = datetime.now()
@@ -611,7 +611,7 @@ class SerialRouterCore:
         # Initialize centralized port manager
         self.port_manager = PortManager(self.logger)
         
-        self.logger.info(f"SerialRouter initialized - Port: {self.incoming_port}, Baud: {self.incoming_baud}/{self.outgoing_baud}")
+        self.logger.info(f"SerialRouter initialized - Incoming: {self.incoming_port}, Outgoing: {self.outgoing_ports}, Baud: {self.incoming_baud}/{self.outgoing_baud}")
     
     def _setup_logging(self):
         """Setup file logging with rotation."""
@@ -676,12 +676,14 @@ class SerialRouterCore:
     
     def _incoming_port_handler(self):
         """Handle incoming port: read data and distribute to both outgoing ports.
-        
+
         This thread owns the incoming port exclusively and reads all data from it.
         Data is then queued for both outgoing ports via the PortManager.
         """
         thread_name = threading.current_thread().name
-        direction = f"{self.incoming_port}->131&141"
+        out1_num = self.outgoing_ports[0].replace("COM", "")
+        out2_num = self.outgoing_ports[1].replace("COM", "")
+        direction = f"{self.incoming_port}->{out1_num}&{out2_num}"
         
         self.logger.info(f"Starting incoming port handler: {direction}")
         
@@ -695,18 +697,35 @@ class SerialRouterCore:
                 data = self.port_manager.read_available(self.incoming_port, thread_name)
                 if data:
                     # Queue data for both outgoing ports
-                    success_131 = self.port_manager.queue_data_for_port("COM131", data, thread_name)
-                    success_141 = self.port_manager.queue_data_for_port("COM141", data, thread_name)
-                    
-                    if success_131 and success_141:
+                    success_out1 = self.port_manager.queue_data_for_port(self.outgoing_ports[0], data, thread_name)
+                    success_out2 = self.port_manager.queue_data_for_port(self.outgoing_ports[1], data, thread_name)
+
+                    if success_out1 and success_out2:
                         # Update statistics
                         self.bytes_transferred[direction] = self.bytes_transferred.get(direction, 0) + len(data)
-                        
+
+                        # Update session totals (never reset - safe for long-term operation)
+                        self.session_totals[direction] = self.session_totals.get(direction, 0) + len(data)
+
+                        # Update rate samples for transfer rate calculation
+                        timestamp = datetime.now()
+                        if direction not in self.rate_samples:
+                            self.rate_samples[direction] = deque(maxlen=10)
+                        self.rate_samples[direction].append((timestamp, len(data)))
+
+                        # Log milestones every 100MB
+                        current_total = self.session_totals[direction]
+                        last_milestone = self.last_milestone_logged.get(direction, 0)
+                        if current_total // 100_000_000 > last_milestone // 100_000_000:
+                            milestone_mb = current_total // 1_000_000
+                            self.logger.info(f"{direction}: Session milestone - {milestone_mb} MB transferred")
+                            self.last_milestone_logged[direction] = current_total
+
                         # Reset counter if needed (prevent overflow)
                         if self.bytes_transferred[direction] > 1000000:  # 1M bytes
                             self.logger.info(f"{direction}: Resetting byte counter at {self.bytes_transferred[direction]} bytes")
                             self.bytes_transferred[direction] = 0
-                        
+
                         self.logger.debug(f"{direction}: {len(data)} bytes distributed")
                         consecutive_errors = 0
                     else:
@@ -762,12 +781,29 @@ class SerialRouterCore:
                     if self.port_manager.queue_data_for_port(self.incoming_port, data, thread_name):
                         # Update statistics
                         self.bytes_transferred[direction] = self.bytes_transferred.get(direction, 0) + len(data)
-                        
+
+                        # Update session totals (never reset - safe for long-term operation)
+                        self.session_totals[direction] = self.session_totals.get(direction, 0) + len(data)
+
+                        # Update rate samples for transfer rate calculation
+                        timestamp = datetime.now()
+                        if direction not in self.rate_samples:
+                            self.rate_samples[direction] = deque(maxlen=10)
+                        self.rate_samples[direction].append((timestamp, len(data)))
+
+                        # Log milestones every 100MB
+                        current_total = self.session_totals[direction]
+                        last_milestone = self.last_milestone_logged.get(direction, 0)
+                        if current_total // 100_000_000 > last_milestone // 100_000_000:
+                            milestone_mb = current_total // 1_000_000
+                            self.logger.info(f"{direction}: Session milestone - {milestone_mb} MB transferred")
+                            self.last_milestone_logged[direction] = current_total
+
                         # Reset counter if needed (prevent overflow)
                         if self.bytes_transferred[direction] > 1000000:  # 1M bytes
                             self.logger.info(f"{direction}: Resetting byte counter at {self.bytes_transferred[direction]} bytes")
                             self.bytes_transferred[direction] = 0
-                        
+
                         self.logger.debug(f"{direction}: {len(data)} bytes queued")
                         consecutive_errors = 0
                     else:
@@ -807,8 +843,8 @@ class SerialRouterCore:
         # Acquire ports in sequence to prevent race conditions
         ports_to_acquire = [
             (self.incoming_port, self.incoming_baud, "IncomingPortOwner"),
-            ("COM131", self.outgoing_baud, "Port131Owner"),
-            ("COM141", self.outgoing_baud, "Port141Owner")
+            (self.outgoing_ports[0], self.outgoing_baud, "Port1Owner"),
+            (self.outgoing_ports[1], self.outgoing_baud, "Port2Owner")
         ]
         
         acquired_ports = []
@@ -832,18 +868,18 @@ class SerialRouterCore:
             name="IncomingPortOwner"
         )
         
-        # Thread 2: Owns COM131, reads data and routes to incoming
+        # Thread 2: Owns first outgoing port, reads data and routes to incoming
         thread2 = threading.Thread(
             target=self._outgoing_port_handler,
-            args=("COM131",),
-            name="Port131Owner"
+            args=(self.outgoing_ports[0],),
+            name="Port1Owner"
         )
-        
-        # Thread 3: Owns COM141, reads data and routes to incoming
+
+        # Thread 3: Owns second outgoing port, reads data and routes to incoming
         thread3 = threading.Thread(
             target=self._outgoing_port_handler,
-            args=("COM141",),
-            name="Port141Owner"
+            args=(self.outgoing_ports[1],),
+            name="Port2Owner"
         )
         
         for thread in [thread1, thread2, thread3]:
@@ -937,7 +973,7 @@ class SerialRouterCore:
             self.logger.warn("Router is already running")
             return
         
-        self.logger.info(f"Starting SerialRouter - {self.incoming_port} <-> COM131 & COM141")
+        self.logger.info(f"Starting SerialRouter - {self.incoming_port} <-> {self.outgoing_ports[0]} & {self.outgoing_ports[1]}")
         self.logger.info(f"Incoming baud: {self.incoming_baud}, Outgoing baud: {self.outgoing_baud}")
         
         self.running = True
@@ -962,7 +998,21 @@ class SerialRouterCore:
         
         self.logger.info("SerialRouter started successfully")
         return True
-    
+
+    def _calculate_transfer_rate(self, direction: str) -> float:
+        """Calculate bytes/sec transfer rate over the last 5 seconds."""
+        if direction not in self.rate_samples:
+            return 0.0
+
+        samples = self.rate_samples[direction]
+        if len(samples) < 2:
+            return 0.0
+
+        # Sum bytes in window, divide by time span
+        total_bytes = sum(s[1] for s in samples)
+        time_span = (samples[-1][0] - samples[0][0]).total_seconds()
+        return total_bytes / time_span if time_span > 0 else 0.0
+
     def stop(self):
         """Stop the serial router gracefully with proper PortManager cleanup."""
         if not self.running:
@@ -986,8 +1036,8 @@ class SerialRouterCore:
             self.logger.info("Releasing port ownership...")
             port_owners = [
                 (self.incoming_port, "IncomingPortOwner"),
-                ("COM131", "Port131Owner"),
-                ("COM141", "Port141Owner")
+                (self.outgoing_ports[0], "Port1Owner"),
+                (self.outgoing_ports[1], "Port2Owner")
             ]
             
             for port_name, owner_name in port_owners:
@@ -1086,9 +1136,14 @@ class SerialRouterCore:
             "outgoing_ports": self.outgoing_ports,
             "active_threads": active_threads,
             "bytes_transferred": combined_bytes_transferred,
+            "session_totals": self.session_totals.copy(),
+            "transfer_rates": {
+                direction: self._calculate_transfer_rate(direction)
+                for direction in self.rate_samples.keys()
+            },
             "error_counts": self.error_counts.copy(),
             "thread_restart_counts": self.thread_restart_counts.copy(),
-            
+
             # Critical monitoring dashboard metrics
             "critical_metrics": {
                 "system_uptime_hours": round(uptime_seconds / 3600, 2),

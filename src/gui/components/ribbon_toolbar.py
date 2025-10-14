@@ -71,10 +71,12 @@ class RibbonToolbar(QToolBar):
     start_routing = pyqtSignal()
     stop_routing = pyqtSignal()
     configure_ports = pyqtSignal()
+    launch_terminal = pyqtSignal()
     refresh_ports = pyqtSignal()
     view_stats = pyqtSignal()
     clear_log = pyqtSignal()
     show_help = pyqtSignal()
+    show_about = pyqtSignal()
     
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -111,16 +113,20 @@ class RibbonToolbar(QToolBar):
         
         # Configuration group
         self.config_group = RibbonGroup("Configuration")
-        
+
         self.configure_button = RibbonButton("Setup", "configure")
         self.configure_button.setToolTip("Configure port settings")
-        
+
+        self.terminal_button = RibbonButton("Terminal", "terminal")
+        self.terminal_button.setToolTip("Launch serial terminal")
+
         self.config_group.add_button(self.configure_button)
+        self.config_group.add_button(self.terminal_button)
         
         # Monitoring group
         self.monitoring_group = RibbonGroup("Monitoring")
         
-        self.stats_button = RibbonButton("Stats", "update")
+        self.stats_button = RibbonButton("Stats", "stats")
         self.stats_button.setToolTip("View routing statistics")
         
         self.refresh_button = RibbonButton("Refresh", "refresh")
@@ -131,15 +137,19 @@ class RibbonToolbar(QToolBar):
         
         # System group
         self.system_group = RibbonGroup("System")
-        
+
         self.clear_button = RibbonButton("Clear", "remove")
         self.clear_button.setToolTip("Clear activity log")
-        
-        self.help_button = RibbonButton("Help", "preinstall")  # Using preinstall as help icon
+
+        self.help_button = RibbonButton("Help", "help")
         self.help_button.setToolTip("Show help information")
-        
+
+        self.about_button = RibbonButton("About", "info")
+        self.about_button.setToolTip("About Serial Router")
+
         self.system_group.add_button(self.clear_button)
         self.system_group.add_button(self.help_button)
+        self.system_group.add_button(self.about_button)
         
         # Add groups to main layout
         main_layout.addWidget(self.control_group)
@@ -156,10 +166,12 @@ class RibbonToolbar(QToolBar):
         self.start_button.clicked.connect(self.start_routing.emit)
         self.stop_button.clicked.connect(self.stop_routing.emit)
         self.configure_button.clicked.connect(self.configure_ports.emit)
+        self.terminal_button.clicked.connect(self.launch_terminal.emit)
         self.refresh_button.clicked.connect(self.refresh_ports.emit)
         self.stats_button.clicked.connect(self.view_stats.emit)
         self.clear_button.clicked.connect(self.clear_log.emit)
         self.help_button.clicked.connect(self.show_help.emit)
+        self.about_button.clicked.connect(self.show_about.emit)
     
     def set_routing_state(self, is_routing: bool):
         """Update button states based on routing status."""
@@ -173,11 +185,11 @@ class RibbonToolbar(QToolBar):
         """Enable/disable buttons based on busy state."""
         buttons = [
             self.start_button, self.stop_button, self.configure_button,
-            self.stats_button, self.clear_button, self.help_button
+            self.stats_button, self.clear_button, self.help_button, self.about_button
         ]
-        
+
         for button in buttons:
             button.setEnabled(not busy)
-        
+
         # Refresh button should always be available unless specifically busy
         self.refresh_button.setEnabled(not busy)

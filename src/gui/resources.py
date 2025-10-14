@@ -7,8 +7,10 @@ import os
 import sys
 from pathlib import Path
 from typing import Optional
-from PyQt6.QtGui import QIcon, QPixmap
-from PyQt6.QtCore import QDir
+from PyQt6.QtGui import QIcon, QPixmap, QPalette, QColor
+from PyQt6.QtCore import QDir, Qt
+from PyQt6.QtSvg import QSvgRenderer
+from PyQt6.QtWidgets import QApplication
 
 
 class ResourceManager:
@@ -37,14 +39,14 @@ class ResourceManager:
             # Running as script - go up from src/gui/resources.py to project root
             return Path(__file__).parent.parent.parent
     
-    def get_theme_path(self, theme_name: str = "windows_theme.qss") -> Optional[Path]:
+    def get_theme_path(self, theme_name: str = "theme.qss") -> Optional[Path]:
         """Get path to theme file."""
         theme_path = self._themes_path / theme_name
         if theme_path.exists():
             return theme_path
         return None
     
-    def load_theme(self, theme_name: str = "windows_theme.qss") -> str:
+    def load_theme(self, theme_name: str = "theme.qss") -> str:
         """Load theme stylesheet content."""
         theme_path = self.get_theme_path(theme_name)
         if theme_path and theme_path.exists():
@@ -93,18 +95,71 @@ class ResourceManager:
         ico_icon = self.load_icon("app_icon.ico")
         if not ico_icon.isNull():
             return ico_icon
-        
+
         svg_icon = self.load_icon("app_icon.svg")
         if not svg_icon.isNull():
             return svg_icon
-            
+
         return QIcon()  # Empty icon if neither found
+
+    def get_guide_path(self, guide_name: str = "guide.pdf") -> Optional[Path]:
+        """Get path to documentation guide file."""
+        guide_path = self._base_path / "guide" / guide_name
+        if guide_path.exists():
+            return guide_path
+        return None
     
     def get_toolbar_icon(self, action_name: str) -> QIcon:
         """Get toolbar icon by action name."""
         icon_name = f"{action_name}.svg"
         return self.load_icon(icon_name, "toolbar")
-    
+
+    def get_stats_icon(self, icon_name: str, subfolder: str = "stats") -> QIcon:
+        """Get stats monitoring icon by name, recolored to match exact text color."""
+        icon_file = f"{icon_name}.svg"
+        icon_path = self.get_icon_path(icon_file, subfolder)
+
+        if not icon_path:
+            print(f"Warning: Stats icon not found: {icon_file} in {subfolder}")
+            return QIcon()
+
+        # Read SVG content
+        try:
+            with open(icon_path, 'r', encoding='utf-8') as f:
+                svg_content = f.read()
+
+            # Get exact palette text color (no modification)
+            app = QApplication.instance()
+            if app:
+                palette = app.palette()
+                text_color = palette.color(QPalette.ColorRole.WindowText)
+                color_hex = text_color.name()
+            else:
+                # Fallback to white for dark themes
+                color_hex = "#FFFFFF"
+
+            # Replace currentColor with exact text color
+            svg_content = svg_content.replace('currentColor', color_hex)
+
+            # Create QIcon from modified SVG
+            from PyQt6.QtCore import QByteArray
+            svg_bytes = QByteArray(svg_content.encode('utf-8'))
+            renderer = QSvgRenderer(svg_bytes)
+
+            pixmap = QPixmap(16, 16)
+            pixmap.fill(Qt.GlobalColor.transparent)
+
+            from PyQt6.QtGui import QPainter
+            painter = QPainter(pixmap)
+            renderer.render(painter)
+            painter.end()
+
+            return QIcon(pixmap)
+
+        except Exception as e:
+            print(f"Warning: Failed to recolor stats icon {icon_file}: {e}")
+            return self.load_icon(icon_file, "stats")
+
     @property
     def assets_path(self) -> Path:
         """Get assets directory path."""
