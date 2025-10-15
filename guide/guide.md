@@ -1,169 +1,239 @@
-# SERIAL SPLITTER OPERATION GUIDE
+# Serial Router Guide
 
-**Document Reference:** SR-OG-001 | **Revision:** D1 | **Date:** 30 July 2025
+## 1. Purpose
 
----
+Serial Router routes serial data bidirectionally between one incoming port and two configurable outgoing ports. Data received on the incoming port is transmitted to both outgoing ports simultaneously. Data received on either outgoing port is transmitted back to the incoming port.
 
-*This document contains information proprietary to [YOUR COMPANY NAME] and shall not be reproduced without prior written permission.*
+## 2. Prerequisites
 
-## REVISION LOG
-
-| Rev. | Description |
-|------|-------------|
-| D1   | New Document |
-
----
-
-## 1. INTRODUCTION
-
-Serial Router is a production-hardened serial port routing application for offshore environments. It routes data between one incoming port and two fixed outgoing ports (COM131, COM141) with automatic recovery.
-
-## 2. SYSTEM OVERVIEW
-
-**Architecture:**
-- 1 x Configurable incoming port → 2 x Fixed outgoing ports (COM131, COM141)
-- Bidirectional communication with automatic reconnection
-- Thread-safe operation with health monitoring
-- Real-time GUI monitoring interface
-
-**Requirements:**
-- Windows 10/11
-- Python 3.8+ with PyQt6 and pyserial
+**System Requirements:**
+- Windows 10 or Windows 11
 - com0com virtual serial port driver
-- Available COM ports: incoming (configurable), COM131, COM141
 
-## 3. COM0COM VIRTUAL PORT SETUP
+**Port Configuration:**
+- One available incoming port (physical, Moxa virtual, or other virtual port)
+- Two com0com virtual port pairs configured for outgoing routing
 
-Serial Router requires virtual port pairs created by com0com for proper operation.
+## 3. Understanding Port Types
+
+The application detects and categorises serial ports automatically:
+
+**Physical Ports**: Hardware COM ports connected directly to the system.
+
+**Moxa Virtual Ports**: Network-to-serial adapter ports. Common in marine and offshore installations where serial devices connect via network infrastructure.
+
+**com0com Virtual Ports**: Software port pairs created by the com0com driver. Used to route serial data between applications on the same machine.
+
+## 4. Port Pairing Fundamentals
+
+### How com0com Port Pairs Function
+
+com0com creates port pairs where data written to one port appears on its paired port. For example:
+
+```
+COM131 ↔ COM132 (Port Pair 1)
+COM141 ↔ COM142 (Port Pair 2)
+```
+
+**Router Configuration**: The router writes outgoing data to COM131 and COM141.
+
+**Application Configuration**: Applications read data from the paired ports COM132 and COM142.
+
+Data flow:
+```
+Incoming Port → Router → COM131 → [com0com pair] → COM132 → Application 1
+Incoming Port → Router → COM141 → [com0com pair] → COM142 → Application 2
+
+Application 1 → COM132 → [com0com pair] → COM131 → Router → Incoming Port
+Application 2 → COM142 → [com0com pair] → COM141 → Router → Incoming Port
+```
+
+### Critical Configuration Rule
+
+The two outgoing ports must not be a com0com pair. Using paired ports (e.g., COM131 and COM132) as both outgoing ports creates a feedback loop where the router transmits to itself continuously. The application prevents this configuration.
+
+## 5. com0com Driver Configuration
 
 ### Required Port Pairs
-- **Pair 1:** COM131 ↔ COM132
-- **Pair 2:** COM141 ↔ COM142
+
+Configure two com0com port pairs. Standard configuration:
+- Pair 1: COM131 ↔ COM132
+- Pair 2: COM141 ↔ COM142
+
+Port numbers may be adjusted to avoid conflicts with existing ports.
 
 ### Configuration Parameters
 
 | Parameter | Value | Purpose |
 |-----------|-------|---------|
-| **EmuBR** | yes | Enables baud rate emulation for realistic speed simulation |
-| **EmuOverrun** | yes | Prevents buffer hangs by simulating physical port overflow behavior |
-| **ExclusiveMode** | no | Keeps ports visible to all applications |
-| **AllDataBits** | yes | Supports all data bit configurations (5,6,7,8 bits) |
-| **cts** | rrts | Maps CTS (Clear To Send) to remote RTS signal |
-| **dsr** | rdtr | Maps DSR (Data Set Ready) to remote DTR signal |
-| **dcd** | rdtr | Maps DCD (Data Carrier Detect) to remote DTR signal |
+| EmuBR | yes | Emulates baud rate timing behaviour |
+| EmuOverrun | yes | Prevents buffer hangs by simulating hardware overflow |
+| ExclusiveMode | no | Allows multiple applications to detect the port |
+| AllDataBits | yes | Supports all data bit configurations (5, 6, 7, 8 bits) |
+| cts | rrts | Maps Clear To Send to remote Request To Send |
+| dsr | rdtr | Maps Data Set Ready to remote Data Terminal Ready |
+| dcd | rdtr | Maps Data Carrier Detect to remote Data Terminal Ready |
 
-### Manual Setup Commands
+### Setup Commands
 
-Open com0com Setup Command Prompt and execute:
+Open the com0com Setup Command Prompt as Administrator and execute:
 
 ```cmd
-# Create Port Pair 1 (COM131/COM132)
-command> install PortName=COM131,EmuBR=yes,EmuOverrun=yes,ExclusiveMode=no,AllDataBits=yes,cts=rrts,dsr=rdtr,dcd=rdtr PortName=COM132,EmuBR=yes,EmuOverrun=yes,ExclusiveMode=no,AllDataBits=yes,cts=rrts,dsr=rdtr,dcd=rdtr
+install PortName=COM131,EmuBR=yes,EmuOverrun=yes,ExclusiveMode=no,AllDataBits=yes,cts=rrts,dsr=rdtr,dcd=rdtr PortName=COM132,EmuBR=yes,EmuOverrun=yes,ExclusiveMode=no,AllDataBits=yes,cts=rrts,dsr=rdtr,dcd=rdtr
 
-# Create Port Pair 2 (COM141/COM142)  
-command> install PortName=COM141,EmuBR=yes,EmuOverrun=yes,ExclusiveMode=no,AllDataBits=yes,cts=rrts,dsr=rdtr,dcd=rdtr PortName=COM142,EmuBR=yes,EmuOverrun=yes,ExclusiveMode=no,AllDataBits=yes,cts=rrts,dsr=rdtr,dcd=rdtr
+install PortName=COM141,EmuBR=yes,EmuOverrun=yes,ExclusiveMode=no,AllDataBits=yes,cts=rrts,dsr=rdtr,dcd=rdtr PortName=COM142,EmuBR=yes,EmuOverrun=yes,ExclusiveMode=no,AllDataBits=yes,cts=rrts,dsr=rdtr,dcd=rdtr
 ```
 
-## 4. INSTALLATION
+Verify configuration in Device Manager under "Ports (COM & LPT)". All four ports should be visible.
 
-1. Install com0com virtual serial port driver
-2. Configure virtual port pairs (see Section 3)
-3. Extract Serial Router files to installation directory
-4. Install dependencies: `pip install PyQt6 pyserial`
-5. Verify installation: `python main.py`
+## 6. Operation
 
-## 5. OPERATION
+### Starting the Application
 
-### Starting the System
-```bash
-# GUI Mode (Recommended)
-python main.py
+Run `SerialRouter.exe`. The application may be minimised to the system tray whilst maintaining operation.
 
-# Headless Mode
-python src/core/router_engine.py
-```
 
-### Configuration
-Edit `config/serial_router_config.json`:
-```json
-{
-  "incoming_port": "",
-  "incoming_baud": 115200,
-  "outgoing_baud": 115200,
-  "timeout": 0.1,
-  "retry_delay_max": 30,
-  "log_level": "INFO"
-}
-```
+1. **Select Incoming Port**: Use the dropdown menu to select the source port. Physical ports and Moxa virtual ports appear in this list. com0com ports are excluded as they are reserved for outgoing routing.
 
-### Normal Operation
-1. Launch application: `python main.py`
-2. Select incoming port from dropdown
-3. Click "Start" to begin routing
-4. Monitor status indicators:
-   - **Green:** Connected and active
-   - **Yellow:** Connecting/reconnecting  
-   - **Red:** Disconnected/error
+2. **Select Outgoing Ports**: Configure both Outgoing Port 1 and Outgoing Port 2. These must be com0com virtual ports. Standard configuration uses COM131 and COM141.
 
-## 6. MONITORING
+3. **Set Baud Rate**: Select the appropriate baud rate. This rate applies to both incoming and outgoing connections. Ensure it matches the baud rate of connected devices.
 
-**Real-time Status:**
-- Connection indicators for all ports
-- Data transfer counters
-- Connection uptime
-- Error statistics
+4. **Start Routing**: Click "Start Routing" in the toolbar. The status indicator changes to show active routing.
 
-**Logging:**
-- File: `serial_router.log` (10MB rotation)
-- Levels: INFO, WARNING, ERROR, DEBUG
+### Monitoring Operation
 
-## 7. TROUBLESHOOTING
+**Status Indicators**:
+- Green: Port connected and actively routing data
+- Yellow: Port connecting or attempting reconnection
+- Red: Port disconnected or error state
 
-### Common Issues
+**Activity Log**: Displays connection events, data transfer milestones, and error messages.
 
-**Application Won't Start:**
-- Install dependencies: `pip install PyQt6 pyserial`
-- Run as administrator
-- Check Python version (3.8+)
+**Data Flow Monitor**: Shows real-time byte counters and transfer rates for each routing direction.
 
-**COM Port Access Denied:**
-- Close other applications using ports
-- Check Device Manager for conflicts
-- Restart system to clear port locks
+### Stopping Operation
 
-**Virtual Ports Missing:**
-- Verify com0com installation
-- Check port pair configuration
-- Reinstall virtual port pairs if needed
+Click "Stop Routing" in the toolbar. The router closes all port connections and halts data transfer.
 
-**No Data Transfer:**
-- Verify baud rate settings match devices
-- Check cable connections
-- Confirm COM131/COM141 availability
+### Configuration Persistence
 
-**Frequent Disconnections:**
-- Check cable connections
-- Verify power supply stability
-- Adjust timeout in configuration
+Click "Save Config" in the toolbar to store the current port configuration. Saved settings are automatically restored when the application restarts.
 
-### Restart Procedures
+## 7. Port Selection Constraints
 
-**Software Restart:**
-1. Close and relaunch application
-2. Restart Windows (if unresponsive)
-3. Hard reset (last resort)
+The application enforces the following configuration rules:
 
-**After Power Loss:**
-- System auto-starts if configured
-- Manual start: Double-click desktop icon or run `python main.py`
+**Rule 1**: Outgoing Port 1 and Outgoing Port 2 must be different ports.
 
-## 8. CONTACT INFORMATION
+**Rule 2**: Neither outgoing port may be the same as the incoming port.
 
-| Role | Contact |
-|------|---------|
-| Technical Support | [TO BE COMPLETED] |
-| System Administrator | [TO BE COMPLETED] |
+**Rule 3**: The two outgoing ports must not be a com0com pair. Adjacent port numbers (e.g., COM131 and COM132) indicate a likely pair and are rejected.
 
----
+**Rule 4**: Paired ports adjacent to selected outgoing ports are excluded from incoming port selection. For example, if COM131 is selected as an outgoing port, both COM131 and COM132 are excluded from the incoming port list.
 
-**For technical support, contact designated personnel listed above.**
+Configuration warnings appear in the Activity Log when invalid selections are attempted.
+
+## 8. Troubleshooting
+
+### Port Access Denied
+
+**Symptom**: Router fails to start with "Access is denied" error.
+
+**Cause**: Another application or router instance is using the selected port.
+
+**Resolution**:
+1. Close other applications using the port
+2. Ensure no other Serial Router instance is running
+3. Restart the application
+4. If the error persists, restart Windows to clear port locks
+
+### No Ports Detected
+
+**Symptom**: Incoming port dropdown shows "(No COM ports detected)".
+
+**Cause**: No compatible serial ports are available or port enumeration failed.
+
+**Resolution**:
+1. Verify physical ports are connected
+2. Confirm com0com driver is installed (check Device Manager)
+3. Click "Refresh Ports" in the toolbar
+4. If using Moxa devices, verify the Moxa driver is installed
+
+### Outgoing Ports Not Available
+
+**Symptom**: Warning message stating required outgoing ports not found.
+
+**Cause**: com0com port pairs are not configured.
+
+**Resolution**:
+1. Install com0com driver if not present
+2. Configure required port pairs using commands in Section 5
+3. Verify ports appear in Device Manager
+4. Click "Refresh Ports" in the toolbar
+
+### Configuration Warning: Paired Ports
+
+**Symptom**: Error message when selecting outgoing ports.
+
+**Cause**: Both outgoing ports are a com0com pair (e.g., COM131 and COM132).
+
+**Resolution**: Select non-adjacent ports for outgoing routing. Standard configuration uses COM131 and COM141.
+
+### Router Fails to Start
+
+**Symptom**: "Router failed to start - check port connections" message.
+
+**Cause**: One or more selected ports cannot be opened.
+
+**Resolution**:
+1. Verify all selected ports exist in Device Manager
+2. Confirm no other application is using the ports
+3. Check cable connections for physical ports
+4. Review Activity Log for specific error details
+5. Use "Configure Ports" toolbar button to view detailed port status
+
+### Frequent Reconnection Events
+
+**Symptom**: Status indicators frequently change between yellow and green.
+
+**Cause**: Intermittent connection to incoming port.
+
+**Resolution**:
+1. Check physical cable connections
+2. Verify power supply to serial devices
+3. Ensure baud rate matches connected device
+4. For Moxa ports, verify network connectivity
+
+### Application Will Not Close
+
+**Symptom**: Application window closes but process remains active.
+
+**Resolution**:
+1. Open system tray (notification area)
+2. Right-click Serial Router icon
+3. Select "Quit"
+
+Alternatively, hold Shift whilst clicking the close button to quit directly without minimising to tray.
+
+## 9. Technical Notes
+
+### Automatic Recovery
+
+The router automatically attempts reconnection when port connections are lost. Reconnection attempts use exponential backoff to avoid system resource exhaustion.
+
+### Thread Management
+
+Three independent threads handle data routing:
+- One thread manages the incoming port
+- Two threads manage the outgoing ports
+
+Each thread operates independently. Failure of one thread does not affect the others.
+
+### Data Transfer Counters
+
+Byte counters reset automatically at 1MB intervals to prevent counter overflow during long-term operation. Session totals continue to accumulate and are displayed in routing statistics.
+
+### System Tray Operation
+
+The application continues routing when minimised to the system tray. Double-click the tray icon to restore the window.
