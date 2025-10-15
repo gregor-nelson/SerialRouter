@@ -10,7 +10,7 @@ from PyQt6.QtWidgets import (
     QHBoxLayout, QFormLayout, QProgressBar, QApplication, QFrame
 )
 from PyQt6.QtCore import Qt, QRectF, QTimer
-from PyQt6.QtGui import QFont, QPalette, QColor, QPainter, QPen, QBrush, QFontDatabase
+from PyQt6.QtGui import QFont, QPalette, QColor, QPainter, QPen, QBrush
 from src.gui.resources import resource_manager
 
 
@@ -180,7 +180,7 @@ class TransferTableRow(QWidget):
         super().__init__(parent)
 
         # Get monospace font for numeric displays
-        self._mono_font = QFontDatabase.systemFont(QFontDatabase.SystemFont.FixedFont)
+        self._mono_font = resource_manager.get_monospace_font()
 
         # Store direction icon name
         self._direction_icon = direction_icon
@@ -404,7 +404,7 @@ class HealthTableRow(QWidget):
         super().__init__(parent)
 
         # Get monospace font for numeric displays
-        self._mono_font = QFontDatabase.systemFont(QFontDatabase.SystemFont.FixedFont)
+        self._mono_font = resource_manager.get_monospace_font()
 
         # Store configuration
         self._metric_icon = metric_icon
@@ -541,11 +541,6 @@ class DataFlowMonitorWidget(QWidget):
 
         # Build UI
         self._init_ui()
-
-
-    def _get_monospace_font(self) -> QFont:
-        """Get the system's fixed-width font for numeric displays."""
-        return QFontDatabase.systemFont(QFontDatabase.SystemFont.FixedFont)
 
     def _init_ui(self):
         """Initialize the monitoring UI."""

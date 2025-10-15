@@ -6,7 +6,7 @@ from PyQt6.QtWidgets import (QToolBar, QWidget, QHBoxLayout, QVBoxLayout,
                             QLabel, QPushButton, QFrame, QSizePolicy,
                             QButtonGroup)
 from PyQt6.QtCore import Qt, pyqtSignal, QSize
-from PyQt6.QtGui import QIcon, QFont, QAction, QPixmap
+from PyQt6.QtGui import QIcon, QAction, QPixmap
 from PyQt6.QtSvgWidgets import QSvgWidget
 from PyQt6.QtSvg import QSvgRenderer
 

@@ -5,9 +5,6 @@ dist/
 # App data directories
 %APPDATA%/
 
-# PyInstaller spec files (generated)
-*.spec
-
 # Python cache
 __pycache__/
 *.py[cod]
@@ -36,7 +33,6 @@ desktop.ini
 # Temporary files
 *.tmp
 *.temp
-version_info.txt
 
 # Claude Code files
 CLAUDE.md

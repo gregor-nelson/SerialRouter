@@ -3,11 +3,12 @@ Enhanced Connection Diagram Widget for SerialRouter
 Uses QGraphicsView framework for professional visualization with animations and interactive elements.
 """
 
-from PyQt6.QtWidgets import (QGraphicsView, QGraphicsScene, QGraphicsItem, 
+from PyQt6.QtWidgets import (QGraphicsView, QGraphicsScene, QGraphicsItem,
                              QGraphicsRectItem, QGraphicsLineItem, QGraphicsTextItem,
                              QGraphicsEllipseItem, QGraphicsPathItem)
 from PyQt6.QtCore import Qt, QRect, QPoint, pyqtSignal, QRectF, QPointF, QTimer
 from PyQt6.QtGui import QPainter, QPen, QBrush, QFont, QFontMetrics, QColor, QPainterPath, QLinearGradient
+from src.gui.resources import resource_manager
 
 
 class PortNode(QGraphicsRectItem):
@@ -32,9 +33,8 @@ class PortNode(QGraphicsRectItem):
         # Add text label
         self.text_item = QGraphicsTextItem(port_name, self)
         self.text_item.setPos(6, 6)
-        font = QFont()
-        font.setPointSize(9)
-        font.setBold(True)
+        # Use centralized font management for consistent application styling
+        font = resource_manager.get_app_font(size=9, weight=QFont.Weight.Bold)
         self.text_item.setFont(font)
         
         # Status indicator (LED-style dot)

@@ -799,9 +799,8 @@ class SerialRouterMainWindow(QMainWindow):
         self.activity_log.setReadOnly(True)
 
         # Set monospace font for proper Unicode box-drawing character alignment
-        # Windows-optimized font stack for clean, modern appearance
-        monospace_font = QFont("Cascadia Code, Cascadia Mono, Consolas, 'Courier New', monospace")
-        monospace_font.setStyleHint(QFont.StyleHint.TypeWriter)
+        # IMPORTANT: Use monospace font here even when UI font is applied globally
+        monospace_font = resource_manager.get_monospace_font()
         self.activity_log.setFont(monospace_font)
 
         # Ultra clean minimal design - match main window background, no border
@@ -1472,8 +1471,25 @@ def main():
     app.setApplicationVersion("1.0.2")
     app.setOrganizationName("Serial Router")
 
-    # Set application icon globally
+    # Load custom fonts and set as default
     from src.gui.resources import resource_manager
+    loaded_fonts = resource_manager.load_custom_fonts("Poppins")
+    if loaded_fonts:
+        # Set Poppins as the default application font
+        app_font = resource_manager.get_app_font()
+        app.setFont(app_font)
+        print(f"Applied {app_font.family()} as default application font")
+    else:
+        print("Warning: Custom fonts not loaded, using system default")
+
+    # Load JetBrains Mono for monospace elements (activity log)
+    mono_fonts = resource_manager.load_custom_fonts("JetBrainsMono")
+    if mono_fonts:
+        print(f"Loaded JetBrains Mono for monospace elements")
+    else:
+        print("Warning: JetBrains Mono not loaded, will use system fallback")
+
+    # Set application icon globally
     app_icon = resource_manager.get_app_icon()
     if not app_icon.isNull():
         app.setWindowIcon(app_icon)

@@ -2,7 +2,7 @@
 from PyQt6.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QLabel,
                             QPushButton, QWidget, QFrame, QGroupBox, QMessageBox)
 from PyQt6.QtCore import Qt, QUrl
-from PyQt6.QtGui import QIcon, QPixmap, QFont, QDesktopServices, QPainter, QKeySequence, QShortcut
+from PyQt6.QtGui import QIcon, QPixmap, QDesktopServices, QPainter, QKeySequence, QShortcut
 from PyQt6.QtSvg import QSvgRenderer
 from src.gui.resources import resource_manager
 
