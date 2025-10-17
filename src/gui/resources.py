@@ -1,7 +1,3 @@
-"""
-Resource Management for SerialRouter GUI
-Handles theme loading, icon management, and asset paths.
-"""
 
 import os
 import sys
