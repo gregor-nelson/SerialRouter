@@ -8,7 +8,6 @@ from src.gui.resources import resource_manager
 
 
 class AboutDialog(QDialog):
-    """Custom about dialog for Serial Router with GitHub source link."""
 
     def __init__(self, parent=None):
         super().__init__(parent)
