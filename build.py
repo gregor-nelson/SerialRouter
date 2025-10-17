@@ -39,7 +39,7 @@ def build(clean=False):
     
     cmd.extend([
         "--windowed", 
-        "--onedir",
+        "--onefile",
         "--optimize=1",  # Safe optimization level
         "--noupx",       # Disable UPX if present
         "--icon", r".\assets\icons\app_icon.ico",

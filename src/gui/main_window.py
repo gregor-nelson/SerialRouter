@@ -446,7 +446,7 @@ class SerialRouterMainWindow(QMainWindow):
 
         # Then launch setup utility
         try:
-            subprocess.Popen([r"C:\Program Files (x86)\com0com\VirtualPortManager\VirtualPortManager.exe"],
+            subprocess.Popen([r"C:\Program Files (x86)\com0com\VirtualPortManager\Virtual Port Manager.exe"],
                             creationflags=subprocess.DETACHED_PROCESS)
             self.add_log_message("Launched com0com setup utility")
         except Exception as e:
