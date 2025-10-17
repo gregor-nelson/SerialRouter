@@ -81,7 +81,7 @@ class AboutDialog(QDialog):
         description_label = QLabel(
             "A Python application for routing serial port communications.\n\n"
             "Routes data between an incoming port and two default outgoing ports (COM131, COM141) "
-            "with bidirectional communication and automatic recovery capabilities."
+            "With bidirectional communication and automatic recovery capabilities."
         )
 
         description_label.setWordWrap(True)
