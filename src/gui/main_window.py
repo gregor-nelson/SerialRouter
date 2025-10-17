@@ -854,7 +854,7 @@ class SerialRouterMainWindow(QMainWindow):
 
             if not all_ports:
                 # No ports available - show placeholder and inform user
-                self.incoming_port_combo.addItem("(No COM ports detected)")
+                self.incoming_port_combo.addItem("")
                 self.add_log_message("No COM ports found - connect device and click Refresh Ports")
                 return
             
@@ -906,7 +906,7 @@ class SerialRouterMainWindow(QMainWindow):
                     self.incoming_port_combo.setCurrentIndex(0)
             else:
                 # No ports found - show placeholder
-                self.incoming_port_combo.addItem("(No COM ports detected)")
+                self.incoming_port_combo.addItem("COM Not Found")
             
             # Populate outgoing port dropdowns with com0com ports only
             if hasattr(self, 'outgoing_port1_combo') and hasattr(self, 'outgoing_port2_combo'):
@@ -1461,6 +1461,9 @@ def main():
 
     # Set Fusion style for consistent cross-platform appearance
     app.setStyle('Fusion')
+
+    # Force dark mode regardless of system theme
+    app.styleHints().setColorScheme(Qt.ColorScheme.Dark)
 
     # Set application properties
     app.setApplicationName("Serial Router")

@@ -366,11 +366,11 @@ class ConnectionDiagramWidget(QGraphicsView):
                     return candidate
 
             # Fallback: proximity detection failed
-            return f"com0com Port {port_index}"
+            return f"{port_index}"
 
         except:
             # Parsing failed, use generic fallback
-            return f"com0com Port {port_index}"
+            return f"{port_index}"
     
     def setup_diagram(self):
         """Initialize the graphics scene with nodes and connections."""
