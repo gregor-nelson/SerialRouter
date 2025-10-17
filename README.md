@@ -1,65 +1,25 @@
 # Serial Router
 
-A serial port routing application designed for reliable operation in offshore environments. Serial Router provides robust bidirectional communication between one configurable incoming port and two virtual outgoing ports with comprehensive monitoring and automatic recovery capabilities.
+A virtual serial port routing application. Provides robust bidirectional communication between one configurable incoming port and two virtual outgoing ports with comprehensive monitoring and automatic recovery capabilities.
 
-
-![Serial Router v1.0.2](https://img.shields.io/badge/Serial_Router-v1.0.2-blue)
-![Python](https://img.shields.io/badge/Python-3.7+-green)
-<div align="center">
-  <table>
-    <tr>
-      <td align="center" width="50%">
-        <img width="420" alt="Serial Router real-time monitoring dashboard displaying thread health, data transfer metrics, and operational status" src="https://github.com/user-attachments/assets/e929fbd7-9db0-49be-b433-8128fc68626e" />
-        <br/>
-      </td>
-      <td align="center" width="50%">
-        <img width="420" alt="Serial Router configuration panel featuring port auto-detection and persistent settings management" src="https://github.com/user-attachments/assets/64c110e6-c20a-4967-859c-b328bc7592d2" />
-        <br/>
-      </td>
-    </tr>
-  </table>
-</div>
-## Overview
-
-Serial Router was developed for offshore applications requiring uninterrupted serial communication routing. The system features a production-ready core engine with automatic failover, comprehensive monitoring, and a modern Qt6 GUI interface for configuration and real-time system oversight.
 
 ## Architecture
 
 ### Core Components
 
-**SerialRouterCore**: Routing engine:
+**Core**:
 - Three dedicated routing threads with exclusive port ownership
 - Centralised PortManager preventing access conflicts
 - Exponential backoff retry logic for connection failures
 - Automatic thread restart with rate limiting
 - Comprehensive error handling and resource management
 
-**GUI Application**: Graphical interface:
+**GUI**: 
 - Real-time monitoring dashboard with live statistics
 - Port configuration with auto-detection
 - Activity logging with integrated backend log streaming
 - Non-blocking operations using threaded architecture
 - Persistent JSON-based configuration management
-
-### Data Flow
-
-```
-┌─────────────┐    ┌──────────────────┐    ┌─────────────┐
-│ Incoming    │◄──►│ Serial Router  │◄──►│   COM131    │
-│ Port (Conf) │    │   Core Engine    │    │   (Fixed)   │
-└─────────────┘    │                  │    └─────────────┘
-                   │                  │    ┌─────────────┐
-                   │                  │◄──►│   COM141    │
-                   └──────────────────┘    │   (Fixed)   │
-                                           └─────────────┘
-```
-
-**Configuration Steps:**
-1. Select your incoming COM port from the dropdown menu
-2. Configure baud rates for incoming and outgoing ports
-3. Click "Start Routing" to begin operation
-4. Monitor real-time statistics and system health
-5. Use "Save Config" to persist your settings
 
 ### Headless Mode
 
@@ -68,8 +28,6 @@ Run the core engine directly for server deployments:
 python src/core/router_engine.py
 ```
 ## Monitoring & Logging
-
-The GUI provides detailed system monitoring:
 
 - **Thread Health**: Active thread count with visual indicators
 - **Data Transfer**: Live byte counters for all routing directions
@@ -85,20 +43,9 @@ The GUI provides detailed system monitoring:
 - **Thread-Aware**: All log messages include originating thread names
 - **Timestamped**: Precise timestamps for troubleshooting
 
-### Status Reporting
 
-Access detailed system status programmatically:
-```python
-from src.core.router_engine import SerialRouterCore
 
-router = SerialRouterCore()
-status = router.get_status()
-# Returns comprehensive dictionary with system health metrics
-```
-
-## Production Deployment
-
-### Reliability Features
+### Reliability 
 
 - **Automatic Recovery**: Connection failures handled with exponential backoff
 - **Thread Monitoring**: Watchdog system restarts failed threads automatically  
@@ -106,35 +53,11 @@ status = router.get_status()
 - **Resource Management**: Memory leak prevention for 24/7 operation
 - **Graceful Shutdown**: Proper cleanup on system signals and application exit
 
-### Offshore Considerations
-
 - **Minimal Complexity**: Simplified architecture reduces failure points
 - **Self-Healing**: Automatic recovery from common failure modes
 - **Remote Monitoring**: Comprehensive logging for remote troubleshooting
 - **Configuration Flexibility**: Runtime configuration changes without restart
 - **Signal Handling**: Responds appropriately to system shutdown signals
-
-## Troubleshooting
-
-### Common Issues
-
-**"Access is denied" Errors**
-- The PortManager ensures exclusive port access - only one instance can use each port
-- Close any other applications using the required COM ports
-- Restart the application if ports remain locked
-
-**Thread Restart Notifications**
-- Normal operation includes automatic thread restarts for reliability
-- Excessive restarts indicate hardware or driver issues
-- Check serial cable connections and port availability
-
-### Log Analysis
-
-Monitor `serial_router.log` for detailed operation information:
-- Connection events and retry attempts
-- Thread lifecycle and health status
-- Data transfer statistics and error counts
-- System performance metrics
 
 ## Technical Specifications
 
@@ -145,6 +68,4 @@ Monitor `serial_router.log` for detailed operation information:
 - **Monitoring**: Comprehensive status API with nested health information
 - **Memory**: Automatic counter resets and queue size limits prevent memory growth
 
-
-
-*Serial Router v1.0.2 - Production-ready serial communication routing for offshore environments*
+*Serial Router v1.0.2 
