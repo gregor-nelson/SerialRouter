@@ -1,11 +1,11 @@
 # Serial Router
 
-A virtual serial port routing application. Provides robust bidirectional communication between one configurable incoming port and two virtual outgoing ports with comprehensive monitoring and automatic recovery capabilities.
+A virtual serial port routing application. Provides bidirectional communication between one configurable incoming port and two virtual outgoing ports with comprehensive monitoring and automatic recovery capabilities.
 
 
 ## Architecture
 
-### Core Components
+### Components
 
 **Core**:
 - Three dedicated routing threads with exclusive port ownership
@@ -21,13 +21,13 @@ A virtual serial port routing application. Provides robust bidirectional communi
 - Non-blocking operations using threaded architecture
 - Persistent JSON-based configuration management
 
-### Headless Mode
+### Headless
 
 Run the core engine directly for server deployments:
 ```bash
 python src/core/router_engine.py
 ```
-## Monitoring & Logging
+## Monitoring
 
 - **Thread Health**: Active thread count with visual indicators
 - **Data Transfer**: Live byte counters for all routing directions
@@ -35,7 +35,7 @@ python src/core/router_engine.py
 - **Port Status**: Connection state and ownership information
 - **Performance Metrics**: Queue sizes and activity timestamps
 
-### Logging System
+### Logging
 
 - **File Logging**: Rotating logs stored in `serial_router.log` (10MB limit)
 - **Console Output**: Real-time status updates and error messages
@@ -43,23 +43,7 @@ python src/core/router_engine.py
 - **Thread-Aware**: All log messages include originating thread names
 - **Timestamped**: Precise timestamps for troubleshooting
 
-
-
-### Reliability 
-
-- **Automatic Recovery**: Connection failures handled with exponential backoff
-- **Thread Monitoring**: Watchdog system restarts failed threads automatically  
-- **Error Isolation**: Individual port failures don't affect system operation
-- **Resource Management**: Memory leak prevention for 24/7 operation
-- **Graceful Shutdown**: Proper cleanup on system signals and application exit
-
-- **Minimal Complexity**: Simplified architecture reduces failure points
-- **Self-Healing**: Automatic recovery from common failure modes
-- **Remote Monitoring**: Comprehensive logging for remote troubleshooting
-- **Configuration Flexibility**: Runtime configuration changes without restart
-- **Signal Handling**: Responds appropriately to system shutdown signals
-
-## Technical Specifications
+## Technical
 
 - **Threading**: Three dedicated routing threads with exclusive port ownership
 - **Concurrency**: Thread-safe operations using RLock and queue mechanisms
