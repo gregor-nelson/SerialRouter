@@ -4,7 +4,6 @@ A virtual serial port routing application. Provides bidirectional communication 
 
 <img width="867" height="631" alt="image" src="https://github.com/user-attachments/assets/c3949a67-fde5-433f-938e-300009c57c07" />
 
-
 ## Architecture
 
 ### Components
