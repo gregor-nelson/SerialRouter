@@ -8,7 +8,6 @@ from src.gui.resources import resource_manager
 
 
 class AboutDialog(QDialog):
-    """Custom about dialog for Serial Router with GitHub source link."""
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -81,7 +80,7 @@ class AboutDialog(QDialog):
         description_label = QLabel(
             "A Python application for routing serial port communications.\n\n"
             "Routes data between an incoming port and two default outgoing ports (COM131, COM141) "
-            "with bidirectional communication and automatic recovery capabilities."
+            "With bidirectional communication and automatic recovery capabilities."
         )
 
         description_label.setWordWrap(True)
