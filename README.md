@@ -2,6 +2,8 @@
 
 A virtual serial port routing application. Provides bidirectional communication between one configurable incoming port and two virtual outgoing ports with comprehensive monitoring and automatic recovery capabilities.
 
+<img width="867" height="631" alt="image" src="https://github.com/user-attachments/assets/c3949a67-fde5-433f-938e-300009c57c07" />
+
 
 ## Architecture
 
