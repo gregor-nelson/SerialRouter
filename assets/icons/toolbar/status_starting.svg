@@ -1,37 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
-  <!-- STARTING STATUS - Rich Two-Tone Design -->
+  <!-- STARTING STATUS - Simple, Clean Design -->
 
-  <!-- Layer 1: Light gray frame and structure -->
-  <rect x="2" y="2" width="28" height="28" rx="6" fill="none" stroke="#e2e1e1" stroke-width="1.5"/>
-
-  <!-- Layer 2: Blue play button with animation -->
-  <!-- Play circle background -->
-  <circle cx="16" cy="16" r="9" fill="none" stroke="#4f90cd" stroke-width="2"/>
-  <circle cx="16" cy="16" r="9" fill="#4f90cd" opacity="0.15"/>
+  <!-- Circle outline (starting) -->
+  <circle cx="16" cy="16" r="10" fill="none" stroke="#4f90cd" stroke-width="2"/>
 
   <!-- Play triangle -->
-  <path d="M13 11 L13 21 L22 16 Z" fill="#4f90cd"/>
-
-  <!-- Layer 3: Details and animation -->
-  <!-- Loading/starting indicators with animation -->
-  <circle cx="7" cy="16" r="1.5" fill="#4f90cd" opacity="0.3">
-    <animate attributeName="opacity" values="0.3;1;0.3" dur="1.5s" repeatCount="indefinite"/>
-    <animate attributeName="r" values="1.5;2;1.5" dur="1.5s" repeatCount="indefinite"/>
-  </circle>
-  <circle cx="25" cy="16" r="1.5" fill="#4f90cd" opacity="0.3">
-    <animate attributeName="opacity" values="1;0.3;1" dur="1.5s" repeatCount="indefinite"/>
-    <animate attributeName="r" values="2;1.5;2" dur="1.5s" repeatCount="indefinite"/>
-  </circle>
-
-  <!-- Status indicator dots (starting sequence) -->
-  <circle cx="10" cy="25" r="1.2" fill="#4f90cd">
-    <animate attributeName="opacity" values="0.3;1;0.3" dur="0.8s" repeatCount="indefinite"/>
-  </circle>
-  <circle cx="16" cy="25" r="1.2" fill="#4f90cd">
-    <animate attributeName="opacity" values="0.3;1;0.3" dur="0.8s" begin="0.2s" repeatCount="indefinite"/>
-  </circle>
-  <circle cx="22" cy="25" r="1.2" fill="#4f90cd">
-    <animate attributeName="opacity" values="0.3;1;0.3" dur="0.8s" begin="0.4s" repeatCount="indefinite"/>
-  </circle>
+  <path d="M13 10 L13 22 L23 16 Z"
+        fill="none" stroke="#4f90cd" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
