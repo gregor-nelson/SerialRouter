@@ -440,13 +440,9 @@ class SerialRouterMainWindow(QMainWindow):
         self.ribbon.show_about.connect(self.show_about_dialog)
     
     def show_port_configuration(self):
-        """Show detailed port information and launch com0com setup utility."""
-        # Show detailed port analysis first
-        self.show_detailed_port_analysis()
-
-        # Then launch setup utility
+        """Launch com0com setup utility."""
         try:
-            subprocess.Popen([r"C:\Program Files (x86)\com0com\VirtualPortManager\VirtualPortManager.exe"],
+            subprocess.Popen([r"C:\Program Files (x86)\com0com\Virtual Port Manager\Virtual Port Manager.exe"],
                             creationflags=subprocess.DETACHED_PROCESS)
             self.add_log_message("Launched com0com setup utility")
         except Exception as e:
@@ -455,7 +451,7 @@ class SerialRouterMainWindow(QMainWindow):
     def launch_terminal(self):
         """Launch serial terminal application."""
         try:
-            subprocess.Popen([r"C:\Program Files (x86)\com0com\SerialTerminal\Serial Terminal.exe"],
+            subprocess.Popen([r"C:\Program Files (x86)\com0com\Serial Terminal\Serial Terminal.exe"],
                             creationflags=subprocess.DETACHED_PROCESS)
             self.add_log_message("Launched serial terminal")
         except Exception as e:

@@ -241,7 +241,7 @@ class AboutDialog(QDialog):
     
     def open_github_repository(self):
         """Open the GitHub repository in the default browser."""
-        github_url = "https://github.com/gregor-nelson/SerialRouter"
+        github_url = ""
         QDesktopServices.openUrl(QUrl(github_url))
 
     def open_help_guide(self):

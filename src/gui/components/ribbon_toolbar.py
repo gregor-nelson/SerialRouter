@@ -6,7 +6,7 @@ from PyQt6.QtWidgets import (QToolBar, QWidget, QHBoxLayout, QVBoxLayout,
                             QLabel, QPushButton, QFrame, QSizePolicy,
                             QButtonGroup)
 from PyQt6.QtCore import Qt, pyqtSignal, QSize
-from PyQt6.QtGui import QIcon, QAction, QPixmap
+from PyQt6.QtGui import QIcon, QAction, QPixmap, QFont
 from PyQt6.QtSvgWidgets import QSvgWidget
 from PyQt6.QtSvg import QSvgRenderer
 
@@ -19,15 +19,18 @@ class RibbonButton(QPushButton):
     def __init__(self, text: str, icon_name: str = None, parent=None):
         super().__init__(parent)
         self.setText(text)
-        
+
         # Set icon if provided using resource manager
         if icon_name:
             icon = resource_manager.get_toolbar_icon(icon_name)
             if not icon.isNull():
                 self.setIcon(icon)
                 self.setIconSize(QSize(16, 16))
-        
-        # Use default button styling
+
+        # Set medium font weight for better readability
+        font = self.font()
+        font.setWeight(QFont.Weight.Medium)
+        self.setFont(font)
 
 
 class RibbonGroup(QFrame):
